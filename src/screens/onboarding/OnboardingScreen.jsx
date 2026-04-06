@@ -8,7 +8,7 @@ import {
   StatusBar,
   Alert,
 } from "react-native";
-
+import Icon from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Onboarding1 from "./Onboarding1";
@@ -95,21 +95,19 @@ const OnboardingScreen = ({ navigation }) => {
 
           {/* Button */}
 
-          <View className="px-5 mb-[2px] mt-[40px] ">
+         <View className="px-5 mb-[2px] mt-[40px] ">
+  <TouchableOpacity
+    onPress={onNext}
+    style={{ width: isTablet ? 420 : "100%" }}
+    className="bg-accent h-[56px] rounded-2xl items-center self-center flex-row justify-center"
+  >
+    <Text className="text-white font-heading text-[18px] mr-2">
+      Next
+    </Text>
 
-            <TouchableOpacity
-              onPress={onNext}
-              style={{ width: isTablet ? 420 : "100%" }}
-              className="bg-accent h-[56px] rounded-2xl items-center self-center flex-row justify-center"
-            >
-              <Text className="text-white font-heading text-[18px]">
-                Next →
-              </Text>
-            </TouchableOpacity>
-
-
-            
-          </View>
+    <Icon name="arrow-forward" size={22} color="#fff" top={1} />
+  </TouchableOpacity>
+</View>
 
         </View>
 

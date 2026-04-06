@@ -20,6 +20,8 @@ import useHandleMutation from "../../hooks/useHandleMutation";
 import { useNavigation } from "@react-navigation/native";
 import { saveAuth } from "../../utils/authStorage";
 import LinearGradient from "react-native-linear-gradient";
+import { pushAlert } from "../../redux/slices/alertSlice";
+import { useDispatch } from "react-redux";
 const { width, height } = Dimensions.get("window");
 const isTablet = width >= 768;
 
@@ -31,27 +33,35 @@ const LoginScreen = () => {
 
     const navigation = useNavigation();
 
-    const [empId, setEmpId] = useState("");
-    const [password, setPassword] = useState("");
+    const [empId, setEmpId] = useState("EMP703  ");
+    const [password, setPassword] = useState("123");
 
     const [login] = useLoginMutation();
     const { handleMutation, loading } = useHandleMutation();
 
-
+    const dispatch = useDispatch()
     const handleLogin = async () => {
 
         if (!empId || !password) {
-            return handleMutation({
-                showError: true,
-                customErrorMsg: "Employee ID and password required",
-            });
+
+            dispatch(pushAlert({
+                id: Date.now().toString(),
+                type: "error",
+                message: "Employee ID and password required",
+
+            }))
+            // return handleMutation({
+            //     showError: true,
+            //     customErrorMsg: "Employee ID and password required",
+            // });
+           
         }
 
         const res = await handleMutation({
             apiFunc: login,
             params: {
-                empId: empId.toUpperCase(),
-                password,
+                empId: empId?.toUpperCase()?.trim(),
+                password:password?.trim(),
             },
             showSuccess: true,
             // navigateTo: () => navigation.replace("Home"),
@@ -87,41 +97,41 @@ const LoginScreen = () => {
 
 
                 {/* ================= IMAGE ================= */}
-               <View
-  className="flex-1 w-full overflow-hidden"
-  style={{
-    height: isTablet ? height * 0.3 : height * 0.5,
-  }}
->
+                <View
+                    className="flex-1 w-full overflow-hidden"
+                    style={{
+                        height: isTablet ? height * 0.55 : height * 0.5,
+                    }}
+                >
 
-  {/* IMAGE */}
-  <Image
-    source={LoginImage}
-    resizeMode="cover"
-    style={{
-      width: "120%",
-      height: "100%",
-      transform: [{ translateX: 0 }]
-    }}
-  />
+                    {/* IMAGE */}
+                    <Image
+                        source={LoginImage}
+                        resizeMode="cover"
+                        style={{
+                            width:isTablet? "120%":"140%",
+                            height:isTablet? "150%":"120%",
+                            transform: [{ translateX: 0} ,{translateY:isTablet?-250:-100}] 
+                        }}
+                    />
 
-  {/* Bottom Black Gradient */}
-  <LinearGradient
-    colors={[
-      "transparent",
-      "rgba(0,0,0,0.2)",
-      "rgba(0,0,0,0.5)"
-    ]}
-    style={{
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      right: 0,
-      height: 120,
-    }}
-  />
+                    {/* Bottom Black Gradient */}
+                    <LinearGradient
+                        colors={[
+                            "transparent",
+                            "rgba(0,0,0,0.2)",
+                            "rgba(0,0,0,0.5)"
+                        ]}
+                        style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: 120,
+                        }}
+                    />
 
-</View>
+                </View>
 
                 <View className="flex-1 w-full px-5  rounded-tl-[20px] rounded-tr-[20px]  bg-primary -mt-[40px]"  >
 
@@ -154,7 +164,7 @@ const LoginScreen = () => {
                     <View
                         className="mt-5 rounded-2xl border border-gray-100"
                         style={{
-                               shadowColor: "#E2E8F0",
+                            shadowColor: "#E2E8F0",
                             shadowOffset: { width: 0, height: 6 },
                             shadowOpacity: 0.06,
                             shadowRadius: 12,
@@ -186,8 +196,8 @@ const LoginScreen = () => {
                     <View
                         className="mt-5 rounded-2xl border border-gray-100"
                         style={{
-                                shadowColor: "#E2E8F0",
-                          
+                            shadowColor: "#E2E8F0",
+
                             shadowOffset: { width: 0, height: 6 },
                             shadowOpacity: 0.06,
                             shadowRadius: 12,
