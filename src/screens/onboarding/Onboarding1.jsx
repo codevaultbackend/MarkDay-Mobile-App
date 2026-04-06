@@ -21,31 +21,28 @@ const Onboarding1 = () => {
 
                 {/* IMAGE */}
                 {/* IMAGE */}
-                <View className="mt-[10px] "
+                <View className="mt-[10px]"
                     style={{
-                        width: isTablet ? 420 : width * 0.85,
+                        width: isTablet ? 420 : width * 0.9,
                         height: isTablet ? 420 : width * 0.85,
                     }}
                 >
                     <Image
-                        className="rounded-[32px]"
+                        className="rounded-[32px] w-full h-full"
                         source={Onboarding1Img}
                         resizeMode="cover"
-                        style={{
-                            width: isTablet ? 420 : width * 0.85,
-                            height: isTablet ? 420 : width * 0.85,
-                        }}
+                        
                     />
                 </View>
 
                 {/* TEXT */}
                 <View className="mt-[44px] items-center">
 
-                    <Text className="text-[30px] text-secondary font-bold text-center ">
+                    <Text className="text-[28px] text-secondary font-bold text-center ">
                         Effortless Check-ins
-                    </Text>
+                    </Text>         
 
-                    <Text className="text-[16px] text-[#475569] font-normal text-center mt-[8px] leading-[26px] mb-[30px]">
+                    <Text className="text-[16px] text-[#475569] font-normal text-center mt-[8px] leading-[24px] mb-[40px]">
                         Mark your attendance in seconds with
                         integrated camera and precise GPS
                         verification.

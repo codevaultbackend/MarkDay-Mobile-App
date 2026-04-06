@@ -35,78 +35,85 @@ const OnboardingScreen = ({ navigation }) => {
         animated: true,
       });
     } else {
-        Alert.alert('navigation.replace')
-    //   navigation.replace("Login");
+
+      navigation.navigate("Login");
     }
   };
 
   return (
 
-    <> 
-
-    <SafeAreaView className="flex-1 bg-primary">
+    <>
 
 
+      <SafeAreaView className="flex-1 bg-primary ">
 
-      <View className="flex-1">
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="#FCF7ED"
+          translucent={false}
+        />
 
-        <ScrollView
-          ref={scrollRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-        >
 
-          <View style={{ width }}>
-            <Onboarding1 />
-          </View>
+        <View className="flex-1">
 
-          <View style={{ width }}>
-            <Onboarding2 />
-          </View>
-
-          <View style={{ width }}>
-            <Onboarding3 />
-          </View>
-
-        </ScrollView>
-
-        {/* Pagination */}
-        <View className="flex-row justify-center">
-
-          {[0,1,2].map((i)=>(
-            <View
-              key={i}
-              className={`${
-                page === i
-                  ? "w-6 h-2 bg-accent"
-                  : "w-2 h-2 bg-gray-300"
-              } rounded-full mx-1`}
-            />
-          ))}
-
-        </View>
-
-        {/* Button */}
-
-        <View className="px-5 mb-8 mt-[30px]">
-
-          <TouchableOpacity
-            onPress={onNext}
-            style={{ width: isTablet ? 420 : "100%" }}
-            className="bg-accent py-5 rounded-2xl items-center self-center"
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleScroll}
           >
-            <Text className="text-white font-heading text-[18px]">
-              Next →
-            </Text>
-          </TouchableOpacity>
+
+            <View style={{ width }}>
+              <Onboarding1 />
+            </View>
+
+            <View style={{ width }}>
+              <Onboarding2 />
+            </View>
+
+            <View style={{ width }}>
+              <Onboarding3 />
+            </View>
+
+          </ScrollView>
+
+          {/* Pagination */}
+          <View className="flex-row justify-center">
+
+            {[0, 1, 2].map((i) => (
+              <View
+                key={i}
+                className={`${page === i
+                    ? "w-6 h-2 bg-accent"
+                    : "w-2 h-2 bg-gray-300"
+                  } rounded-full mx-1`}
+              />
+            ))}
+
+          </View>
+
+          {/* Button */}
+
+          <View className="px-5 mb-[2px] mt-[40px] ">
+
+            <TouchableOpacity
+              onPress={onNext}
+              style={{ width: isTablet ? 420 : "100%" }}
+              className="bg-accent h-[56px] rounded-2xl items-center self-center flex-row justify-center"
+            >
+              <Text className="text-white font-heading text-[18px]">
+                Next →
+              </Text>
+            </TouchableOpacity>
+
+
+            
+          </View>
 
         </View>
 
-      </View>
-
-    </SafeAreaView>
+      </SafeAreaView>
 
     </>
   );

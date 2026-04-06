@@ -21,34 +21,31 @@ const Onboarding3 = () => {
 
                 {/* IMAGE */}
                 {/* IMAGE */}
-                <View className="mt-10   "
+                <View className="mt-[10px]"
                     style={{
-                        width: isTablet ? 420 : width * 0.85,
+                        width: isTablet ? 420 : width * 0.9,
                         height: isTablet ? 420 : width * 0.85,
                     }}
                 >
                     <Image
-                        className="rounded-[32px]"
+                        className="rounded-[32px] w-full h-full"
                         source={Onboarding1Img}
                         resizeMode="cover"
-                        style={{
-                            width: isTablet ? 420 : width * 0.85,
-                            height: isTablet ? 420 : width * 0.85,
-                        }}
+
                     />
                 </View>
 
                 {/* TEXT */}
                 <View className="mt-[44px] items-center ">
 
-                    <Text className="text-[30px] text-secondary font-bold text-center">
+                    <Text className="text-[28px] text-secondary font-bold text-center">
                         Request leave simply
                     </Text>
 
-                    <Text className="text-[16px] text-[#475569] font-normal text-center mt-[16px] leading-[26px] mb-[44px]">
-                     Visualize your attendance history and
-work hours with our intuitive calendar
-view.
+                    <Text className="text-[16px] text-[#475569] font-normal text-center mt-[16px] leading-[26px] mb-[40px]">
+                        Visualize your attendance history and
+                        work hours with our intuitive calendar
+                        view.
                     </Text>
 
                 </View>

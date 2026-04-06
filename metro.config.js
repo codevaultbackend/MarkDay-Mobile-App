@@ -1,11 +1,33 @@
-const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 
-/**
- * Metro configuration
- * https://reactnative.dev/docs/metro
- *
- * @type {import('@react-native/metro-config').MetroConfig}
- */
-const config = {};
+const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
+const { withNativeWind } = require("nativewind/metro");
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+const defaultConfig = getDefaultConfig(__dirname);
+
+// 🔹 SVG support add
+const {
+  transformer,
+  resolver: { sourceExts, assetExts },
+} = defaultConfig;
+
+const svgConfig = {
+  transformer: {
+    ...transformer,
+    babelTransformerPath: require.resolve(
+      "react-native-svg-transformer"
+    ),
+  },
+  resolver: {
+    assetExts: assetExts.filter(ext => ext !== "svg"),
+    sourceExts: [...sourceExts, "svg"],
+  },
+};
+
+const config = mergeConfig(defaultConfig, svgConfig);
+
+// 🔹 NativeWind wrapper
+module.exports = withNativeWind(config, {
+  input: "./global.css",
+});
+
+
