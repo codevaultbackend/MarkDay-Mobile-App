@@ -5,7 +5,7 @@ import Onboarding1Img from "../onboarding/images/onboarding2.webp";
 
 
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 const isTablet = width >= 768;
 
 const Onboarding2 = () => {
@@ -21,43 +21,28 @@ const Onboarding2 = () => {
 
                 {/* IMAGE */}
                 {/* IMAGE */}
-                <View className="mt-10"
+                <View className="mt-[10px]"
                     style={{
                         width: isTablet ? 420 : width * 0.9,
-                        height: isTablet ? 420 : width * 0.85,
+                        height: isTablet ? 420 : height * 0.45,
                     }}
                 >
-                       <Image
-                                          className="rounded-[32px] w-full h-full"
-                                          source={Onboarding1Img}
-                                          resizeMode="cover"
-                                          
-                                      />
+                    <Image
+                        className="rounded-[32px] w-full h-full"
+                        source={Onboarding1Img}
+                        resizeMode="cover"
+
+                    />
                 </View>
 
                 {/* TEXT */}
-                <View className="mt-[44px] items-center ">
+                <View className="mt-[44px] items-center">
 
                     <Text className="text-[28px] text-secondary font-bold text-center">
                         Track your Progress
                     </Text>
 
-                    <Text className="text-[16px] text-[#475569] font-normal text-center mt-[16px] leading-[26px] mb-[40px]
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    px]">
+                    <Text className="text-[16px] text-[#475569] font-normal text-center mt-[8px] leading-[24px] mb-[40px] min-h-[80px]">             
                         Visualize your attendance history and work hours with our intuitive calendar view.
                     </Text>
 

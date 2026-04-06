@@ -15,16 +15,63 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
 import LoginImage from "./images/loginimage.webp";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
-const { width } = Dimensions.get("window");
+import { useLoginMutation } from "../../redux/features/auth/authApi";
+import useHandleMutation from "../../hooks/useHandleMutation";
+import { useNavigation } from "@react-navigation/native";
+import { saveAuth } from "../../utils/authStorage";
+import LinearGradient from "react-native-linear-gradient";
+const { width, height } = Dimensions.get("window");
 const isTablet = width >= 768;
 
 const LoginScreen = () => {
-    const [activeTab, setActiveTab] = useState("login");
+
     const [showPassword, setShowPassword] = useState(false);
 
+
+
+    const navigation = useNavigation();
+
+    const [empId, setEmpId] = useState("");
+    const [password, setPassword] = useState("");
+
+    const [login] = useLoginMutation();
+    const { handleMutation, loading } = useHandleMutation();
+
+
+    const handleLogin = async () => {
+
+        if (!empId || !password) {
+            return handleMutation({
+                showError: true,
+                customErrorMsg: "Employee ID and password required",
+            });
+        }
+
+        const res = await handleMutation({
+            apiFunc: login,
+            params: {
+                empId: empId.toUpperCase(),
+                password,
+            },
+            showSuccess: true,
+            // navigateTo: () => navigation.replace("Home"),
+        });
+
+
+        if (res?.empId) {
+            saveAuth({
+                user: {
+                    empId: res?.empId,
+                    role: res?.role,
+                    name: res?.name
+                }
+            })
+        }
+
+        console.log("Login Response", res);
+    };
     return (
-        <SafeAreaView className="flex-1 bg-primary" edges={['left', 'right', 'bottom']}>
+        <SafeAreaView className="flex-1 bg-white" edges={['left', 'right', 'bottom']}>
 
 
 
@@ -40,21 +87,43 @@ const LoginScreen = () => {
 
 
                 {/* ================= IMAGE ================= */}
-                <View className="flex-1 w-full"
+               <View
+  className="flex-1 w-full overflow-hidden"
+  style={{
+    height: isTablet ? height * 0.3 : height * 0.5,
+  }}
+>
 
-                    style={{
+  {/* IMAGE */}
+  <Image
+    source={LoginImage}
+    resizeMode="cover"
+    style={{
+      width: "120%",
+      height: "100%",
+      transform: [{ translateX: 0 }]
+    }}
+  />
 
-                        height: isTablet ? 240 : width * 0.7,
-                    }}
-                >
-                    <Image
-                        source={LoginImage}
-                        className="w-full h-full  "
-                        resizeMode="cover"
-                    />
-                </View>
+  {/* Bottom Black Gradient */}
+  <LinearGradient
+    colors={[
+      "transparent",
+      "rgba(0,0,0,0.2)",
+      "rgba(0,0,0,0.5)"
+    ]}
+    style={{
+      position: "absolute",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: 120,
+    }}
+  />
 
-                <View className="flex-1 w-full px-5">
+</View>
+
+                <View className="flex-1 w-full px-5  rounded-tl-[20px] rounded-tr-[20px]  bg-primary -mt-[40px]"  >
 
 
 
@@ -65,14 +134,14 @@ const LoginScreen = () => {
                             className="text-2xl font-medium text-secondary"
                             style={{ includeFontPadding: false }}
                         >
-                            Create your account
+                            Login your account
                         </Text>
 
                         <Text
                             className="text-sm text-gray-500 mt-[10px]"
                             style={{ includeFontPadding: false }}
                         >
-                            Sign up to enjoy the best Try On experience
+                            Login  to enjoy the best Try On experience
                         </Text>
 
                     </View>
@@ -83,9 +152,9 @@ const LoginScreen = () => {
                     {/* ================= EMAIL INPUT ================= */}
 
                     <View
-                        className="mt-5 rounded-2xl"
+                        className="mt-5 rounded-2xl border border-gray-100"
                         style={{
-                            shadowColor: "#000",
+                               shadowColor: "#E2E8F0",
                             shadowOffset: { width: 0, height: 6 },
                             shadowOpacity: 0.06,
                             shadowRadius: 12,
@@ -95,15 +164,17 @@ const LoginScreen = () => {
                         <View className="bg-white rounded-2xl px-4 h-[55px] flex-row items-center">
 
                             <Ionicons
-                                name="mail-outline"
+                                name="person-outline"
                                 size={20}
                                 color="#64748B"
                             />
 
                             <TextInput
-                                placeholder="Email Address"
+                                placeholder="Employee ID"
                                 placeholderTextColor="#94A3B8"
                                 className="flex-1 ml-3 text-[15px] text-secondary"
+                                value={empId}
+                                onChangeText={setEmpId}
                             />
 
                         </View>
@@ -113,9 +184,10 @@ const LoginScreen = () => {
                     {/* ================= PASSWORD INPUT ================= */}
 
                     <View
-                        className="mt-5 rounded-2xl"
+                        className="mt-5 rounded-2xl border border-gray-100"
                         style={{
-                            shadowColor: "#000",
+                                shadowColor: "#E2E8F0",
+                          
                             shadowOffset: { width: 0, height: 6 },
                             shadowOpacity: 0.06,
                             shadowRadius: 12,
@@ -136,6 +208,8 @@ const LoginScreen = () => {
                                 placeholder="Password"
                                 placeholderTextColor="#94A3B8"
                                 secureTextEntry={!showPassword}
+                                value={password}
+                                onChangeText={setPassword}
                                 className="flex-1 ml-3 text-[15px] text-secondary"
                             />
 
@@ -157,9 +231,13 @@ const LoginScreen = () => {
 
 
                     {/* ================= SIGN IN BUTTON ================= */}
-                    <TouchableOpacity className="bg-accent h-[55px] rounded-2xl mt-4 items-center shadow-md flex-row justify-center mt-[40px] mb-[20px]">
+                    <TouchableOpacity
+
+                        onPress={handleLogin}
+                        disabled={loading}
+                        className="bg-accent h-[55px] rounded-2xl mt-4 items-center shadow-md flex-row justify-center mt-[40px] mb-[20px]">
                         <Text className="text-white text-base font-normal">
-                            Sign In
+                            {loading ? "Signing In..." : "Sign In"}
                         </Text>
                     </TouchableOpacity>
 

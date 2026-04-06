@@ -5,7 +5,7 @@ import Onboarding1Img from "../onboarding/images/onboarding1.webp";
 
 
 
-const { width } = Dimensions.get("window");
+const { width  ,height} = Dimensions.get("window");
 const isTablet = width >= 768;
 
 const Onboarding1 = () => {
@@ -24,7 +24,7 @@ const Onboarding1 = () => {
                 <View className="mt-[10px]"
                     style={{
                         width: isTablet ? 420 : width * 0.9,
-                        height: isTablet ? 420 : width * 0.85,
+                        height: isTablet ? 420 : height * 0.45,
                     }}
                 >
                     <Image
@@ -42,7 +42,7 @@ const Onboarding1 = () => {
                         Effortless Check-ins
                     </Text>         
 
-                    <Text className="text-[16px] text-[#475569] font-normal text-center mt-[8px] leading-[24px] mb-[40px]">
+                    <Text className="text-[16px] text-[#475569] font-normal text-center mt-[8px] min-h-[80px] leading-[24px] mb-[40px]">
                         Mark your attendance in seconds with
                         integrated camera and precise GPS
                         verification.

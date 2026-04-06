@@ -10,13 +10,19 @@ import { name as appName } from './app.json';
 
 
 import { Text, TextInput } from "react-native";
- 
-const Root = () => (
- <SafeAreaProvider>
- <App/>
+import { store } from './src/redux/store';
+import { Provider } from 'react-redux';
 
- </SafeAreaProvider>
-   
+const Root = () => (
+    <SafeAreaProvider>
+        <Provider store={store}>
+
+
+
+            <App />
+        </Provider>
+    </SafeAreaProvider>
+
 )
 
 AppRegistry.registerComponent(appName, () => Root);

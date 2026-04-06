@@ -5,7 +5,7 @@ import Onboarding1Img from "../onboarding/images/onboarding3.webp";
 
 
 
-const { width } = Dimensions.get("window");
+const { width ,height} = Dimensions.get("window");
 const isTablet = width >= 768;
 
 const Onboarding3 = () => {
@@ -17,14 +17,14 @@ const Onboarding3 = () => {
                 alignItems: "center",
             }}
         >
-            <View className="flex-1 items-center px-5 max-w-[520px]  flex-col justify-end ">
+            <View className="flex-1 items-center px-5 max-w-[520px]  flex-col justify-end">
 
                 {/* IMAGE */}
                 {/* IMAGE */}
                 <View className="mt-[10px]"
                     style={{
                         width: isTablet ? 420 : width * 0.9,
-                        height: isTablet ? 420 : width * 0.85,
+                        height: isTablet ? 420 : height * 0.45,
                     }}
                 >
                     <Image
@@ -42,7 +42,7 @@ const Onboarding3 = () => {
                         Request leave simply
                     </Text>
 
-                    <Text className="text-[16px] text-[#475569] font-normal text-center mt-[16px] leading-[26px] mb-[40px]">
+                      <Text className="text-[16px] text-[#475569] font-normal text-center mt-[8px] leading-[24px] mb-[40px] min-h-[80px]">             
                         Visualize your attendance history and
                         work hours with our intuitive calendar
                         view.
