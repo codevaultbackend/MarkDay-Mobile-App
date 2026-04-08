@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/Feather";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -34,27 +34,34 @@ const CustomTabBar = ({ state, navigation }) => {
 
           // CENTER BUTTON
           if (route.name === "Atendence") {
-            return (
-              <View key={route.key} className="items-center relative bottom-[32px] ">
-                <TouchableOpacity
-                  onPress={onPress}
-                  className="bg-accent w-16 h-16 rounded-full items-center justify-center border-4 border-gray-50"
-                //   style={{
-                //     shadowColor: "#000",
-                //     shadowOffset: { width: 0, height: 8 },
-                //     shadowOpacity: 0.25,
-                //     shadowRadius: 10,
-                //     elevation: 10,
-                //   }}
-                >
-                  {/* CHANGE ICON HERE */}
-                 <MainImage style={{ width: 32, height: 32 }} />
-                </TouchableOpacity>
+  const isCameraScreen = isFocused;
 
-                
-              </View>
-            );
+  return (
+    <View key={route.key} className="items-center relative bottom-[32px] ">
+      <TouchableOpacity
+        onPress={() => {
+
+          if (isCameraScreen) {
+            
+            navigation.emit({
+              type: "take-photo"
+            });
+          } else {
+            navigation.navigate(route.name);
           }
+        }}
+        className="bg-accent w-16 h-16 rounded-full items-center justify-center border-4 border-gray-50"
+      >
+        {isCameraScreen ? (
+          // <Icon name="camera" size={26} color="white" />
+               <Icon name="aperture" color="white" size={30} /> 
+        ) : (
+          <MainImage style={{ width: 32, height: 32 }} />
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+}
 
           // NORMAL TABS
           return (

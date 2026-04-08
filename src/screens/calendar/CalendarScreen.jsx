@@ -4,7 +4,9 @@ import React from 'react'
 const CalendarScreen = () => {
   return (
     <View>
-      <Text>CalendarScreen</Text>
+<Text className="text-lg">
+  Hello
+</Text>
     </View>
   )
 }

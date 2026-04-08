@@ -6,57 +6,95 @@ import {
     Dimensions,
     Image,
     ScrollView,
+    Alert,
+    AppState
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Feather";
 
+// Vision Camera
 import { Camera, useCameraDevice, useCameraDevices } from "react-native-vision-camera";
+
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
+// Custom Hooks
 import { useCurrentLocation } from '../../hooks/useCurrentLocation'
 
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 import { useCameraPermission } from "../../hooks/useCameraPermission";
+
 const { width } = Dimensions.get("window");
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-
+// API
 import { useMarkAttendanceMutation } from "../../redux/features/attendance/attendanceApi";
 
 import useHandleMutation from "../../hooks/useHandleMutation";
 import AttendanceSuccessScreen from './AttendanceSuccessScreen'
+
+// Utils
 import { getAuth } from "../../utils/authStorage";
+
+// Redux
+import { pushAlert } from "../../redux/slices/alertSlice";
+import { useDispatch } from "react-redux";
+
+import { useIsFocused } from "@react-navigation/native";
 
 const FacialVerificationScreen = ({ navigation }) => {
 
+    const isFocused = useIsFocused()
+    // Camera Active State (App Background / Foreground Handle)
+    const [isActive, setIsActive] = useState(true);
 
+    // API
     const [markAttendance] = useMarkAttendanceMutation();
     const { handleMutation, loading: ApiLoading } = useHandleMutation();
 
+    const dispatch = useDispatch()
 
+    // Camera Position State
+    const [cameraPosition, setCameraPosition] = useState("front");
 
-    const device = useCameraDevice("front");
+    // Get Camera Device
+    const device = useCameraDevice(cameraPosition);
 
+    // Camera Ready State
     const [isCameraReady, setIsCameraReady] = useState(false);
+
+    // Location Hook
     const { location, getCurrentLocation, loading, address } = useCurrentLocation();
 
+    // API Type (Checkin / Checkout)
     const [ApiType, setApiType] = useState(null);
 
+    // Camera Initializing State
     const [isInitializing, setIsInitializing] = useState(true);
+
+    // Camera Permission Hook
     const {
         hasCameraPermission,
         cameraDenied,
         requestCameraPermission
     } = useCameraPermission();
 
-
+    // Camera Ref
     const cameraRef = useRef(null);
 
+    // Captured Image State
     const [captured, setCaptured] = useState(null);
+
+    // Time State
     const [time, setTime] = useState(new Date());
 
-    // Dynamic Time
+    console.log(captured, 'captured')
+
+    // =============================
+    // Dynamic Time Update
+    // =============================
     useEffect(() => {
         const interval = setInterval(() => {
             setTime(new Date());
@@ -64,32 +102,42 @@ const FacialVerificationScreen = ({ navigation }) => {
 
         return () => clearInterval(interval);
     }, []);
+
+    // =============================
+    // Fetch Location Once
+    // =============================
     useEffect(() => {
         if (!location && !loading) {
             getCurrentLocation();
         }
     }, []);
 
-
+useEffect(() => {
+   setIsCameraReady(false)
+}, [cameraPosition])
+    // =============================
+    // Screen Focus Effect
+    // Camera Permission Init
+    // =============================
     useFocusEffect(
         useCallback(() => {
 
             const init = async () => {
 
+                // Start Initializing
                 setIsInitializing(true);
 
+                // Request Camera Permission
                 const camera = await requestCameraPermission();
 
+                // If Permission Denied
                 if (!camera) {
                     setIsInitializing(false);
                     return;
                 }
 
-
-
-
+                // Camera Ready
                 setIsInitializing(false);
-
             };
 
             init();
@@ -97,31 +145,137 @@ const FacialVerificationScreen = ({ navigation }) => {
         }, [])
     );
 
+    // =============================
+    // Take Photo Listener
+    // =============================
+ useEffect(() => {
+    const unsubscribe = navigation.addListener(
+        "take-photo",
+        takePhoto
+    );
 
-    const takePhoto = async () => {
-        if (!cameraRef.current || !isCameraReady) {
-            console.log("Camera not ready");
-            return;
-        }
+    return unsubscribe;
+}, []);
+
+    // =============================
+    // App Background / Foreground Handle
+    // =============================
+    useEffect(() => {
+        const subscription = AppState.addEventListener(
+            "change",
+            (state) => {
+                if (state === "active") {
+                    setIsActive(true);
+                } else {
+                    setIsActive(false);
+                }
+            }
+        );
+
+        return () => subscription.remove();
+    }, []);
 
 
-        const photo = await cameraRef.current.takePhoto({
-            flash: "off",
-        });
+    // =============================
+    // Flip Camera
+    // ISSUE POINT:
+    // Sometimes Camera not resetting properly
+    // Because device changes before camera re-init
+    // =============================
+    
+    const flipCamera = () => {
 
-        setCaptured(photo);
-        if (!location) {
-            await getCurrentLocation();
-        }
+        if (takingRef.current) return;
 
+        takingRef.current = false;   // 👈 add this
+
+        setIsCameraReady(false);
+        setCaptured(null);
+
+        setCameraPosition(prev =>
+            prev === "front" ? "back" : "front"
+        );
     };
 
 
+    // =============================
+    // Take Photo
+    // =============================
+    const capturedRef = useRef(null);
+    const takingRef = useRef(false);
+    useEffect(() => {
+        capturedRef.current = captured;
+    }, [captured]);
 
+    const takePhoto = async () => {
 
+        try {
+
+            if (capturedRef.current) {
+                return Alert.alert('Please retake before capturing again');
+            }
+
+            if (takingRef.current) return;
+ 
+            if (!cameraRef.current ) {
+                Alert.alert('Camera is initializing, please wait...');
+                return;
+            }
+
+            takingRef.current = true;
+
+            const photo = await cameraRef.current.takePhoto({
+                flash: "off",
+            });
+
+            if (!photo) {
+                return Alert.alert("Failed to capture photo");
+            }
+
+            setCaptured(photo);
+
+            if (!location) {
+                await getCurrentLocation();
+            }
+
+        } catch (error) {
+
+            console.log("Capture Error:", error);
+            Alert.alert("Camera busy, try again");
+
+        } finally {
+            takingRef.current = false;   // 👈 always reset
+        }
+    };
+
+    // =============================
+    // Handle Check In
+    // =============================
     const handleCheckIn = async () => {
         setApiType('check-in')
         const auth = await getAuth();
+
+        // Location Check
+        if (!location?.latitude || !location?.longitude) {
+            dispatch(pushAlert({
+                id: Date.now().toString(),
+                type: "error",
+                message: "Please wait, fetching your location. Attendance cannot be marked without location."
+            }));
+            setApiType(null);
+            return;
+        }
+
+        // Photo Check
+        if (!captured?.path) {
+            dispatch(pushAlert({
+                id: Date.now().toString(),
+                type: "error",
+                message: "Please capture your photo before marking attendance."
+            }));
+            setApiType(null);
+            return;
+        }
 
         const res = await handleMutation({
             apiFunc: markAttendance,
@@ -129,7 +283,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                 empId: auth?.user?.empId,
                 name: auth?.user?.name,
                 type: "in",
-                location: `${location.latitude},${location.longitude}`,
+                location: `${location?.latitude},${location?.longitude}`,
                 photo: captured?.path
             },
             showSuccess: true
@@ -137,6 +291,7 @@ const FacialVerificationScreen = ({ navigation }) => {
 
         console.log("Check In Response", res);
         setApiType(null)
+
         if (res) {
             navigation.reset({
                 index: 1,
@@ -156,32 +311,20 @@ const FacialVerificationScreen = ({ navigation }) => {
                 ]
             });
         }
-
-
     };
 
 
     const handleCheckOut = async () => {
 
-        //      navigation.reset({
-        //   index: 1,
-        //   routes: [
-        //     {
-        //       name: "Tabs",
-        //       params: { screen: "Home" }
-        //     },
-        //     {
-        //       name: "attendance-mark-success",
-        //       params: {
-        //         type: "out",
-        //         time: formattedTime,
-        //         location: address
-        //       }
-        //     }
-        //   ]
-        // });
-
-
+        // Location Validation
+        if (!location?.latitude || !location?.longitude) {
+            dispatch(pushAlert({
+                id: Date.now().toString(),
+                type: "error",
+                message: "Please wait, fetching your location. Check-out cannot be completed without location."
+            }));
+            return;
+        }
 
         setApiType('check-out')
         const auth = await getAuth();
@@ -192,10 +335,11 @@ const FacialVerificationScreen = ({ navigation }) => {
                 empId: auth?.user?.empId,
                 name: auth?.user?.name,
                 type: "out",
-                location: `${location.latitude},${location.longitude}`,
+                location: `${location?.latitude},${location?.longitude}`,
             },
             showSuccess: true
         });
+
         setApiType(null)
         console.log("Check Out Response", res);
 
@@ -217,10 +361,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                     }
                 ]
             });
-
-
-        };
-
+        }
     };
 
     const formattedTime = time.toLocaleTimeString([], {
@@ -233,14 +374,6 @@ const FacialVerificationScreen = ({ navigation }) => {
         month: "short",
         day: "numeric",
     });
-
-
-
-
-
-
-
-
 
     return (
         <SafeAreaView className="flex-1 bg-primary" edges={['top', 'left', 'right']}>
@@ -270,8 +403,8 @@ const FacialVerificationScreen = ({ navigation }) => {
                 </View>
 
                 {/* Camera Card */}
-                <View className="mx-4 mt-2 rounded-3xl overflow-hidden bg-white shadow-sm border">
-                    <View className="relative border">
+                <View className="mx-4 mt-2 rounded-3xl overflow-hidden bg-white shadow-sm ">
+                    <View className="relative ">
 
                         {/* CAMERA VIEW */}
                         {captured ? (
@@ -284,10 +417,11 @@ const FacialVerificationScreen = ({ navigation }) => {
                         ) : device && hasCameraPermission && !isInitializing ? (
 
                             <Camera
+                                key={cameraPosition}   // 👈 YE MISSING HAIi
                                 ref={cameraRef}
                                 style={{ width: "100%", height: 420 }}
                                 device={device}
-                                isActive={true}
+                                isActive={isActive && isFocused}
                                 photo={true}
                                 onInitialized={() => setIsCameraReady(true)}
                             />
@@ -344,14 +478,22 @@ const FacialVerificationScreen = ({ navigation }) => {
 
                         {/* Capture Button */}
                         <View className="absolute bottom-16 self-center">
-                            <TouchableOpacity onPress={takePhoto} disabled={!isCameraReady}  >
-                                <View className="bg-white p-3 rounded-full">
+                            <TouchableOpacity onPress={flipCamera} disabled={!device}  >
+                                <View className="bg-white p-2 rounded-full">
                                     <View className="bg-accent w-12 h-12 rounded-full items-center justify-center">
-                                        <Icon name="aperture" color="white" size={20} />
+                                        {/* <Icon name="aperture" color="white" size={20} /> */}
+
+                                        <MaterialCommunityIcons
+                                            name="camera-flip-outline"
+                                            size={22}
+                                            color="white"
+                                        />
+
                                     </View>
                                 </View>
                             </TouchableOpacity>
                         </View>
+
 
                         {/* Bottom Info */}
                         <View className="absolute bottom-3 left-3 right-3 flex-row justify-between items-end">
@@ -437,7 +579,10 @@ const FacialVerificationScreen = ({ navigation }) => {
 
                         {/* Retake */}
                         <TouchableOpacity
-                            onPress={() => setCaptured(null)}
+                            onPress={() => {
+                                takingRef.current = false;
+                                setCaptured(null);
+                            }}
                             className="flex-row items-center "
                         >
                             <Icon
