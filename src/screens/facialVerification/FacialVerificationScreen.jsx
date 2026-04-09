@@ -12,7 +12,7 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Feather";
-
+import RNFS from 'react-native-fs'
 // Vision Camera
 import { Camera, useCameraDevice, useCameraDevices } from "react-native-vision-camera";
 
@@ -43,7 +43,7 @@ import { pushAlert } from "../../redux/slices/alertSlice";
 import { useDispatch } from "react-redux";
 
 import { useIsFocused } from "@react-navigation/native";
-
+import { Image as ImageCompressor } from 'react-native-compressor';
 const FacialVerificationScreen = ({ navigation }) => {
 
     const isFocused = useIsFocused()
@@ -61,7 +61,7 @@ const FacialVerificationScreen = ({ navigation }) => {
 
     // Get Camera Device
     const device = useCameraDevice(cameraPosition);
-    console.log(device, "devices")
+   
     // Camera Ready State
     const [isCameraReady, setIsCameraReady] = useState(false);
 
@@ -90,7 +90,7 @@ const FacialVerificationScreen = ({ navigation }) => {
     // Time State
     const [time, setTime] = useState(new Date());
 
-    console.log(captured, 'captured')
+ 
 
     // =============================
     // Dynamic Time Update
@@ -212,46 +212,77 @@ const FacialVerificationScreen = ({ navigation }) => {
         capturedRef.current = captured;
     }, [captured]);
 
-    const takePhoto = async () => {
+const takePhoto = async () => {
 
-        try {
+    try {
 
-            if (capturedRef.current) {
-                return Alert.alert('Please retake before capturing again');
-            }
-
-            if (takingRef.current) return;
-
-            if (!cameraRef.current) {
-                Alert.alert('Camera is initializing, please wait...');
-                return;
-            }
-
-            takingRef.current = true;
-
-            const photo = await cameraRef.current.takePhoto({
-                flash: "off",
-            });
-
-            if (!photo) {
-                return Alert.alert("Failed to capture photo");
-            }
-
-            setCaptured(photo);
-
-            if (!location) {
-                await getCurrentLocation();
-            }
-
-        } catch (error) {
-
-            console.log("Capture Error:", error);
-            Alert.alert("Camera busy, try again");
-
-        } finally {
-            takingRef.current = false;   // 👈 always reset
+        // Already captured check
+        if (capturedRef.current) {
+            return Alert.alert('Please retake before capturing again');
         }
-    };
+
+        // Prevent double click
+        if (takingRef.current) return;
+
+        // Camera ready check
+        if (!cameraRef.current) {
+            Alert.alert('Camera is initializing, please wait...');
+            return;
+        }
+
+        takingRef.current = true;
+
+        // 📸 Capture Photo
+        const photo = await cameraRef.current.takePhoto({
+            flash: "off",
+            qualityPrioritization: "balanced",
+            enableAutoStabilization: true,
+        });
+
+        console.log("Original Path:", photo.path);
+
+        // 🔥 Compress (Best Quality + Size Balance)
+        const compressedPath = await ImageCompressor.compress(
+            photo.path,
+            {
+                compressionMethod: "auto",
+                maxWidth: 1400,   // 👈 resolution control
+                quality: 0.85     // 👈 quality maintain
+            }
+        );
+
+        console.log("Compressed Path:", compressedPath);
+
+        // 📊 Size Check
+        const stat = await RNFS.stat(compressedPath);
+
+        console.log(
+            "📸 Compressed Size:",
+            (stat.size / 1024).toFixed(2),
+            "KB"
+        );
+
+        // Save Image
+        setCaptured({
+            ...photo,
+            path: compressedPath
+        });
+
+        // Get Location if missing
+        if (!location) {
+            await getCurrentLocation();
+        }
+
+    } catch (error) {
+
+        console.log("Capture Error:", error);
+
+    } finally {
+
+        takingRef.current = false;
+
+    }
+};
 
     // =============================
     // Handle Check In
