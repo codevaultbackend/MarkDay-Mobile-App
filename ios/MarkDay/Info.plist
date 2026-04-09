@@ -88,5 +88,21 @@
 		<string>FontAwesome6_Brands.ttf</string>
 		<string>MaterialIcons.ttf</string>
 	</array>
+<!-- Camera -->
+<key>NSCameraUsageDescription</key>
+<string>We need camera access for attendance verification</string>
+	      <!-- Location Permession   start -->
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>We need location for attendance</string>
+
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>We need location for attendance</string>
+      <!-- Location Permession   end -->
 </dict>
+
+
+
+
+
+
 </plist>

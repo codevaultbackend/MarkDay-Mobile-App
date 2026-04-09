@@ -10,9 +10,13 @@ import {
 import axios from "axios";   // ✅ Missing import
 
 import { NativeModules } from "react-native";
- 
 
-const { CustomLocationModule, GpsModule } = NativeModules;
+
+const { CustomLocationModule, GpsModule, IOSLocationModule } = NativeModules;
+const LocationModule =
+  Platform.OS === "android"
+    ? CustomLocationModule
+    : IOSLocationModule;
 let cachedLocation = null;
 let cachedAddress = null;
 let isFetching = false;
@@ -142,14 +146,17 @@ export const useCurrentLocation = () => {
             const hasPermission = await requestLocationPermission();
 
             if (!hasPermission) return null;
+            if (Platform.OS === "android") {
+                const isGpsEnabled = await GpsModule.isGpsEnabled();
 
-            const isGpsEnabled = await GpsModule.isGpsEnabled();
+                if (!isGpsEnabled) {
+                    await GpsModule.enableGps();
+                }
 
-            if (!isGpsEnabled) {
-                await GpsModule.enableGps();
             }
 
-            const result = await CustomLocationModule.getCurrentLocation();
+
+            const result = await LocationModule.getCurrentLocation();
             // Alert.alert("LOcation fetch naive module")
 
             cachedLocation = result;

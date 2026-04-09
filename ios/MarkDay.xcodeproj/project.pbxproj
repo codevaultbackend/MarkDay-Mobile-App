@@ -18,6 +18,8 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		ACEC764B39B942D6ABF1F3F5 /* SF-Pro-Text-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 367E85F318654811B242D3E3 /* SF-Pro-Text-Heavy.otf */; };
+		C60060C12F8685F100094666 /* IOSLocationModule.m in Sources */ = {isa = PBXBuildFile; fileRef = C60060C02F8685F100094666 /* IOSLocationModule.m */; };
+		C60060C32F86860A00094666 /* IOSLocationModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60060C22F86860A00094666 /* IOSLocationModule.swift */; };
 		D634EFE80DFB4479B7967810 /* SF-Pro-Text-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 122869E5822147D585FF8DB3 /* SF-Pro-Text-Thin.otf */; };
 		DA3385ED978A4E18AC552DA8 /* SF-Pro-Text-Ultralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 12B2CD59BFF44BBDADE0A3FE /* SF-Pro-Text-Ultralight.otf */; };
 		E13BC7510C8A4786A67A45C5 /* SF-Pro-Text-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 377411CE59304D22B0A50724 /* SF-Pro-Text-Light.otf */; };
@@ -58,6 +60,8 @@
 		AF1C162288B54C408C81885C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		B1FA858B4EE8422A87FD4BDE /* SF-Pro-Text-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-Black.otf"; path = "../src/assets/fonts/SF-Pro-Text-Black.otf"; sourceTree = "<group>"; };
 		B8EBA6B2B60A4DB6BB84348A /* FontAwesome6_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome6_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome6_Solid.ttf"; sourceTree = "<group>"; };
+		C60060C02F8685F100094666 /* IOSLocationModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSLocationModule.m; sourceTree = "<group>"; };
+		C60060C22F86860A00094666 /* IOSLocationModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSLocationModule.swift; sourceTree = "<group>"; };
 		E6B3F744B0684AF7B1E6B210 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		E9079675BC0D4CE5B6ECA4DD /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -81,6 +85,8 @@
 		13B07FAE1A68108700A75B9A /* MarkDay */ = {
 			isa = PBXGroup;
 			children = (
+				C60060C22F86860A00094666 /* IOSLocationModule.swift */,
+				C60060C02F8685F100094666 /* IOSLocationModule.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -207,7 +213,7 @@
 				LastUpgradeCheck = 1210;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 2630;
 					};
 				};
 			};
@@ -332,7 +338,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C60060C12F8685F100094666 /* IOSLocationModule.m in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+				C60060C32F86860A00094666 /* IOSLocationModule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,8 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { useDispatch } from "react-redux";
 import { pushAlert } from "../redux/slices/alertSlice.js";
 import { withTimeout } from "../utils/withTimeout.js";
+import { Alert } from "react-native";
 
 /**
  * Custom Hook for Handling RTK Query Mutations
@@ -22,7 +23,8 @@ const useHandleMutation = () => {
 
   // Global Loading State
   const [loading, setLoading] = useState(false);
-
+  // Abort Request Ref
+  const requestRef = useRef(null);
   const handleMutation = useCallback(
     async ({
       apiFunc, // RTK mutation function
@@ -55,10 +57,18 @@ const useHandleMutation = () => {
          * API Call with Timeout
          */
          
-        const res = await withTimeout(
+        // const res = await withTimeout(
+        //   (signal) => apiFunc(params, { signal }).unwrap(),
+        //   timeoutMs
+        // );
+         /**
+         * API Call with Timeout + Abort
+         */
+        requestRef.current = withTimeout(
           (signal) => apiFunc(params, { signal }).unwrap(),
           timeoutMs
         );
+           const res = await requestRef.current;
 
         /**
          * Dispatch Redux Actions
@@ -157,7 +167,7 @@ const useHandleMutation = () => {
         return null;
 
       } finally {
-
+ requestRef.current = null;
         /**
          * Small Delay (Smooth UX)
          */
@@ -172,6 +182,11 @@ const useHandleMutation = () => {
   return {
     handleMutation,
     loading,
+  abort: () => {
+    
+  requestRef.current?.abort?.();
+  setLoading(false);   // 👈 add this
+}
   };
 };
 

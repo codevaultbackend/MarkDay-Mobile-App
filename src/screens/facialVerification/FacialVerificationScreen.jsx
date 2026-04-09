@@ -52,7 +52,7 @@ const FacialVerificationScreen = ({ navigation }) => {
 
     // API
     const [markAttendance] = useMarkAttendanceMutation();
-    const { handleMutation, loading: ApiLoading } = useHandleMutation();
+    const { handleMutation, loading: ApiLoading, abort } = useHandleMutation();
 
     const dispatch = useDispatch()
 
@@ -61,7 +61,7 @@ const FacialVerificationScreen = ({ navigation }) => {
 
     // Get Camera Device
     const device = useCameraDevice(cameraPosition);
-
+    console.log(device, "devices")
     // Camera Ready State
     const [isCameraReady, setIsCameraReady] = useState(false);
 
@@ -112,9 +112,9 @@ const FacialVerificationScreen = ({ navigation }) => {
         }
     }, []);
 
-useEffect(() => {
-   setIsCameraReady(false)
-}, [cameraPosition])
+    useEffect(() => {
+        setIsCameraReady(false)
+    }, [cameraPosition])
     // =============================
     // Screen Focus Effect
     // Camera Permission Init
@@ -148,14 +148,14 @@ useEffect(() => {
     // =============================
     // Take Photo Listener
     // =============================
- useEffect(() => {
-    const unsubscribe = navigation.addListener(
-        "take-photo",
-        takePhoto
-    );
+    useEffect(() => {
+        const unsubscribe = navigation.addListener(
+            "take-photo",
+            takePhoto
+        );
 
-    return unsubscribe;
-}, []);
+        return unsubscribe;
+    }, []);
 
     // =============================
     // App Background / Foreground Handle
@@ -182,16 +182,21 @@ useEffect(() => {
     // Sometimes Camera not resetting properly
     // Because device changes before camera re-init
     // =============================
-    
+
+
+    // cancel api
+
+
+
     const flipCamera = () => {
 
         if (takingRef.current) return;
-
+        abort();
         takingRef.current = false;   // 👈 add this
-
+ setCaptured(null);
+        setApiType(null);
         setIsCameraReady(false);
-        setCaptured(null);
-
+       
         setCameraPosition(prev =>
             prev === "front" ? "back" : "front"
         );
@@ -216,8 +221,8 @@ useEffect(() => {
             }
 
             if (takingRef.current) return;
- 
-            if (!cameraRef.current ) {
+
+            if (!cameraRef.current) {
                 Alert.alert('Camera is initializing, please wait...');
                 return;
             }
@@ -580,8 +585,10 @@ useEffect(() => {
                         {/* Retake */}
                         <TouchableOpacity
                             onPress={() => {
+                                abort(); // cancel api
                                 takingRef.current = false;
                                 setCaptured(null);
+                                setApiType(null);
                             }}
                             className="flex-row items-center "
                         >
