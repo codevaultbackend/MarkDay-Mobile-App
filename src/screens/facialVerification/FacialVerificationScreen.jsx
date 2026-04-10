@@ -44,6 +44,7 @@ import { useDispatch } from "react-redux";
 
 import { useIsFocused } from "@react-navigation/native";
 import { Image as ImageCompressor } from 'react-native-compressor';
+import { cardStyle } from "../../utils/cardStyle";
 const FacialVerificationScreen = ({ navigation }) => {
 
     const isFocused = useIsFocused()
@@ -61,7 +62,7 @@ const FacialVerificationScreen = ({ navigation }) => {
 
     // Get Camera Device
     const device = useCameraDevice(cameraPosition);
-   
+
     // Camera Ready State
     const [isCameraReady, setIsCameraReady] = useState(false);
 
@@ -90,7 +91,7 @@ const FacialVerificationScreen = ({ navigation }) => {
     // Time State
     const [time, setTime] = useState(new Date());
 
- 
+
 
     // =============================
     // Dynamic Time Update
@@ -193,10 +194,10 @@ const FacialVerificationScreen = ({ navigation }) => {
         if (takingRef.current) return;
         abort();
         takingRef.current = false;   // 👈 add this
- setCaptured(null);
+        setCaptured(null);
         setApiType(null);
         setIsCameraReady(false);
-       
+
         setCameraPosition(prev =>
             prev === "front" ? "back" : "front"
         );
@@ -212,77 +213,77 @@ const FacialVerificationScreen = ({ navigation }) => {
         capturedRef.current = captured;
     }, [captured]);
 
-const takePhoto = async () => {
+    const takePhoto = async () => {
 
-    try {
+        try {
 
-        // Already captured check
-        if (capturedRef.current) {
-            return Alert.alert('Please retake before capturing again');
-        }
-
-        // Prevent double click
-        if (takingRef.current) return;
-
-        // Camera ready check
-        if (!cameraRef.current) {
-            Alert.alert('Camera is initializing, please wait...');
-            return;
-        }
-
-        takingRef.current = true;
-
-        // 📸 Capture Photo
-        const photo = await cameraRef.current.takePhoto({
-            flash: "off",
-            qualityPrioritization: "balanced",
-            enableAutoStabilization: true,
-        });
-
-        console.log("Original Path:", photo.path);
-
-        // 🔥 Compress (Best Quality + Size Balance)
-        const compressedPath = await ImageCompressor.compress(
-            photo.path,
-            {
-                compressionMethod: "auto",
-                maxWidth: 1400,   // 👈 resolution control
-                quality: 0.85     // 👈 quality maintain
+            // Already captured check
+            if (capturedRef.current) {
+                return Alert.alert('Please retake before capturing again');
             }
-        );
 
-        console.log("Compressed Path:", compressedPath);
+            // Prevent double click
+            if (takingRef.current) return;
 
-        // 📊 Size Check
-        const stat = await RNFS.stat(compressedPath);
+            // Camera ready check
+            if (!cameraRef.current) {
+                Alert.alert('Camera is initializing, please wait...');
+                return;
+            }
 
-        console.log(
-            "📸 Compressed Size:",
-            (stat.size / 1024).toFixed(2),
-            "KB"
-        );
+            takingRef.current = true;
 
-        // Save Image
-        setCaptured({
-            ...photo,
-            path: compressedPath
-        });
+            // 📸 Capture Photo
+            const photo = await cameraRef.current.takePhoto({
+                flash: "off",
+                qualityPrioritization: "balanced",
+                enableAutoStabilization: true,
+            });
 
-        // Get Location if missing
-        if (!location) {
-            await getCurrentLocation();
+            console.log("Original Path:", photo.path);
+
+            // 🔥 Compress (Best Quality + Size Balance)
+            const compressedPath = await ImageCompressor.compress(
+                photo.path,
+                {
+                    compressionMethod: "auto",
+                    maxWidth: 1400,   // 👈 resolution control
+                    quality: 0.85     // 👈 quality maintain
+                }
+            );
+
+            console.log("Compressed Path:", compressedPath);
+
+            // 📊 Size Check
+            const stat = await RNFS.stat(compressedPath);
+
+            console.log(
+                "📸 Compressed Size:",
+                (stat.size / 1024).toFixed(2),
+                "KB"
+            );
+
+            // Save Image
+            setCaptured({
+                ...photo,
+                path: compressedPath
+            });
+
+            // Get Location if missing
+            if (!location) {
+                await getCurrentLocation();
+            }
+
+        } catch (error) {
+
+            console.log("Capture Error:", error);
+
+        } finally {
+
+            takingRef.current = false;
+
         }
-
-    } catch (error) {
-
-        console.log("Capture Error:", error);
-
-    } finally {
-
-        takingRef.current = false;
-
-    }
-};
+    };
 
     // =============================
     // Handle Check In
@@ -439,7 +440,7 @@ const takePhoto = async () => {
                 </View>
 
                 {/* Camera Card */}
-                <View className="mx-4 mt-2 rounded-3xl overflow-hidden bg-white shadow-sm ">
+                <View className="mx-4 mt-2 rounded-3xl overflow-hidden bg-white" style={cardStyle}>
                     <View className="relative ">
 
                         {/* CAMERA VIEW */}
@@ -576,11 +577,12 @@ const takePhoto = async () => {
 
                 {/* Success Card */}
                 {captured && <>
-
+ 
                     <Animated.View
                         entering={FadeIn}
                         exiting={FadeOut}
-                        className="mx-4 mt-4 bg-white p-3 rounded-2xl flex-row items-center shadow-sm"
+                        className="mx-4 mt-4 bg-white p-3 rounded-2xl flex-row items-center border border-gray-100"
+                        style={cardStyle}
                     >
                         {/* Image */}
                         <Image

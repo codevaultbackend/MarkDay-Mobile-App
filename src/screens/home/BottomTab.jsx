@@ -4,7 +4,18 @@ import Icon from "react-native-vector-icons/Feather";
 
 const BottomTab = () => {
   return (
-    <View className="absolute bottom-0 left-0 right-0 bg-white py-3 flex-row justify-around items-center shadow-lg">
+    <View 
+    
+    className=" bg-white py-3 flex-row justify-around items-center border-t border-gray-100"
+      style={{
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 6,
+        elevation: 8
+      }}
+    
+    >
 
       <TouchableOpacity className="items-center">
         <Icon name="home" size={22} color="#A67C52" />

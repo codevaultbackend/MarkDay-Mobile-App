@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import Icon from "react-native-vector-icons/Feather";
+import { cardStyle } from "../../utils/cardStyle";
 
 const AttendanceSuccessScreen = ({ route, navigation }) => {
 
@@ -77,13 +78,13 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
                         </View>
 
                         {/* Title */}
-                        <Text className="text-center text-xl font-semibold mt-10 text-secondary">
+                        <Text className="text-center text-xl font-semibold mt-10 text-secondary" style={{ includeFontPadding: false }}>
                             {type === "out"
                                 ? "Check-out Successful"
                                 : "Check-in Successful"}
                         </Text>
 
-                        <Text className="text-center text-gray-500 mt-2 px-6">
+                        <Text className="text-center text-gray-500 mt-2 px-6" style={{ includeFontPadding: false }}>
                             Your attendance has been recorded for today's shift
                         </Text>
 
@@ -92,7 +93,7 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
                         <View className="mt-10">
 
                             {/* Time Card */}
-                            <View className="bg-white rounded-2xl p-4 flex-row items-center mb-4 shadow-sm">
+                            <View className="bg-white rounded-2xl p-4 flex-row items-center mb-4 border border-gray-100" style={cardStyle}>
 
                                 <View className="bg-accent w-10 h-10 rounded-full items-center justify-center mr-3">
                                     <Icon name="arrow-down-left" size={18} color="white" />
@@ -105,7 +106,7 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
                                             : "CHECK-IN TIME"}
                                     </Text>
 
-                                    <Text className="text-secondary text-lg font-semibold">
+                                    <Text className="text-secondary text-lg font-semibold" style={{ includeFontPadding: false }}>
                                         {time}
                                     </Text>
                                 </View>
@@ -114,19 +115,19 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
 
 
                             {/* Location Card */}
-                            <View className="bg-white rounded-2xl p-4 flex-row items-center shadow-sm">
+                            <View className="bg-white rounded-2xl p-4 flex-row items-center border border-gray-100" style={cardStyle}>
 
                                 <View className="bg-accent w-10 h-10 rounded-full items-center justify-center mr-3">
                                     <Icon name="map-pin" size={18} color="white" />
                                 </View>
 
                                 <View className="flex-1">
-                                    <Text className="text-gray-400 text-xs">
+                                    <Text className="text-gray-400 text-xs" style={{ includeFontPadding: false }}>
                                         LOCATION
                                     </Text>
 
                                     <Text
-                                        className="text-secondary text-md font-medium"
+                                        className="text-secondary text-md font-medium" style={{ includeFontPadding: false }}
                                         numberOfLines={2}
                                     >
                                         {location}
@@ -150,7 +151,7 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
                         }}
                         className="bg-accent h-[56px] rounded-2xl items-center justify-center mb-5 mt-10"
                     >
-                        <Text className="text-white text-base font-medium">
+                        <Text className="text-white text-base font-medium" style={{ includeFontPadding: false }}>
                             Back to Home
                         </Text>
                     </TouchableOpacity>

@@ -1,11 +1,17 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import RootNavigator from './src/navigation/RootNavigator'
 import CustomToastStack from './src/Toats/CustomToastStack'
+import { useSelector } from 'react-redux'
 // import "./src/config/TextDefaults";
 const App = () => {
 
+  const apiCache = useSelector((state) => state.api);
 
+  useEffect(() => {
+ 
+    console.log("🧠 RTK QUERY CACHE:", apiCache);
+  }, [apiCache]);
   
   return (
    <>

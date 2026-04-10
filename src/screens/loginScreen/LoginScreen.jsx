@@ -23,7 +23,8 @@ import LinearGradient from "react-native-linear-gradient";
 import { pushAlert } from "../../redux/slices/alertSlice";
 import { useDispatch } from "react-redux";
 const { width, height } = Dimensions.get("window");
-const isTablet = width >= 768;
+const isTablet = width >= 768
+import {buttonShadow} from '../../utils/cardStyle'
 
 const LoginScreen = () => {
 
@@ -241,15 +242,18 @@ const LoginScreen = () => {
 
 
                     {/* ================= SIGN IN BUTTON ================= */}
-                    <TouchableOpacity
+              <TouchableOpacity
+onPress={handleLogin}
+disabled={loading}
+ style={buttonShadow}
+className="bg-accent h-[55px] rounded-2xl mt-4 items-center flex-row justify-center mt-[40px] mb-[20px]"
+>
 
-                        onPress={handleLogin}
-                        disabled={loading}
-                        className="bg-accent h-[55px] rounded-2xl mt-4 items-center shadow-md flex-row justify-center mt-[40px] mb-[20px]">
-                        <Text className="text-white text-base font-normal">
-                            {loading ? "Signing In..." : "Sign In"}
-                        </Text>
-                    </TouchableOpacity>
+<Text className="text-white text-base font-normal">
+{loading ? "Signing In..." : "Sign In"}
+</Text>
+
+</TouchableOpacity>
 
                 </View>
 
