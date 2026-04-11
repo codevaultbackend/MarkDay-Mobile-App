@@ -1,9 +1,8 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { useDispatch } from "react-redux";
 import { pushAlert } from "../redux/slices/alertSlice.js";
 import { withTimeout } from "../utils/withTimeout.js";
-import { Alert } from "react-native";
 
 /**
  * Custom Hook for Handling RTK Query Mutations
@@ -11,6 +10,7 @@ import { Alert } from "react-native";
  * Features:
  * ✅ Offline handling
  * ✅ Timeout handling
+ * ✅ Abort / Cancel support
  * ✅ Loading state
  * ✅ Success/Error alerts
  * ✅ Dispatch multiple redux actions
@@ -19,175 +19,253 @@ import { Alert } from "react-native";
  */
 
 const useHandleMutation = () => {
-  const dispatch = useDispatch();
 
-  // Global Loading State
-  const [loading, setLoading] = useState(false);
-  // Abort Request Ref
-  const requestRef = useRef(null);
-  const handleMutation = useCallback(
-    async ({
-      apiFunc, // RTK mutation function
-      params, // API params
-      dispatches = [], // Redux dispatch array
-      showSuccess = false, // show success alert
-      showError = true, // show error alert
-      customSuccessMsg = null, // custom success message
-      customErrorMsg = null, // custom error message
-      timeoutMs = 8000, // request timeout
-      navigateTo = null, // optional navigation function
-    }) => {
+const dispatch = useDispatch()
 
-      // Prevent Multiple Clicks
-      if (loading) return null;
+const [loading , setLoading] = useState(false)
 
-      setLoading(true);
+const requestRef = useRef(null)
 
-      try {
 
-        /**
-         * Check Internet Connection
-         */
-        const netState = await NetInfo.fetch();
-        if (!netState.isConnected) {
-          throw { name: "OfflineError" };
-        }
+const abort = useCallback(() => {
 
-        /**
-         * API Call with Timeout
-         */
-         
-        // const res = await withTimeout(
-        //   (signal) => apiFunc(params, { signal }).unwrap(),
-        //   timeoutMs
-        // );
-         /**
-         * API Call with Timeout + Abort
-         */
-        requestRef.current = withTimeout(
-          (signal) => apiFunc(params, { signal }).unwrap(),
-          timeoutMs
-        );
-           const res = await requestRef.current;
+requestRef.current?.abort?.()
+requestRef.current = null
+setLoading(false)
 
-        /**
-         * Dispatch Redux Actions
-         */
-        dispatches.forEach((fn) => dispatch(fn(res)));
+},[])
 
-        /**
-         * Show Success Alert
-         */
-        if (showSuccess) {
-          dispatch(
-            pushAlert({
-              id: Date.now().toString(),
-              type: "success",
-              message:
-                customSuccessMsg || res?.message || "Success",
-            })
-          );
-        }
 
-        /**
-         * Optional Navigation
-         */
-        if (navigateTo && res) {
-          navigateTo();
-        }
+const handleMutation = useCallback(
 
-        return res;
+async ({
 
-      } catch (err) {
+apiFunc,
+params,
+dispatches = [],
+showSuccess = false,
+showError = true,
+customSuccessMsg = null,
+customErrorMsg = null,
+timeoutMs = 8000,
+navigateTo = null
 
-        console.log("Mutation Error:", err);
+}) => {
 
-        let message = "Something went wrong";
+if (loading) return null
 
-        /**
-         * Timeout Error
-         */
-        if (err?.name === "AbortError") {
-          message =
-            "⚠️ Server is slow. Request timed out";
+setLoading(true)
 
-        /**
-         * Offline Error
-         */
-        } else if (err?.name === "OfflineError") {
-          message = "🚫 You are offline";
+try {
 
-        /**
-         * Network Error
-         */
-        } else if (err?.status === "FETCH_ERROR") {
-          message =
-            "🌐 Network error. Unable to connect";
+/**
+ * Internet Check
+ */
 
-        /**
-         * Unauthorized
-         */
-        } else if (err?.status === 401) {
-          message =
-            "Session expired. Please login again";
+const netState = await NetInfo.fetch()
 
-        /**
-         * Server Error
-         */
-        } else if (err?.status === 500) {
-          message =
-            "Server error. Please try later";
-
-        /**
-         * Custom Error Message
-         */
-        } else if (customErrorMsg) {
-          message = customErrorMsg;
-
-        /**
-         * API Error Message
-         */
-        } else if (err?.data?.message || err?.data?.error) {
-          message = err.data.message || err?.data?.error
-        }
-
-        /**
-         * Show Error Alert
-         */
-        if (showError) {
-          dispatch(
-            pushAlert({
-              id: Date.now().toString(),
-              type: "error",
-              message,
-            })
-          );
-        }
-
-        return null;
-
-      } finally {
- requestRef.current = null;
-        /**
-         * Small Delay (Smooth UX)
-         */
-        setTimeout(() => {
-          setLoading(false);
-        }, 300);
-      }
-    },
-    [dispatch, loading]
-  );
-
-  return {
-    handleMutation,
-    loading,
-  abort: () => {
-    
-  requestRef.current?.abort?.();
-  setLoading(false);   // 👈 add this
+if (!netState.isConnected) {
+throw { name:"OfflineError" }
 }
-  };
-};
 
-export default useHandleMutation;
+
+/**
+ * Cancel Previous Request
+ */
+
+requestRef.current?.abort?.()
+
+
+/**
+ * Start Request
+ */
+
+const request = apiFunc(params)
+
+requestRef.current = request
+
+
+/**
+ * Timeout Wrapper
+ */
+
+const res = await withTimeout(
+() => request.unwrap(),
+timeoutMs
+)
+
+
+/**
+ * Dispatch Redux
+ */
+
+dispatches.forEach(fn => dispatch(fn(res)))
+
+
+/**
+ * Success Alert
+ */
+
+if (showSuccess) {
+
+dispatch(
+pushAlert({
+id: Date.now().toString(),
+type:"success",
+message:
+customSuccessMsg ||
+res?.message ||
+"Success"
+})
+)
+
+}
+
+
+/**
+ * Navigation
+ */
+
+if (navigateTo && res) {
+navigateTo()
+}
+
+return res
+
+} catch (err) {
+
+console.log("Mutation Error:", err)
+
+let message = "Something went wrong"
+
+
+/**
+ * Timeout
+ */
+
+if (err?.name === "AbortError") {
+
+message =
+"⚠️ Server is slow. Request timed out"
+
+
+/**
+ * Offline
+ */
+
+} else if (err?.name === "OfflineError") {
+
+message = "🚫 You are offline"
+
+
+/**
+ * Network
+ */
+
+} else if (err?.status === "FETCH_ERROR") {
+
+message =
+"🌐 Network error. Unable to connect"
+
+
+/**
+ * Unauthorized
+ */
+
+} else if (err?.status === 401) {
+
+message =
+"Session expired. Please login again"
+
+
+/**
+ * Server Error
+ */
+
+} else if (err?.status === 500) {
+
+message =
+"Server error. Please try later"
+
+
+/**
+ * Custom Error
+ */
+
+} else if (customErrorMsg) {
+
+message = customErrorMsg
+
+
+/**
+ * API Error
+ */
+
+} else if (err?.data?.message || err?.data?.error) {
+
+message =
+err.data.message ||
+err.data.error
+
+}
+
+
+/**
+ * Error Alert
+ */
+
+if (showError) {
+
+dispatch(
+pushAlert({
+id: Date.now().toString(),
+type:"error",
+message
+})
+)
+
+}
+
+return null
+
+} finally {
+
+requestRef.current = null
+
+setTimeout(()=>{
+setLoading(false)
+},300)
+
+}
+
+},
+
+[dispatch, loading, abort]
+
+)
+
+
+/**
+ * Auto Cancel on Unmount
+ */
+
+useEffect(() => {
+
+return () => {
+abort()
+}
+
+},[abort])
+
+
+return {
+
+handleMutation,
+loading,
+abort
+
+}
+
+}
+
+export default useHandleMutation

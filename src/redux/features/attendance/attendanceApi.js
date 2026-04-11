@@ -8,6 +8,7 @@ export const attendanceApi = baseApi.injectEndpoints({
         url: "/api/attendanc/mark",
         method: "POST",
         body,
+        invalidatesTags: ["My-Attendance", "My-Leaves"]
       }),
     }),
 
@@ -17,14 +18,24 @@ export const attendanceApi = baseApi.injectEndpoints({
         url: `/api/admin/attendances?empId=${empId}`,
         method: "GET",
       }),
-      providesTags: ["Attendance"],
+      providesTags: ["My-Attendance"],
     }),
     getLeaves: builder.query({
-      query: (empId) => `/api/leave/my/${empId}`
+      query: (empId) => `/api/leave/my/${empId}`,
+      providesTags: ["My-Leaves"],
     }),
 
     getHolidays: builder.query({
       query: () => `/api/holidays/get`
+    }),
+
+    applyLeave: builder.mutation({
+      query: (body) => ({
+        url: "/api/leave/apply",
+        method: "POST",
+        body
+      }),
+      invalidatesTags: ["My-Attendance", "My-Leaves"]
     }),
 
   }),
@@ -34,5 +45,6 @@ export const {
   useMarkAttendanceMutation,
   useGetAttendanceQuery,   // ← ye add hoga
   useGetLeavesQuery,
-  useGetHolidaysQuery
+  useGetHolidaysQuery ,
+  useApplyLeaveMutation
 } = attendanceApi;

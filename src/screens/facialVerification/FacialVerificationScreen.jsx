@@ -440,7 +440,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                 </View>
 
                 {/* Camera Card */}
-                <View className="mx-4 mt-2 rounded-3xl overflow-hidden bg-white" style={cardStyle}>
+                <View className="mx-4 mt-2 rounded-3xl overflow-hidden bg-white " style={cardStyle}>
                     <View className="relative ">
 
                         {/* CAMERA VIEW */}
@@ -468,13 +468,13 @@ const FacialVerificationScreen = ({ navigation }) => {
                                 <View className="w-full h-[420px] bg-gray-200 items-center justify-center">
 
                                     {/* Fake Camera Image */}
-                                    <Image
+                                    {/* <Image
                                         source={{
                                             uri: "https://randomuser.me/api/portraits/women/44.jpg"
                                         }}
                                         className="w-full h-full"
                                         resizeMode="cover"
-                                    />
+                                    /> */}
 
                                     {/* Loading Overlay */}
                                     <View className="absolute inset-0 bg-black/30 items-center justify-center">
