@@ -93,7 +93,7 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
                         <View className="mt-10">
 
                             {/* Time Card */}
-                            <View className="bg-white rounded-2xl p-4 flex-row items-center mb-4 border border-gray-100" style={cardStyle}>
+                            <View className="bg-white rounded-2xl p-4 flex-row items-center mb-4 border border-gray-200" style={cardStyle}>
 
                                 <View className="bg-accent w-10 h-10 rounded-full items-center justify-center mr-3">
                                     <Icon name="arrow-down-left" size={18} color="white" />
@@ -115,7 +115,7 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
 
 
                             {/* Location Card */}
-                            <View className="bg-white rounded-2xl p-4 flex-row items-center border border-gray-100" style={cardStyle}>
+                            <View className="bg-white rounded-2xl p-4 flex-row items-center border border-gray-200" style={cardStyle}>
 
                                 <View className="bg-accent w-10 h-10 rounded-full items-center justify-center mr-3">
                                     <Icon name="map-pin" size={18} color="white" />

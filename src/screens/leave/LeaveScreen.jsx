@@ -14,6 +14,8 @@ import LeaveSuccessCard from "./components/LeaveSuccessCard";
 import LeaveFormCard from "./components/LeaveFormCard";
 import LeavePolicyCard from "./components/LeavePolicyCard";
 import LeaveHistoryList from "./components/LeaveHistoryList";
+import { useGetLeavesQuery } from "../../redux/features/attendance/attendanceApi";
+import { getAuth } from "../../utils/authStorage";
 
 const LeaveScreen = ({ navigation }) => {
 
@@ -36,31 +38,69 @@ const LeaveScreen = ({ navigation }) => {
         }
 
     }, [showSuccess])
+
+    //  get User Leave   ===== start
+    const [authUser, setAuthUser] = useState(null);
+    const empId = authUser?.empId;
+    useEffect(() => {
+
+        const loadAuth = async () => {
+            const auth = await getAuth();
+            setAuthUser(auth?.user);
+        };
+
+        loadAuth();
+
+    }, []);
+
+    const {
+        data: leaves,
+        isLoading: leaveLoading,
+        error: leaveError,
+        isFetching:isleaveFetching,
+        refetch: refetchLeaves
+    } = useGetLeavesQuery(empId, {
+        skip: !empId
+    });
+
+    //  get User Leave   ===== end
+
+
+
+     
+
+
     return (
 
         <SafeAreaView
-            className="flex-1 bg-primary"
+            className="flex-1 bg-primary px-5"
             edges={['top', 'left', 'right']}
         >
+            <LeaveHeader navigation={navigation} />
+            <LeaveStatsCard
+                leaves={leaves}
+                loading={leaveLoading || isleaveFetching}
+                leaveError={leaveError}
+            />
+            <LeaveTabs
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+            />
 
             <ScrollView
                 ref={scrollRef}   // ✅ add ref
                 showsVerticalScrollIndicator={false}
-                className="px-5"
+              
                 contentContainerStyle={{ paddingBottom: 40 }}
             >
 
                 {/* Header */}
-                <LeaveHeader navigation={navigation} />
+
 
                 {/* Stats */}
-                <LeaveStatsCard />
+
 
                 {/* Tabs */}
-                <LeaveTabs
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
-                />
 
                 {/* Success */}
                 {showSuccess && (
@@ -109,14 +149,23 @@ const LeaveScreen = ({ navigation }) => {
                     {/* History */}
                     {activeTab === "history" && (
 
-                        <LeaveHistoryList />
+                        <LeaveHistoryList
+                            leaves={leaves}
+                            loading={leaveLoading  || isleaveFetching}
+                            error={leaveError}
+                            refetch={refetchLeaves}
+                        />
 
                     )}
 
                 </View>
-
-                {/* Policy */}
+{
+    activeTab === "request" &&  <> 
+       {/* Policy */}
                 <LeavePolicyCard />
+       </>
+}
+             
 
             </ScrollView>
 

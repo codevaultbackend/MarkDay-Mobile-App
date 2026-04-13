@@ -74,7 +74,7 @@ const AttendanceSkeleton = () => {
 
     <View
       style={cardStyle}
-      className="bg-white rounded-3xl mt-5 p-4 border border-gray-100"
+      className="bg-white rounded-3xl mt-5 p-4 border border-gray-200"
     >
 
       {/* Header */}

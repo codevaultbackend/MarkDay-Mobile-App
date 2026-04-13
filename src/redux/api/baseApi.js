@@ -1,20 +1,23 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+  import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const baseApi = createApi({
-  reducerPath: "baseApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://ff9e-2401-4900-8843-9201-a9e4-ceb0-e31d-e5b1.ngrok-free.app",
+  export const baseApi = createApi({
+    reducerPath: "baseApi",
 
-    prepareHeaders: (headers, { getState }) => {
-      // const token = getState()?.auth?.token;
+    baseQuery: fetchBaseQuery({
+     baseUrl: "https://attendance-backend-final-4.onrender.com",
+     // baseUrl: "https://64a8-2401-4900-8842-2f04-51f6-d0d-e5fc-102c.ngrok-free.app",
 
-      // if (token) {
-      //   headers.set("authorization", `Bearer ${token}`);
-      // }
+      prepareHeaders: (headers, { getState }) => {
+        return headers;
+      },
+    }),
 
-      return headers;
-    },
-  }),
+    // ✅ Correct place
+    tagTypes: [
+      "My-Attendance",
+      "My-Leaves",
+      "Holidays"
+    ],
 
-  endpoints: () => ({}),
-});
+    endpoints: () => ({}),
+  });

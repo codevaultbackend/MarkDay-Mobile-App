@@ -45,6 +45,8 @@ import { useDispatch } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import { Image as ImageCompressor } from 'react-native-compressor';
 import { cardStyle } from "../../utils/cardStyle";
+import { setTodayAttendance } from "../../redux/slices/attendanceSlice";
+import { useSelector } from "react-redux";
 const FacialVerificationScreen = ({ navigation }) => {
 
     const isFocused = useIsFocused()
@@ -330,6 +332,13 @@ const FacialVerificationScreen = ({ navigation }) => {
         setApiType(null)
 
         if (res) {
+
+            dispatch(setTodayAttendance({
+                date: new Date().toLocaleDateString(),
+                inTime: formattedTime,
+                inLocation: address,
+            }))
+
             navigation.reset({
                 index: 1,
                 routes: [
@@ -378,9 +387,14 @@ const FacialVerificationScreen = ({ navigation }) => {
         });
 
         setApiType(null)
-        console.log("Check Out Response", res);
+
 
         if (res) {
+            dispatch(setTodayAttendance({
+                outTime: formattedTime,
+                outLocation: address
+            }))
+
             navigation.reset({
                 index: 1,
                 routes: [
@@ -411,6 +425,13 @@ const FacialVerificationScreen = ({ navigation }) => {
         month: "short",
         day: "numeric",
     });
+
+    //  get Ceck-in time and out time 
+    const { checkInTime, checkOutTime } = useSelector(
+        state => state.todayAttendance
+    );
+
+    console.log(checkInTime, checkOutTime, "checkout", 'checkintime')
 
     return (
         <SafeAreaView className="flex-1 bg-primary" edges={['top', 'left', 'right']}>
@@ -577,11 +598,11 @@ const FacialVerificationScreen = ({ navigation }) => {
 
                 {/* Success Card */}
                 {captured && <>
- 
+
                     <Animated.View
                         entering={FadeIn}
                         exiting={FadeOut}
-                        className="mx-4 mt-4 bg-white p-3 rounded-2xl flex-row items-center border border-gray-100"
+                        className="mx-4 mt-4 bg-white p-3 rounded-2xl flex-row items-center border border-gray-200"
                         style={cardStyle}
                     >
                         {/* Image */}
@@ -650,9 +671,13 @@ const FacialVerificationScreen = ({ navigation }) => {
                         {/* Check In */}
                         <TouchableOpacity
                             onPress={handleCheckIn}
-                            disabled={ApiLoading}
+                            disabled={ApiLoading || checkInTime ? true : false}
                             className={`flex-1 rounded-3xl p-5 mr-2 flex-row items-center
-${ApiLoading ? "bg-gray-400" : "bg-accent"}
+${checkInTime
+                                    ? "bg-gray-300"
+                                    : ApiLoading
+                                        ? "bg-gray-400"
+                                        : "bg-accent"}
 `}
                         >
 
@@ -680,9 +705,11 @@ ${ApiLoading ? "bg-gray-400" : "bg-accent"}
                         {/* Check Out */}
                         <TouchableOpacity
                             onPress={handleCheckOut}
-                            disabled={ApiLoading}
+                            disabled={ApiLoading || (!checkInTime || checkOutTime) ? true : false}
                             className={`flex-1 rounded-3xl p-5 ml-2 flex-row items-center border
-${ApiLoading ? "bg-gray-200 border-gray-200" : "bg-white border-gray-200"}
+${!checkInTime || checkOutTime
+                                    ? "bg-gray-200 border-gray-200"
+                                    : "bg-white border-gray-200"}
 `}
                         >
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
-View,
-Text,
-TextInput,
-TouchableOpacity,
-ActivityIndicator
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ActivityIndicator
 } from "react-native";
 
 import DatePicker from "react-native-date-picker";
@@ -21,398 +21,409 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 const LeaveFormCard = ({ onSuccess }) => {
 
 
-// ================= STATE =================
+    // ================= STATE =================
 
-const [empId, setEmpId] = useState("")
-const [empName, setEmpName] = useState("")
-const [reason, setReason] = useState("")
-const [leaveType, setLeaveType] = useState("paid")
+    const [empId, setEmpId] = useState("")
+    const [empName, setEmpName] = useState("")
+    const [reason, setReason] = useState("")
+    const [leaveType, setLeaveType] = useState("paid")
 
-const [startDate, setStartDate] = useState(new Date())
-const [endDate, setEndDate] = useState(new Date())
+    const [startDate, setStartDate] = useState(new Date())
+    const [endDate, setEndDate] = useState(new Date())
 
-const [openStart, setOpenStart] = useState(false)
-const [openEnd, setOpenEnd] = useState(false)
+    const [openStart, setOpenStart] = useState(false)
+    const [openEnd, setOpenEnd] = useState(false)
 
-const [error , setError] = useState("")
-const [dateError , setDateError] = useState("")
-const [reasonError , setReasonError] = useState("")
+    const [error, setError] = useState("")
+    const [dateError, setDateError] = useState("")
+    const [reasonError, setReasonError] = useState("")
 
-const [applyLeave, { isLoading }] = useApplyLeaveMutation()
-const { handleMutation } = useHandleMutation();
+    const [applyLeave, { isLoading }] = useApplyLeaveMutation()
+    const { handleMutation } = useHandleMutation();
 
 
-// ================= LOAD USER =================
+    // ================= LOAD USER =================
 
-useEffect(() => {
+    useEffect(() => {
 
-const loadUser = async () => {
+        const loadUser = async () => {
 
-const auth = await getAuth()
+            const auth = await getAuth()
 
-setEmpId(auth?.user?.empId)
-setEmpName(auth?.user?.name)
+            setEmpId(auth?.user?.empId)
+            setEmpName(auth?.user?.name)
 
-}
+        }
 
-loadUser()
+        loadUser()
 
-}, [])
+    }, [])
 
 
-// ================= RESET =================
+    // ================= RESET =================
 
-const resetForm = () => {
+    const resetForm = () => {
 
-setReason("")
-setLeaveType("paid")
-setStartDate(new Date())
-setEndDate(new Date())
-setDateError("")
-setReasonError("")
+        setReason("")
+        setLeaveType("paid")
+        setStartDate(new Date())
+        setEndDate(new Date())
+        setDateError("")
+        setReasonError("")
 
-}
+    }
 
 
-// ================= VALIDATION =================
+    // ================= VALIDATION =================
 
-const validate = () => {
+    const validate = () => {
 
-let valid = true
+        let valid = true
 
-if(dateError){
-valid = false
-}
+        if (dateError) {
+            valid = false
+        }
 
-if(!reason?.trim()){
+        if (!reason?.trim()) {
 
-setReasonError("Reason is required")
-valid = false
+            setReasonError("Reason is required")
+            valid = false
 
-}else{
-setReasonError("")
-}
+        } else {
+            setReasonError("")
+        }
 
-return valid
+        return valid
 
-}
+    }
 
 
-// ================= SUBMIT =================
+    // ================= SUBMIT =================
 
-const handleSubmit = async () => {
+    const handleSubmit = async () => {
 
-if(!validate()) return
+        if (!validate()) return
 
-const res = await handleMutation({
+        const res = await handleMutation({
 
-apiFunc: applyLeave,
+            apiFunc: applyLeave,
 
-params: {
-empId,
-empName,
-startDate,
-endDate,
-reason,
-leaveType
-},
+            params: {
+                empId,
+                empName,
+                startDate,
+                endDate,
+                reason,
+                leaveType
+            },
 
-showSuccess:false
+            showSuccess: false
 
-})
-console.log(res,'res')
+        })
+        console.log(res, 'res')
 
-if(res){
+        if (res) {
 
-resetForm()
-onSuccess?.(res?.message)
+            resetForm()
+            onSuccess?.(res?.message)
 
-}
+        }
 
-}
+    }
 
 
 
 
-// ================= LEAVE DAYS =================
+    // ================= LEAVE DAYS =================
 
-const leaveDays = useMemo(() => {
+    const leaveDays = useMemo(() => {
 
-const start = dayjs(startDate).startOf("day")
-const end = dayjs(endDate).startOf("day")
+        const start = dayjs(startDate).startOf("day")
+        const end = dayjs(endDate).startOf("day")
 
-// invalid date
-if(end.isBefore(start)){
-return 0
-}
+        // invalid date
+        if (end.isBefore(start)) {
+            return 0
+        }
 
-return end.diff(start , "day") + 1
+        return end.diff(start, "day") + 1
 
-}, [startDate , endDate])
+    }, [startDate, endDate])
 
-useEffect(()=>{
+    useEffect(() => {
 
-if(dayjs(endDate).isBefore(dayjs(startDate))){
-setDateError("End date cannot be before start date")
-}else{
-setDateError("")
-}
+        if (dayjs(endDate).isBefore(dayjs(startDate))) {
+            setDateError("End date cannot be before start date")
+        } else {
+            setDateError("")
+        }
 
-},[startDate , endDate])
-const today = new Date()
+    }, [startDate, endDate])
+    const today = new Date()
 
-const maxDate = dayjs()
-.add(12 , "month")
-.toDate()
+    const maxDate = dayjs()
+        .add(12, "month")
+        .toDate()
 
 
-return (
-<> 
-{/* <KeyboardAwareScrollView
-enableOnAndroid
-extraScrollHeight={20}
-keyboardShouldPersistTaps="handled"
-> */}
+        
 
-<View
-style={cardStyle}
-className="bg-white rounded-3xl p-5 mt-5"
->
+    return (
+        <>
 
-{/* ================= LEAVE TYPE ================= */}
 
-<View className="flex-row gap-2 mb-3">
+            <View
+                style={cardStyle}
+                className="bg-white rounded-3xl p-5 mt-5 border border-gray-200"
+            >
 
-{["paid" , "unpaid" , "optional_leave"].map(type=>{
+                {/* ================= LEAVE TYPE ================= */}
 
-const active = leaveType === type
+                <View className="flex-row gap-2 mb-3 flex-wrap">
 
-return(
+                    {["paid", "unpaid", "optional_leave"].map(type => {
 
-<TouchableOpacity
-key={type}
-onPress={()=> setLeaveType(type)}
-className={`
-px-4 py-2 rounded-full
+                        const active = leaveType === type
+
+                        return (
+
+                            <TouchableOpacity
+                                key={type}
+                                onPress={() => setLeaveType(type)}
+                                className={`
+px-5 py-2.5 rounded-full
 ${active ? "bg-accent" : "border border-accent"}
 `}
->
+                            >
 
-<Text
-className={`
+                                <Text
+                                    className={`
 text-sm capitalize
 ${active ? "text-white" : "text-accent"}
 `}
->
+                                >
 
-{type.replace("_" , " ")}
+                                    {
+                                        type === "optional_leave"
+                                            ? "Optional Holiday"
+                                            : type.replace("_", " ")
+                                    }
 
-</Text>
 
-</TouchableOpacity>
+                                </Text>
 
-)
+                            </TouchableOpacity>
 
-})}
+                        )
 
-</View>
+                    })}
 
+                </View>
 
 
-{/* ================= TITLE ================= */}
 
-<Text className="text-[22px] font-semibold text-secondary">
-Leave Application Form
-</Text>
+                {/* ================= TITLE ================= */}
 
+                <Text className="text-[22px] font-semibold text-secondary">
+                    Leave Application Form
+                </Text>
 
 
-{/* ================= START DATE ================= */}
 
-<View className="mt-4">
+                {/* ================= START DATE ================= */}
 
-<Text className="text-gray-500 text-sm">
-Start Date
-</Text>
+                <View className="mt-4">
 
-<TouchableOpacity
-onPress={()=> setOpenStart(true)}
-className="bg-gray-100 rounded-xl px-4 py-4 mt-2 flex-row justify-between"
->
+                    <Text className="text-[#474747] text-sm border-1">
+                        Start Date
+                    </Text>
 
-<Text>
-{dayjs(startDate).format("DD MMM YYYY")}
-</Text>
+                    <TouchableOpacity
+                        onPress={() => setOpenStart(true)}
+                        className="bg-gray-100 rounded-xl px-4 py-4 mt-2 flex-row justify-between border border-gray-200"
+                    >
 
-<Ionicons
-name="calendar-outline"
-size={18}
-/>
+                        <Text>
+                            {dayjs(startDate).format("DD MMM YYYY")}
+                        </Text>
 
-</TouchableOpacity>
+                        <Ionicons
+                            name="calendar-outline"
+                            size={18}
+                        />
 
-</View>
+                    </TouchableOpacity>
 
+                </View>
 
 
-{/* ================= END DATE ================= */}
 
-<View className="mt-4">
+                {/* ================= END DATE ================= */}
 
-<Text className="text-gray-500 text-sm">
-End Date
-</Text>
+                <View className="mt-4">
 
-<TouchableOpacity
-onPress={()=> setOpenEnd(true)}
-className="bg-gray-100 rounded-xl px-4 py-4 mt-2 flex-row justify-between"
->
+                    <Text className="text-[#474747] text-sm">
+                        End Date
+                    </Text>
 
-<Text>
-{dayjs(endDate).format("DD MMM YYYY")}
-</Text>
+                    <TouchableOpacity
+                        onPress={() => setOpenEnd(true)}
+                        className="bg-gray-100 rounded-xl px-4 py-4 mt-2 flex-row justify-between border border-gray-200"
+                    >
 
-<Ionicons
-name="calendar-outline"
-size={18}
-/>
+                        <Text>
+                            {dayjs(endDate).format("DD MMM YYYY")}
+                        </Text>
 
-</TouchableOpacity>
+                        <Ionicons
+                            name="calendar-outline"
+                            size={18}
+                        />
 
-</View>
+                    </TouchableOpacity>
 
+                </View>
 
 
-{/* ================= ERROR ================= */}
 
-{dateError ? (
-<Text className="text-red-500 text-xs mt-2">
-{dateError}
-</Text>
-) : null}
+                {/* ================= ERROR ================= */}
 
+                {dateError ? (
+                    <Text className="text-red-500 text-xs mt-2">
+                        {dateError}
+                    </Text>
+                ) : null}
 
 
-{/* ================= REASON ================= */}
 
-<View className="mt-4">
+                {/* ================= REASON ================= */}
 
-<Text className="text-gray-500 text-sm">
-Reason for Leave 
-<Text className="text-red-500">*</Text>
-</Text>
-<TextInput
-multiline
-textAlignVertical="top"
-value={reason}
-onChangeText={setReason}
-className="bg-gray-100 rounded-xl px-4 py-3 mt-2 h-28"
-/>
-{reasonError ? (
-<Text className="text-red-500 text-xs mt-1">
-{reasonError}
-</Text>
-) : null}
-</View>
+                <View className="mt-4 ">
 
+                    <Text className="text-[#474747] text-sm">
+                        Reason for Leave
+                        <Text className="text-red-500">*</Text>
+                    </Text>
+                    <TextInput
+                        multiline
+                        textAlignVertical="top"
+                        value={reason}
+                        onChangeText={setReason}
+                        className="bg-gray-100 rounded-xl px-4 py-3 mt-2 h-28 border border-gray-200"
+                    />
+                    {reasonError ? (
+                        <Text className="text-red-500 text-xs mt-1">
+                            {reasonError}
+                        </Text>
+                    ) : null}
+                </View>
 
 
-{/* ================= NOTE ================= */}
 
-{leaveDays > 0 && (
+                {/* ================= NOTE ================= */}
 
-<View
-className="mt-4 px-4 py-3 rounded-xl"
-style={{
-backgroundColor:"#EEF5FF",
-borderWidth:1,
-borderColor:"#C7D7FE"
-}}
->
+                {leaveDays > 0 && (
 
-<Text>
+                    <View
+                        className="mt-4 px-4 py-3 rounded-xl"
+                        style={{
+                            backgroundColor: "#EEF5FF",
+                            borderWidth: 1,
+                            borderColor: "#C7D7FE"
+                        }}
+                    >
 
-<Text className="font-semibold">
-Note :
-</Text>
+                        <Text>
 
-{" "}Applying leave for {leaveDays} {leaveDays === 1 ? "day" : "days"}
+                            <Text className="font-semibold">
+                                Note :
+                            </Text>
 
-</Text>
+                            {" "}Applying leave for {leaveDays} {leaveDays === 1 ? "day" : "days"}
 
-</View>
+                        </Text>
 
-)}
+                    </View>
 
+                )}
 
 
-{/* ================= SUBMIT ================= */}
 
-<TouchableOpacity
-onPress={handleSubmit}
-disabled={isLoading}
-style={buttonShadow}
-className="bg-accent rounded-2xl py-4 mt-5 items-center"
->
+                {/* ================= SUBMIT ================= */}
 
-{isLoading ? (
+                <TouchableOpacity
+                    onPress={handleSubmit}
+                    disabled={isLoading}
+                    style={buttonShadow}
+                    className="bg-accent rounded-2xl py-4 mt-5 items-center"
+                >
 
-<ActivityIndicator color="#fff"/>
+                    {isLoading ? (
 
-) : (
+                        <ActivityIndicator color="#fff" />
 
-<Text className="text-white font-semibold">
-Submit Leave Request
-</Text>
+                    ) : (
 
-)}
+                        <Text className="text-white font-semibold">
+                            Submit Leave Request
+                        </Text>
 
-</TouchableOpacity>
+                    )}
 
+                </TouchableOpacity>
 
 
-{/* ================= DATE PICKER ================= */}
 
-<DatePicker
-modal
-open={openStart}
-date={startDate}
-minimumDate={today}
-maximumDate={maxDate}
-mode="date"
-onConfirm={(date)=>{
+                {/* ================= DATE PICKER ================= */}
 
-setOpenStart(false)
-setStartDate(date)
+                <DatePicker
+                    modal
+                    open={openStart}
+                    date={startDate}
+                    minimumDate={today}
+                    maximumDate={maxDate}
+                    mode="date"
+                    onConfirm={(date) => {
 
-}}
-onCancel={()=> setOpenStart(false)}
-/>
+                        setOpenStart(false)
+                        setStartDate(date)
 
+                    }}
+                    onCancel={() => setOpenStart(false)}
+                />
 
-<DatePicker
-modal
-open={openEnd}
-date={endDate}
-minimumDate={startDate}
-maximumDate={maxDate}
-mode="date"
-onConfirm={(date)=>{
 
-setOpenEnd(false)
-setEndDate(date)
+                <DatePicker
+                    modal
+                    open={openEnd}
+                    date={endDate}
+                    minimumDate={startDate}
+                    maximumDate={maxDate}
+                    mode="date"
+                    onConfirm={(date) => {
 
-}}
-onCancel={()=> setOpenEnd(false)}
-/>
+                        setOpenEnd(false)
+                        setEndDate(date)
 
+                    }}
+                    onCancel={() => setOpenEnd(false)}
+                />
 
-</View>
 
-{/* </KeyboardAwareScrollView> */}
-</>
-)
+            </View>
+
+            {/* </KeyboardAwareScrollView> */}
+        </>
+    )
 
 }
 
 export default LeaveFormCard
+
+
+
+
+
+
+
+

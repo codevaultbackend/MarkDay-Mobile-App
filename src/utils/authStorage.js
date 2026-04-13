@@ -1,5 +1,7 @@
 import mmkvStorage from  './mmkvStorage'
-
+import {store} from '../redux/store'
+import { Alert } from 'react-native';
+import { baseApi } from '../redux/api/baseApi';
 const USER_KEY = "user";
 
 export const authChangeListeners = [];
@@ -53,5 +55,30 @@ export async function getAuth() {
       user: null
     };
 
+  }
+}
+
+
+export async function removeAuth() {
+  try {
+
+    // 🧹 Clear full MMKV
+    mmkvStorage.clearAll();
+
+    // 🔥 RTK Query cache reset
+    store.dispatch(baseApi.util.resetApiState());
+
+    // 🔥 Redux reset
+    store.dispatch({ type: "LOGOUT" });
+   
+
+    // 🔁 Auth listeners
+    triggerAuthChanged();
+
+    return true;
+
+  } catch (e) {
+    console.log("removeAuth error:", e);
+    return false;
   }
 }

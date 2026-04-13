@@ -163,7 +163,7 @@ const LoginScreen = () => {
                     {/* ================= EMAIL INPUT ================= */}
 
                     <View
-                        className="mt-5 rounded-2xl border border-gray-100"
+                        className="mt-5 rounded-2xl border border-gray-200"
                         style={{
                             shadowColor: "#E2E8F0",
                             shadowOffset: { width: 0, height: 6 },
@@ -195,7 +195,7 @@ const LoginScreen = () => {
                     {/* ================= PASSWORD INPUT ================= */}
 
                     <View
-                        className="mt-5 rounded-2xl border border-gray-100"
+                        className="mt-5 rounded-2xl border border-gray-200"
                         style={{
                             shadowColor: "#E2E8F0",
 

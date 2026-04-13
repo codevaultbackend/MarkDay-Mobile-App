@@ -19,6 +19,16 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
+ 
+
+    getProfile: builder.query({
+      query: (empId) => ({
+        url: `/api/admin/attendances?empId=${empId}`,
+        method: "GET",
+      }),
+      providesTags: ["My-Attendance"],
+    }),
+
   }),
 });
 

@@ -1,116 +1,228 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useCallback } from "react";
+import { View, Text, FlatList } from "react-native";
+import dayjs from "dayjs";
 
-const LeaveHistoryList = () => {
+import LeaveHistorySkeleton from "./LeaveHistorySkeleton";
+import RetryScreen from "../../calendar/components/RetryScreen";
+import { cardStyle } from "../../../utils/cardStyle";
 
-return (
+const LeaveHistoryList = ({ leaves, loading, error, refetch }) => {
 
-<View className="mt-4">
+    /*
+    ============================================
+    Loading State
+    ============================================
+    */
+if (error) {
+  return (
+    <View
+      style={{ flex: 1, minHeight: 450 }}
+      className="w-full justify-center items-center"
+    >
+      <RetryScreen
+        onRetry={refetch}
+        error={error}
+      />
+    </View>
+  )
+}
+    if (loading) {
+        return <LeaveHistorySkeleton />
+    }
 
-<Text className="text-lg font-semibold">
-All Leave Requests
-</Text>
+    /*
+    ============================================
+    Error State
+    ============================================
+    */
+  
 
 
-{[1,2,3].map((item,index)=>{
+    /*
+    ============================================
+    Render Each Leave Card
+    useCallback for performance optimization
+    ============================================
+    */
+    const renderItem = useCallback(({ item }) => {
 
-const status = index === 0 ? "Pending" : "Approved";
+        // Leave Status
+        const status = item.status
 
-return(
+        // Calculate Total Days
+        const totalDays =
+            dayjs(item.endDate)
+                .diff(dayjs(item.startDate), "day") + 1
 
-<View
-key={index}
-style={{
-shadowColor:"#000",
-shadowOffset:{width:0,height:2},
-shadowOpacity:0.08,
-shadowRadius:6,
-elevation:3
-}}
-className="bg-white rounded-3xl p-4 mt-4"
->
+        return (
 
-{/* Header */}
+            <View
+              style={cardStyle}
+                className="bg-white rounded-3xl p-4 mt-4  border border-gray-200"
+            >
 
-<View className="flex-row justify-between items-center">
+                {/* ================= Header ================= */}
 
-<Text className="font-semibold">
-Leave Request ID #46789
-</Text>
+                <View className="flex-row justify-between items-center">
 
-<View
-className={`
+                    {/* Leave ID */}
+
+                    <Text className="font-semibold" style={{includeFontPadding:false}}>
+                        Leave Request ID #{item._id.slice(-5)}
+                    </Text>
+
+
+                    {/* Status Badge */}
+
+                    <View
+                        className={`
 px-3 py-1 rounded-full
-${status === "Pending" && "bg-orange-100"}
-${status === "Approved" && "bg-green-100"}
+${status === "pending" && "bg-orange-100"}
+${status === "approved" && "bg-green-100"}
+${status === "rejected" && "bg-red-100"}
 `}
->
+                    >
 
-<Text
-className={`
-text-xs
-${status === "Pending" && "text-orange-600"}
-${status === "Approved" && "text-green-600"}
+                        <Text
+                        style={{includeFontPadding:false}}
+                            className={`
+text-xs capitalize
+${status === "pending" && "text-orange-600"}
+${status === "approved" && "text-green-600"}
+${status === "rejected" && "text-red-600"}
 `}
->
-{status}
-</Text>
+                        >
+                            {status}
+                        </Text>
 
-</View>
+                    </View>
 
-</View>
-
-<Text className="text-gray-400 text-xs mt-1">
-Applied on Feb 13, 2026
-</Text>
+                </View>
 
 
-{/* Dates */}
+                {/* Applied Date */}
 
-<View className="flex-row justify-between mt-4">
+                <Text className="text-gray-400 text-xs mt-1" style={{includeFontPadding:false}}>
+                    Applied on {dayjs(item.appliedAt).format("MMM DD, YYYY")}
+                </Text>
 
-<View>
-<Text className="text-xs text-gray-400">
-From Date
-</Text>
 
-<Text className="font-medium">
-29/01/26
-</Text>
-</View>
+                {/* ================= Dates Section ================= */}
 
-<View>
-<Text className="text-xs text-gray-400">
-To Date
-</Text>
+                <View className="flex-row justify-between mt-4">
 
-<Text className="font-medium">
-29/01/26
-</Text>
-</View>
+                    {/* From Date */}
 
-<View>
-<Text className="text-xs text-gray-400">
-Total Days
-</Text>
+                    <View>
+                        <Text className="text-xs text-gray-400" style={{includeFontPadding:false}}>
+                            From Date
+                        </Text>
 
-<Text className="font-medium">
-5 Days
-</Text>
-</View>
+                        <Text className="font-medium" style={{includeFontPadding:false}}>
+                            {dayjs(item.startDate).format("DD/MM/YY")}
+                        </Text>
+                    </View>
 
-</View>
 
-</View>
+                    {/* To Date */}
 
-)
+                    <View>
+                        <Text className="text-xs text-gray-400" style={{includeFontPadding:false}}>
+                            To Date
+                        </Text>
 
-})}
+                        <Text className="font-medium" style={{includeFontPadding:false}}>
+                            {dayjs(item.endDate).format("DD/MM/YY")}
+                        </Text>
+                    </View>
 
-</View>
 
-)
+                    {/* Total Days */}
+
+                    <View>
+                        <Text className="text-xs text-gray-400" style={{includeFontPadding:false}}>
+                            Total Days
+                        </Text>
+
+                        <Text className="font-medium" style={{includeFontPadding:false}}    >
+                            {totalDays} Days
+                        </Text>
+                    </View>
+
+                </View>
+
+            </View>
+
+        )
+
+    }, [])
+
+
+
+    /*
+    ============================================
+    Empty State
+    ============================================
+    */
+    const EmptyComponent = () => (
+
+        <View className="bg-white rounded-3xl p-6 mt-4 items-center">
+
+            <Text className="text-gray-400">
+                No Leave Requests Found
+            </Text>
+
+        </View>
+
+    )
+
+
+
+    return (
+
+        <View className="mt-3">
+
+            {/* Title */}
+
+            <Text className="text-lg font-semibold ">
+                All Leave Requests
+            </Text>
+
+
+            {/* ================= FlatList ================= */}
+
+            <FlatList
+
+                data={leaves?.leaves || []}
+
+                renderItem={renderItem}
+
+                keyExtractor={(item) => item._id}
+
+                ListEmptyComponent={EmptyComponent}
+
+                showsVerticalScrollIndicator={false}
+
+                scrollEnabled={false} // Important (Parent ScrollView fix)
+
+                contentContainerStyle={{
+                    paddingBottom: 20
+                }}
+
+                removeClippedSubviews={true}
+
+                initialNumToRender={5}
+
+                maxToRenderPerBatch={5}
+
+                windowSize={5}
+
+            />
+
+        </View>
+
+    )
 
 }
 
-export default LeaveHistoryList
+export default React.memo(LeaveHistoryList)

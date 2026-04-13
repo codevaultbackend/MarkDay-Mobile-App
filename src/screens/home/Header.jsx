@@ -35,7 +35,7 @@ const getGreeting = useCallback(() => {
       <View className="flex-row justify-between items-center">
 
         <View>
-          <Text className="text-sm text-gray-400 font-normal">
+          <Text className="text-sm text-gray-400 font-normal" style={{includeFontPadding:false}}>
             {getGreeting()},
           </Text>
 
@@ -54,7 +54,7 @@ const getGreeting = useCallback(() => {
       {/* Bottom Row */}
       <View className="flex-row justify-between items-center mt-3">
 
-        <Text className="text-xs text-gray-400">
+        <Text className="text-xs text-gray-400" style={{includeFontPadding:false}}>
           Thursday, 11 March, 2026
         </Text>
 
@@ -62,7 +62,7 @@ const getGreeting = useCallback(() => {
           <View className="flex-row items-center">
             <Icon name="map-pin" size={12} color="#fff" />
 
-            <Text className="text-white text-xs ml-2">
+            <Text className="text-white text-xs ml-2" style={{includeFontPadding:false}}>
               Spaze IT Park, Gurgaon
             </Text>
           </View>

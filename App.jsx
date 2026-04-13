@@ -4,9 +4,16 @@ import RootNavigator from './src/navigation/RootNavigator'
 import CustomToastStack from './src/Toats/CustomToastStack'
 import { useSelector } from 'react-redux'
 // import "./src/config/TextDefaults";
+
 const App = () => {
 
   const apiCache = useSelector((state) => state.api);
+ 
+   const state = useSelector((state)=>{
+     console.log(state ,"state")
+
+   })
+
 
   useEffect(() => {
  

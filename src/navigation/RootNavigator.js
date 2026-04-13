@@ -16,16 +16,27 @@ export default function RootNavigator() {
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
+  // 🔐 Check Auth
   const checkAuth = async () => {
-    const {user } = await getAuth();
- console.log(user ,"user")
+    const { user } = await getAuth();
+    console.log(user, "user")
+
+
     setLoggedIn(!!user);
     setLoading(false);
   };
 
   useEffect(() => {
+
+    // First check
     checkAuth();
-    onAuthChanged(checkAuth);
+
+    // Listen auth change
+    const unsubscribe = onAuthChanged(checkAuth);
+
+    // Cleanup
+    return () => unsubscribe();
+
   }, []);
 
   return (
@@ -33,7 +44,7 @@ export default function RootNavigator() {
 
       <Stack.Navigator screenOptions={{ headerShown: false }}>
 
-        {/* Splash */}
+        {/* Splash Screen */}
         {loading && (
           <Stack.Screen
             name="Splash"
