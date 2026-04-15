@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/home/HomeScreen";
 import BottomTabNavigator from "./BottomTabNavigator.js";
 import AttendanceSuccessScreen from "../screens/facialVerification/AttendanceSuccessScreen.jsx";
+
+import Notification from "../screens/Notification/Notification.jsx";
 const Stack = createNativeStackNavigator();
 
 export default function AppStack() {
@@ -19,7 +21,10 @@ export default function AppStack() {
         name="attendance-mark-success"
         component={AttendanceSuccessScreen}
       />
-    
+        <Stack.Screen
+        name="notification-screen"
+        component={Notification}
+      />
 
     </Stack.Navigator>
   );

@@ -168,7 +168,7 @@ export const useCurrentLocation = () => {
                 result.latitude,
                 result.longitude
             );
-            console.log(addr, "addr")
+             
 
             cachedAddress = addr;
             notify();

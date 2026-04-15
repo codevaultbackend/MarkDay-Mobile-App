@@ -5,9 +5,11 @@ import { getAuth } from '../../utils/authStorage'
 import { useCurrentLocation } from "../../hooks/useCurrentLocation";
 
 import dayjs from "dayjs";
+import { useNavigation } from "@react-navigation/native";
 
 const Header = ({ loading, address }) => {
-  console.log(loading, address, "loading-address")
+ 
+  const  navigation = useNavigation()
 
   const todayDate = dayjs().format("dddd, DD MMMM, YYYY");
 
@@ -18,7 +20,7 @@ const Header = ({ loading, address }) => {
   useEffect(() => {
     const loadUser = async () => {
       const res = await getAuth();
-      console.log(res, "user");
+       
       setUser(res?.user);
     };
 
@@ -53,7 +55,10 @@ const Header = ({ loading, address }) => {
           </Text>
         </View>
 
-        <TouchableOpacity className="bg-white p-3 rounded-full shadow">
+        <TouchableOpacity className="bg-white p-3 rounded-full border border-gray-200" onPress={()=>{
+          navigation.navigate("notification-screen")
+           
+        }}>
           <Icon name="bell" size={20} color="#000" />
         </TouchableOpacity>
 

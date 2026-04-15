@@ -351,7 +351,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                     {
                         name: "attendance-mark-success",
                         params: {
-                            type: "out",
+                            type: "in",
                             time: formattedTime,
                             location: address
                         }
@@ -436,6 +436,15 @@ const FacialVerificationScreen = ({ navigation }) => {
 
 
 
+
+
+    const canCheckIn = !checkInTime;
+    const canCheckOut = checkInTime && !checkOutTime;
+
+    const isCheckingIn = ApiLoading && ApiType === "check-in";
+    const isCheckingOut = ApiLoading && ApiType === "check-out";
+
+
     return (
         <SafeAreaView className="flex-1 bg-primary" edges={['top', 'left', 'right']}>
 
@@ -500,16 +509,16 @@ const FacialVerificationScreen = ({ navigation }) => {
                             </View>
 
                         ) : device && hasCameraPermission && !isInitializing ? (
-                            <View> 
-                              <Camera
-                                key={cameraPosition}   // 👈 YE MISSING HAIi
-                                ref={cameraRef}
-                                style={{ width: "100%", height: 420 }}
-                                device={device}
-                                isActive={isActive && isFocused}
-                                photo={true}
-                                onInitialized={() => setIsCameraReady(true)}
-                            />
+                            <View>
+                                <Camera
+                                    key={cameraPosition}   // 👈 YE MISSING HAIi
+                                    ref={cameraRef}
+                                    style={{ width: "100%", height: 420 }}
+                                    device={device}
+                                    isActive={isActive && isFocused}
+                                    photo={true}
+                                    onInitialized={() => setIsCameraReady(true)}
+                                />
 
                                 <View className="absolute inset-0 bg-black/20" />
                             </View>
@@ -702,64 +711,42 @@ const FacialVerificationScreen = ({ navigation }) => {
                         {/* Check In */}
                         <TouchableOpacity
                             onPress={handleCheckIn}
-                            disabled={ApiLoading || checkInTime ? true : false}
-                            className={`flex-1 rounded-3xl p-5 mr-2 flex-row items-center ${checkInTime
+                            disabled={ApiLoading || !canCheckIn}
+                            className={`flex-1 rounded-3xl px-4 py-5 mr-2 flex-row items-center ${!canCheckIn
                                 ? "bg-gray-300"
-                                : ApiLoading
+                                : isCheckingIn
                                     ? "bg-gray-400"
-                                    : "bg-accent"}
-`}
+                                    : "bg-accent"
+                                }`}
                         >
-
                             <View className="bg-white/20 p-2 rounded-xl mr-3">
-                                <MaterialCommunityIcons
-                                    name="login"
-                                    size={22}
-                                    color="white"
-                                />
+                                <MaterialCommunityIcons name="login" size={22} color="white" />
                             </View>
 
-                            <Text
-                                className="text-white font-medium text-md flex-1"
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                            >
-                                {ApiLoading && ApiType == "check-in"
-                                    ? "Checking In..."
-                                    : "Check-In"}
+                            <Text className="text-white font-medium text-md flex-1" style={{ includeFontPadding: false }}>
+                                {isCheckingIn ? "Checking In..." : "Check-In"}
                             </Text>
-
                         </TouchableOpacity>
 
 
                         {/* Check Out */}
                         <TouchableOpacity
                             onPress={handleCheckOut}
-                            disabled={ApiLoading || (!checkInTime || checkOutTime) ? true : false}
-                            className={`flex-1 rounded-3xl p-5 ml-2 flex-row items-center border ${!checkInTime || checkOutTime
-                                ? "bg-gray-200 border-gray-200"
-                                : "bg-white border-gray-200"}
-`}
+                            disabled={ApiLoading || !canCheckOut}
+                            className={`flex-1 rounded-3xl px-4 py-5 ml-2 flex-row items-center ${!canCheckOut
+                                ? "bg-gray-200"
+                                : isCheckingOut
+                                    ? "bg-gray-400"
+                                    : "bg-accent"
+                                }`}
                         >
-
-                            <View className="bg-gray-100 p-2 rounded-xl mr-3">
-                                <MaterialCommunityIcons
-                                    name="logout"
-                                    size={22}
-                                    color="#6B7280"
-                                />
+                            <View className="bg-white/20 p-2 rounded-xl mr-3">
+                                <MaterialCommunityIcons name="logout" size={22} color="white" />
                             </View>
 
-                            <Text
-                                className="text-gray-600 font-medium text-md flex-1"
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                            >
-                                {ApiLoading && ApiType == "check-out"
-                                    ? "Check Out..."
-                                    : "Check-Out"}
+                            <Text className="text-white font-medium text-md flex-1" style={{ includeFontPadding: false }}>
+                                {isCheckingOut ? "Checking Out..." : "Check-Out"}
                             </Text>
-
                         </TouchableOpacity>
 
                     </View>

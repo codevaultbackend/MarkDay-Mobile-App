@@ -165,7 +165,7 @@ const HomeScreen = ({ navigation }) => {
     );
 
     if (!today) return;
-  
+
 
     const formattedInTime = formatTime(today?.inTime);
     const formattedOutTime = formatTime(today?.outTime);
@@ -235,9 +235,12 @@ const HomeScreen = ({ navigation }) => {
 
           {/* Shift Ending Banner */}
 
-          {checkInTime && (
-            <ShiftEndingBanner navigation={navigation} />
-          )}
+
+          {
+            checkInTime && !checkOutTime && <ShiftEndingBanner navigation={navigation} />
+          }
+
+
 
           {/* Cards */}
           {
@@ -281,8 +284,8 @@ const HomeScreen = ({ navigation }) => {
                 />
 
 
-              
-                   <RecentActivity
+
+                <RecentActivity
                   attendance={attendance}
                   leaves={leaves}
                   loading={Apiloading}

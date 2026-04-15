@@ -33,8 +33,8 @@ const LoginScreen = () => {
     const dispatch = useDispatch();
 
     // ✅ FIXED (no extra spaces)
-    const [empId, setEmpId] = useState("EMP703");
-    const [password, setPassword] = useState("123");
+    const [empId, setEmpId] = useState("");
+    const [password, setPassword] = useState("");
 
     const passwordRef = useRef(null);
 
