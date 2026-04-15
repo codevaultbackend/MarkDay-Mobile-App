@@ -42,7 +42,7 @@ const HomeScreen = ({ navigation }) => {
     const init = async () => {
 
       const loc = await getCurrentLocation();
-      console.log(loc, "");
+
 
       if (loc) {
         console.log("location ready");
@@ -156,15 +156,16 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
 
     if (!attendance?.length) return;
- console.log(attendance ,"atendece  ")
-    const todayDate = new Date().toLocaleDateString();
- console.log(todayDate ,"today")
+
+
+    const todayDate = dayjs().format("M/D/YYYY");
+    console.log(todayDate, "todayDate")
     const today = attendance.find(
       item => item.date === todayDate
     );
- 
-    if (!today) return;
 
+    if (!today) return;
+  
 
     const formattedInTime = formatTime(today?.inTime);
     const formattedOutTime = formatTime(today?.outTime);
@@ -246,33 +247,31 @@ const HomeScreen = ({ navigation }) => {
 
 
           {
-            Apierror || Apiloading ?
-              <>
-                {
-                  Apierror ?
+            Apierror || Apiloading ? (
 
+              Apierror ? (
 
-                    <View
-                      style={{ flex: 1, minHeight: 450 }}
-                      className="w-full justify-center items-center"
-                    >
+                <View
+                  style={{ flex: 1, minHeight: 450 }}
+                  className="w-full justify-center items-center"
+                >
+                  <RetryScreen
+                    onRetry={handleRetry}
+                    error={Apierror}
+                  />
+                </View>
 
-                      <RetryScreen
-                        onRetry={handleRetry}
-                        error={Apierror}
-                      />
-                    </View>
-                   
+              ) : (
 
+                <View className="px-5">
+                  <RecentActivitySkeleton />
+                </View>
 
-                    : 
-                     <View className="px-5">       <RecentActivitySkeleton />  </View>
-                  
-                }
+              )
 
-              </>
+            ) : (
 
-              : <>
+              <View>
 
                 <AttendanceCard
                   attendance={attendance}
@@ -281,12 +280,17 @@ const HomeScreen = ({ navigation }) => {
                   loading={Apiloading}
                 />
 
-                <RecentActivity
+
+              
+                   <RecentActivity
                   attendance={attendance}
                   leaves={leaves}
                   loading={Apiloading}
                 />
-              </>
+
+              </View>
+
+            )
           }
 
 

@@ -195,6 +195,7 @@ const Calendar = ({
 
                     return (
                         <View
+                          key={formatted}
                             style={{
                                 width: "14.285%",
                                 padding: 2
@@ -202,7 +203,7 @@ const Calendar = ({
                         >
                             <AnimatedTouchable
                                 entering={FadeIn.delay(index * 15)}
-                                key={formatted}
+                              
                                 disabled={isFuture}
                                 onPress={() => setSelectedDate(formatted)}
 

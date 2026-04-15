@@ -47,6 +47,7 @@ import { Image as ImageCompressor } from 'react-native-compressor';
 import { cardStyle } from "../../utils/cardStyle";
 import { setTodayAttendance } from "../../redux/slices/attendanceSlice";
 import { useSelector } from "react-redux";
+import Ionicons from "react-native-vector-icons/Ionicons";
 const FacialVerificationScreen = ({ navigation }) => {
 
     const isFocused = useIsFocused()
@@ -242,7 +243,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                 enableAutoStabilization: true,
             });
 
-            console.log("Original Path:", photo.path);
+
 
             // 🔥 Compress (Best Quality + Size Balance)
             const compressedPath = await ImageCompressor.compress(
@@ -254,7 +255,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                 }
             );
 
-            console.log("Compressed Path:", compressedPath);
+
 
             // 📊 Size Check
             const stat = await RNFS.stat(compressedPath);
@@ -433,7 +434,7 @@ const FacialVerificationScreen = ({ navigation }) => {
         state => state.todayAttendance
     );
 
-    console.log(checkInTime, checkOutTime, "checkout", 'checkintime')
+
 
     return (
         <SafeAreaView className="flex-1 bg-primary" edges={['top', 'left', 'right']}>
@@ -450,16 +451,34 @@ const FacialVerificationScreen = ({ navigation }) => {
 
 
                 {/* Header */}
-                <View className="flex-row items-center px-5 py-3">
-                    <TouchableOpacity>
-                        <Icon name="chevron-left" size={24} />
+                <View className="flex-row items-center justify-between mt-4 mb-2 mx-4">
+
+                    {/* Back Button */}
+
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        className="w-8"
+                    >
+                        <Ionicons
+                            name="chevron-back"
+                            size={24}
+                            color="#1F2937"
+                        />
                     </TouchableOpacity>
 
-                    <Text className="flex-1 text-center text-lg font-semibold">
+
+                    {/* Title */}
+
+                    <Text
+                        className="text-lg font-semibold text-center flex-1"
+                        style={{ includeFontPadding: false }}
+                    >
                         Facial Verification
                     </Text>
 
-                    <View className="w-6" />
+
+                    <View className="w-8" />
+
                 </View>
 
                 {/* Camera Card */}
@@ -469,7 +488,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                         {/* CAMERA VIEW */}
                         {captured ? (
 
-                            <>
+                            <View>
                                 <Image
                                     source={{ uri: "file://" + captured.path }}
                                     className="w-full h-[420px]"
@@ -478,10 +497,11 @@ const FacialVerificationScreen = ({ navigation }) => {
                                 {/* Dark Overlay */}
                                 <View className="absolute inset-0 bg-black/20" />
 
-                            </>
+                            </View>
 
                         ) : device && hasCameraPermission && !isInitializing ? (
-                            <>   <Camera
+                            <View> 
+                              <Camera
                                 key={cameraPosition}   // 👈 YE MISSING HAIi
                                 ref={cameraRef}
                                 style={{ width: "100%", height: 420 }}
@@ -492,11 +512,11 @@ const FacialVerificationScreen = ({ navigation }) => {
                             />
 
                                 <View className="absolute inset-0 bg-black/20" />
-                            </>
+                            </View>
 
 
                         ) : (
-                            <>
+                            <View>
                                 <View className="w-full h-[420px] bg-gray-200 items-center justify-center">
 
                                     {/* Fake Camera Image */}
@@ -540,7 +560,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                                     <View className="w-[260px] h-[260px] rounded-full border-2 border-[#8B7AF0]" />
                                 </View>
 
-                            </>
+                            </View>
 
                         )}
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ScrollView, View } from "react-native";
+import { KeyboardAvoidingView, ScrollView, StatusBar, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
     FadeIn,
@@ -57,7 +57,7 @@ const LeaveScreen = ({ navigation }) => {
         data: leaves,
         isLoading: leaveLoading,
         error: leaveError,
-        isFetching:isleaveFetching,
+        isFetching: isleaveFetching,
         refetch: refetchLeaves
     } = useGetLeavesQuery(empId, {
         skip: !empId
@@ -67,7 +67,7 @@ const LeaveScreen = ({ navigation }) => {
 
 
 
-     
+
 
 
     return (
@@ -76,6 +76,10 @@ const LeaveScreen = ({ navigation }) => {
             className="flex-1 bg-primary px-5"
             edges={['top', 'left', 'right']}
         >
+            <StatusBar
+                barStyle="dark-content"
+                backgroundColor="#FCF7ED"
+            />
             <LeaveHeader navigation={navigation} />
             <LeaveStatsCard
                 leaves={leaves}
@@ -87,88 +91,94 @@ const LeaveScreen = ({ navigation }) => {
                 setActiveTab={setActiveTab}
             />
 
-            <ScrollView
-                ref={scrollRef}   // ✅ add ref
-                showsVerticalScrollIndicator={false}
-              
-                contentContainerStyle={{ paddingBottom: 40 }}
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1 }}
+                keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
             >
 
-                {/* Header */}
+                <ScrollView
+                    ref={scrollRef}   // ✅ add ref
+                    showsVerticalScrollIndicator={false}
+                    eyboardShouldPersistTaps="handled"
+                    contentContainerStyle={{ paddingBottom: 40 }}
+                >
+
+                    {/* Header */}
 
 
-                {/* Stats */}
+                    {/* Stats */}
 
 
-                {/* Tabs */}
+                    {/* Tabs */}
 
-                {/* Success */}
-                {showSuccess && (
+                    {/* Success */}
+                    {showSuccess && (
 
-                    <Animated.View
-                        entering={FadeInDown.duration(400)}
-                        exiting={FadeOut.duration(300)}
-                        layout={LinearTransition}
-                    >
+                        <Animated.View
+                            entering={FadeInDown.duration(400)}
+                            exiting={FadeOut.duration(300)}
+                            layout={LinearTransition}
+                        >
 
-                        <LeaveSuccessCard
-                            message={successMsg}
-                            onClose={() => setShowSuccess(false)}
-                        />
+                            <LeaveSuccessCard
+                                message={successMsg}
+                                onClose={() => setShowSuccess(false)}
+                            />
 
-                    </Animated.View>
-
-                )}
-
-                {/* Form */}
-                <View>
-
-                    {/* Request */}
-                    {activeTab === "request" && (
-
-                        <LeaveFormCard
-                            onSuccess={(message) => {
-
-                                setSuccessMsg(message)
-                                setShowSuccess(true)
-                                setActiveTab("history")
-
-                                // ✅ Scroll To Top
-                                setTimeout(() => {
-                                    scrollRef.current?.scrollTo({
-                                        y: 0,
-                                        animated: true
-                                    })
-                                }, 100)
-
-                            }}
-                        />
+                        </Animated.View>
 
                     )}
 
-                    {/* History */}
-                    {activeTab === "history" && (
+                    {/* Form */}
+                    <View>
 
-                        <LeaveHistoryList
-                            leaves={leaves}
-                            loading={leaveLoading  || isleaveFetching}
-                            error={leaveError}
-                            refetch={refetchLeaves}
-                        />
+                        {/* Request */}
+                        {activeTab === "request" && (
 
-                    )}
+                            <LeaveFormCard
+                                onSuccess={(message) => {
 
-                </View>
-{
-    activeTab === "request" &&  <> 
-       {/* Policy */}
-                <LeavePolicyCard />
-       </>
-}
-             
+                                    setSuccessMsg(message)
+                                    setShowSuccess(true)
+                                    setActiveTab("history")
 
-            </ScrollView>
+                                    // ✅ Scroll To Top
+                                    setTimeout(() => {
+                                        scrollRef.current?.scrollTo({
+                                            y: 0,
+                                            animated: true
+                                        })
+                                    }, 100)
 
+                                }}
+                            />
+
+                        )}
+
+                        {/* History */}
+                        {activeTab === "history" && (
+
+                            <LeaveHistoryList
+                                leaves={leaves}
+                                loading={leaveLoading || isleaveFetching}
+                                error={leaveError}
+                                refetch={refetchLeaves}
+                            />
+
+                        )}
+
+                    </View>
+                    {
+                        activeTab === "request" && <>
+                            {/* Policy */}
+                            <LeavePolicyCard />
+                        </>
+                    }
+
+
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
 
     )

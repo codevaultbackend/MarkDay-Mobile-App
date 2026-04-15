@@ -214,7 +214,7 @@ const CustomToastStack = () => {
   // alerts = useSelector(
   //   (state) => state?.alert?.queue
   // );
-   console.log(alerts ,"alerts")
+ 
 
   return (
     <View

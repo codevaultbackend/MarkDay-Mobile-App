@@ -5,7 +5,7 @@
 
     baseQuery: fetchBaseQuery({
   //   baseUrl: "https://attendance-backend-final-4.onrender.com",
-     baseUrl: "https://e8e3-2401-4900-8842-2f04-c88f-b84e-890d-7509.ngrok-free.app",
+     baseUrl: "https://9d90-2401-4900-8840-6edd-8917-d7c2-4428-b712.ngrok-free.app",
 
       prepareHeaders: (headers, { getState }) => {
         return headers;
@@ -16,7 +16,8 @@
     tagTypes: [
       "My-Attendance",
       "My-Leaves",
-      "Holidays"
+      "Holidays",
+      "My-Profile"
     ],
 
     endpoints: () => ({}),

@@ -7,7 +7,7 @@ import RetryScreen from "../../calendar/components/RetryScreen";
 import { cardStyle } from "../../../utils/cardStyle";
 
 const LeaveHistoryList = ({ leaves, loading, error, refetch }) => {
-    console.log(leaves, "leaves")
+     
 
     /*
     ============================================

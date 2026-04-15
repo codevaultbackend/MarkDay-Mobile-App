@@ -4,7 +4,8 @@ import {
   Text,
 
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  StatusBar
 } from "react-native";
 
 import dayjs from "dayjs";
@@ -62,7 +63,7 @@ const CalendarScreen = ({ navigation }) => {
   } = useGetLeavesQuery(empId, {
     skip: !empId
   });
-  console.log(leaves, "leaves")
+
 
   const {
     data: holidays,
@@ -72,16 +73,16 @@ const CalendarScreen = ({ navigation }) => {
   } = useGetHolidaysQuery();
 
 
-const handleRetry = () => {
+  const handleRetry = () => {
 
-  if(empId){
-    refetchAttendance()
-    refetchLeaves()
+    if (empId) {
+      refetchAttendance()
+      refetchLeaves()
+    }
+
+    refetchHoliday()
+
   }
-
-  refetchHoliday()
-
-}
   // Filter By Date
   const attendance = useMemo(() => {
 
@@ -139,6 +140,11 @@ const handleRetry = () => {
   return (
 
     <SafeAreaView className="flex-1 bg-primary" edges={['top', 'right', 'left']}>
+
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#FCF7ED"
+      />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

@@ -62,17 +62,25 @@ const CheckGrid = () => {
   // Work Duration Logic
   useEffect(() => {
 
-    if (!checkInTime) return;
+    if (!checkInTime) {
+      setWorkDuration("00:00 hrs");
+      return;
+    }
 
+    const calculate = () => {
 
-    // If checkout already done
-    if (checkOutTime) {
-
-      const start = dayjs(checkInTime, "h:mm A");
-      const end = dayjs(checkOutTime, "h:mm A");
+      const start = dayjs(checkInTime, ["h:mm:ss A", "h:mm A"]);
+      const end = checkOutTime
+        ? dayjs(checkOutTime, ["h:mm:ss A", "h:mm A"])
+        : dayjs();
 
       const diff = end.diff(start, "minute");
 
+      if (diff < 0) {
+        setWorkDuration("00:00 hrs");
+        return;
+      }
+
       const hours = Math.floor(diff / 60);
       const minutes = diff % 60;
 
@@ -81,33 +89,14 @@ const CheckGrid = () => {
           .toString()
           .padStart(2, "0")} hrs`
       );
+    };
 
-      return;
+    calculate();
 
+    if (!checkOutTime) {
+      const interval = setInterval(calculate, 60000);
+      return () => clearInterval(interval);
     }
-
-
-    // Live Timer
-    const interval = setInterval(() => {
-
-      const start = dayjs(checkInTime, "h:mm A");
-      const now = dayjs();
-
-      const diff = now.diff(start, "minute");
-
-      const hours = Math.floor(diff / 60);
-      const minutes = diff % 60;
-
-      setWorkDuration(
-        `${hours.toString().padStart(2, "0")}:${minutes
-          .toString()
-          .padStart(2, "0")} hrs`
-      );
-
-    }, 1000);
-
-
-    return () => clearInterval(interval)
 
   }, [checkInTime, checkOutTime]);
 

@@ -63,7 +63,7 @@ const LeaveFormCard = ({ onSuccess }) => {
     // ================= RESET =================
 
     const resetForm = () => {
-
+        
         setReason("")
         // setLeaveType("paid")
         setStartDate(new Date())

@@ -19,7 +19,7 @@ export default function RootNavigator() {
   // 🔐 Check Auth
   const checkAuth = async () => {
     const { user } = await getAuth();
-    console.log(user, "user")
+ 
 
 
     setLoggedIn(!!user);
