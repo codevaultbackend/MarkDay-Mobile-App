@@ -4,7 +4,8 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
+  StatusBar
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -150,7 +151,10 @@ const ProfileScreen = ({ navigation }) => {
       className="flex-1 bg-primary px-5"
       edges={['top', 'left', 'right']}
     >
-
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#FCF7ED"
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}

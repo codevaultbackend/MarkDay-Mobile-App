@@ -76,10 +76,10 @@ const LeaveScreen = ({ navigation }) => {
             className="flex-1 bg-primary px-5"
             edges={['top', 'left', 'right']}
         >
-            <StatusBar
-                barStyle="dark-content"
-                backgroundColor="#FCF7ED"
-            />
+              <StatusBar
+                  barStyle="dark-content"
+                  backgroundColor="#FCF7ED"
+                />
             <LeaveHeader navigation={navigation} />
             <LeaveStatsCard
                 leaves={leaves}
