@@ -44,28 +44,44 @@ const CalendarScreen = ({ navigation }) => {
   const {
     data,
     isLoading,
-     isFetching ,
+    isFetching,
     error,
-    refetch
+    refetch: refetchAttendance
   } = useGetAttendanceQuery(empId, {
     skip: !empId
   });
 
- console.log(data ,"data")
+
+
   const {
     data: leaves,
     isLoading: leaveLoading,
-    isFetching:isleaveFetching,
+    isFetching: isleaveFetching,
+    error: leaveError,
+    refetch: refetchLeaves
   } = useGetLeavesQuery(empId, {
     skip: !empId
   });
-   console.log(leaves ,"leaves")
+  console.log(leaves, "leaves")
 
   const {
     data: holidays,
-    isLoading: holidayLoading
+    isLoading: holidayLoading,
+    error: holidayError,
+    refetch: refetchHoliday
   } = useGetHolidaysQuery();
 
+
+const handleRetry = () => {
+
+  if(empId){
+    refetchAttendance()
+    refetchLeaves()
+  }
+
+  refetchHoliday()
+
+}
   // Filter By Date
   const attendance = useMemo(() => {
 
@@ -78,7 +94,7 @@ const CalendarScreen = ({ navigation }) => {
   }, [data, selectedDate]);
 
 
-   
+
 
 
   const selectedType = useMemo(() => {
@@ -117,7 +133,7 @@ const CalendarScreen = ({ navigation }) => {
 
   // Error
   if (error) {
-    return <RetryScreen onRetry={refetch} error={error}  />;
+    return <RetryScreen onRetry={handleRetry} error={error || leaveError || holidayError} />;
   }
 
   return (
@@ -128,7 +144,7 @@ const CalendarScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         className="px-5 "
         contentContainerStyle={{ paddingBottom: 40 }}
-        
+
       >
 
         {/* Header */}
@@ -170,11 +186,11 @@ const CalendarScreen = ({ navigation }) => {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           data={data}
-          empId={empId} 
+          empId={empId}
           leaves={leaves}
           holidays={holidays}
           loading={
-            isLoading || leaveLoading || holidayLoading ||isFetching || isleaveFetching
+            isLoading || leaveLoading || holidayLoading || isFetching || isleaveFetching
           }
 
         />
@@ -185,8 +201,8 @@ const CalendarScreen = ({ navigation }) => {
           selectedDate={selectedDate}
           type={selectedType}
           holidays={holidays}
-           loading={
-            isLoading || leaveLoading || holidayLoading ||isFetching || isleaveFetching
+          loading={
+            isLoading || leaveLoading || holidayLoading || isFetching || isleaveFetching
           }
         />
 

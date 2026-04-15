@@ -65,7 +65,7 @@ const LeaveFormCard = ({ onSuccess }) => {
     const resetForm = () => {
 
         setReason("")
-        setLeaveType("paid")
+        // setLeaveType("paid")
         setStartDate(new Date())
         setEndDate(new Date())
         setDateError("")
@@ -114,7 +114,7 @@ const LeaveFormCard = ({ onSuccess }) => {
                 startDate,
                 endDate,
                 reason,
-                leaveType
+                
             },
 
             showSuccess: false
@@ -179,7 +179,7 @@ const LeaveFormCard = ({ onSuccess }) => {
 
                 {/* ================= LEAVE TYPE ================= */}
 
-                <View className="flex-row gap-2 mb-3 flex-wrap">
+                {/* <View className="flex-row gap-2 mb-3 flex-wrap">
 
                     {["paid", "unpaid", "optional_leave"].map(type => {
 
@@ -218,7 +218,7 @@ ${active ? "text-white" : "text-accent"}
 
                     })}
 
-                </View>
+                </View> */}
 
 
 

@@ -51,7 +51,7 @@ const LeaveTabs = ({
 
         <View
             style={[
-                
+
                 cardStyle,
                 {
                     borderWidth: 1,

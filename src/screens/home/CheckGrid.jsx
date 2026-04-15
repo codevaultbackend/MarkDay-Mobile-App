@@ -10,7 +10,7 @@ const Card = ({ icon, title, value }) => {
   return (
 
     <View
-      className="bg-white w-[48%] p-4 rounded-2xl mb-4 border border-gray-200"
+      className="bg-white w-[48%] h-[72px] rounded-3xl mb-4 border border-gray-200 flex-col items-center  justify-center"
       style={cardStyle}
     >
 

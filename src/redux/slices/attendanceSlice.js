@@ -8,6 +8,7 @@ const initialState = {
   inLocation: null,
   outLocation: null,
   status: "not-checked-in",
+   isOffline: false
 };
 
 const attendanceSlice = createSlice({
@@ -31,7 +32,7 @@ const attendanceSlice = createSlice({
 
       state.inLocation = state.today?.inLocation || null;
       state.outLocation = state.today?.outLocation || null;
-
+      state.isOffline = data?.isOffline ?? false;
       if (state.checkInTime && !state.checkOutTime) {
         state.status = "checked-in";
       }

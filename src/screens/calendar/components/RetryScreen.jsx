@@ -8,31 +8,36 @@ const RetryScreen = ({ onRetry, error }) => {
   const [isConnected, setIsConnected] = useState(true);
   const [hasRetried, setHasRetried] = useState(false);
 
-  useEffect(() => {
+ useEffect(() => {
 
-    const unsubscribe = NetInfo.addEventListener(state => {
+const unsubscribe = NetInfo.addEventListener(state => {
 
-      const connected =
-        state.isConnected && state.isInternetReachable;
+const connected =
+state.isConnected && state.isInternetReachable;
 
-      setIsConnected(connected);
+setIsConnected(connected);
 
-      // Auto retry only once
-      if (connected && error && !hasRetried) {
-        onRetry();
-        setHasRetried(true);
-      }
+// Auto retry only when internet comes back
+if (connected && !hasRetried) {
 
-      // Reset when internet lost again
-      if (!connected) {
-        setHasRetried(false);
-      }
+setTimeout(() => {
+onRetry?.();
+}, 500);
 
-    });
+setHasRetried(true);
 
-    return () => unsubscribe();
+}
 
-  }, [error, hasRetried]);
+// Reset when internet lost again
+if (!connected) {
+setHasRetried(false);
+}
+
+});
+
+return () => unsubscribe();
+
+}, [hasRetried]);
 
 
 

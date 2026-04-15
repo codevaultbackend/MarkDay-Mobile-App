@@ -7,25 +7,26 @@ import RetryScreen from "../../calendar/components/RetryScreen";
 import { cardStyle } from "../../../utils/cardStyle";
 
 const LeaveHistoryList = ({ leaves, loading, error, refetch }) => {
+    console.log(leaves, "leaves")
 
     /*
     ============================================
     Loading State
     ============================================
     */
-if (error) {
-  return (
-    <View
-      style={{ flex: 1, minHeight: 450 }}
-      className="w-full justify-center items-center"
-    >
-      <RetryScreen
-        onRetry={refetch}
-        error={error}
-      />
-    </View>
-  )
-}
+    if (error) {
+        return (
+            <View
+                style={{ flex: 1, minHeight: 450 }}
+                className="w-full justify-center items-center"
+            >
+                <RetryScreen
+                    onRetry={refetch}
+                    error={error}
+                />
+            </View>
+        )
+    }
     if (loading) {
         return <LeaveHistorySkeleton />
     }
@@ -35,7 +36,7 @@ if (error) {
     Error State
     ============================================
     */
-  
+
 
 
     /*
@@ -57,7 +58,7 @@ if (error) {
         return (
 
             <View
-              style={cardStyle}
+                style={cardStyle}
                 className="bg-white rounded-3xl p-4 mt-4  border border-gray-200"
             >
 
@@ -67,7 +68,7 @@ if (error) {
 
                     {/* Leave ID */}
 
-                    <Text className="font-semibold" style={{includeFontPadding:false}}>
+                    <Text className="font-semibold" style={{ includeFontPadding: false }}>
                         Leave Request ID #{item._id.slice(-5)}
                     </Text>
 
@@ -84,7 +85,7 @@ ${status === "rejected" && "bg-red-100"}
                     >
 
                         <Text
-                        style={{includeFontPadding:false}}
+                            style={{ includeFontPadding: false }}
                             className={`
 text-xs capitalize
 ${status === "pending" && "text-orange-600"}
@@ -102,7 +103,7 @@ ${status === "rejected" && "text-red-600"}
 
                 {/* Applied Date */}
 
-                <Text className="text-gray-400 text-xs mt-1" style={{includeFontPadding:false}}>
+                <Text className="text-gray-400 text-xs mt-1" style={{ includeFontPadding: false }}>
                     Applied on {dayjs(item.appliedAt).format("MMM DD, YYYY")}
                 </Text>
 
@@ -114,11 +115,11 @@ ${status === "rejected" && "text-red-600"}
                     {/* From Date */}
 
                     <View>
-                        <Text className="text-xs text-gray-400" style={{includeFontPadding:false}}>
+                        <Text className="text-xs text-gray-400" style={{ includeFontPadding: false }}>
                             From Date
                         </Text>
 
-                        <Text className="font-medium" style={{includeFontPadding:false}}>
+                        <Text className="font-medium" style={{ includeFontPadding: false }}>
                             {dayjs(item.startDate).format("DD/MM/YY")}
                         </Text>
                     </View>
@@ -127,11 +128,11 @@ ${status === "rejected" && "text-red-600"}
                     {/* To Date */}
 
                     <View>
-                        <Text className="text-xs text-gray-400" style={{includeFontPadding:false}}>
+                        <Text className="text-xs text-gray-400" style={{ includeFontPadding: false }}>
                             To Date
                         </Text>
 
-                        <Text className="font-medium" style={{includeFontPadding:false}}>
+                        <Text className="font-medium" style={{ includeFontPadding: false }}>
                             {dayjs(item.endDate).format("DD/MM/YY")}
                         </Text>
                     </View>
@@ -140,11 +141,11 @@ ${status === "rejected" && "text-red-600"}
                     {/* Total Days */}
 
                     <View>
-                        <Text className="text-xs text-gray-400" style={{includeFontPadding:false}}>
+                        <Text className="text-xs text-gray-400" style={{ includeFontPadding: false }}>
                             Total Days
                         </Text>
 
-                        <Text className="font-medium" style={{includeFontPadding:false}}    >
+                        <Text className="font-medium" style={{ includeFontPadding: false }}    >
                             {totalDays} Days
                         </Text>
                     </View>

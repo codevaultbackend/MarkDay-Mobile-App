@@ -337,6 +337,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                 date: new Date().toLocaleDateString(),
                 inTime: formattedTime,
                 inLocation: address,
+                isOffline: true
             }))
 
             navigation.reset({
@@ -392,7 +393,8 @@ const FacialVerificationScreen = ({ navigation }) => {
         if (res) {
             dispatch(setTodayAttendance({
                 outTime: formattedTime,
-                outLocation: address
+                outLocation: address,
+                isOffline: true,
             }))
 
             navigation.reset({
@@ -467,14 +469,19 @@ const FacialVerificationScreen = ({ navigation }) => {
                         {/* CAMERA VIEW */}
                         {captured ? (
 
-                            <Image
-                                source={{ uri: "file://" + captured.path }}
-                                className="w-full h-[420px]"
-                            />
+                            <>
+                                <Image
+                                    source={{ uri: "file://" + captured.path }}
+                                    className="w-full h-[420px]"
+                                />
+
+                                {/* Dark Overlay */}
+                                <View className="absolute inset-0 bg-black/20" />
+
+                            </>
 
                         ) : device && hasCameraPermission && !isInitializing ? (
-
-                            <Camera
+                            <>   <Camera
                                 key={cameraPosition}   // 👈 YE MISSING HAIi
                                 ref={cameraRef}
                                 style={{ width: "100%", height: 420 }}
@@ -483,6 +490,10 @@ const FacialVerificationScreen = ({ navigation }) => {
                                 photo={true}
                                 onInitialized={() => setIsCameraReady(true)}
                             />
+
+                                <View className="absolute inset-0 bg-black/20" />
+                            </>
+
 
                         ) : (
                             <>
@@ -498,7 +509,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                                     /> */}
 
                                     {/* Loading Overlay */}
-                                    <View className="absolute inset-0 bg-black/30 items-center justify-center">
+                                    <View className="absolute inset-0 bg-black/20 items-center justify-center">
 
                                         {cameraDenied ? (
 
@@ -672,12 +683,11 @@ const FacialVerificationScreen = ({ navigation }) => {
                         <TouchableOpacity
                             onPress={handleCheckIn}
                             disabled={ApiLoading || checkInTime ? true : false}
-                            className={`flex-1 rounded-3xl p-5 mr-2 flex-row items-center
-${checkInTime
-                                    ? "bg-gray-300"
-                                    : ApiLoading
-                                        ? "bg-gray-400"
-                                        : "bg-accent"}
+                            className={`flex-1 rounded-3xl p-5 mr-2 flex-row items-center ${checkInTime
+                                ? "bg-gray-300"
+                                : ApiLoading
+                                    ? "bg-gray-400"
+                                    : "bg-accent"}
 `}
                         >
 
@@ -706,10 +716,9 @@ ${checkInTime
                         <TouchableOpacity
                             onPress={handleCheckOut}
                             disabled={ApiLoading || (!checkInTime || checkOutTime) ? true : false}
-                            className={`flex-1 rounded-3xl p-5 ml-2 flex-row items-center border
-${!checkInTime || checkOutTime
-                                    ? "bg-gray-200 border-gray-200"
-                                    : "bg-white border-gray-200"}
+                            className={`flex-1 rounded-3xl p-5 ml-2 flex-row items-center border ${!checkInTime || checkOutTime
+                                ? "bg-gray-200 border-gray-200"
+                                : "bg-white border-gray-200"}
 `}
                         >
 

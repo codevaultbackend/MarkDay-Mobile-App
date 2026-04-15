@@ -19,14 +19,14 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
- 
+
 
     getProfile: builder.query({
       query: (empId) => ({
-        url: `/api/admin/attendances?empId=${empId}`,
+        url: `/profile/emp/${empId}`,
         method: "GET",
       }),
-      providesTags: ["My-Attendance"],
+      providesTags: ["My-Profile"],
     }),
 
   }),
@@ -35,4 +35,5 @@ export const authApi = baseApi.injectEndpoints({
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useGetProfileQuery
 } = authApi;
