@@ -69,7 +69,7 @@ const Header = ({ loading, address }) => {
       <View className="flex-row justify-between items-center mt-3">
 
         <Text
-          className="text-xs text-[#717171]"
+          className="text-xs text-[#717171] font-normal"
           style={{ includeFontPadding: false }}
         >
           {todayDate}
@@ -84,7 +84,7 @@ const Header = ({ loading, address }) => {
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              className="text-white text-xs ml-2 flex-1"
+              className="text-white text-xs ml-2 flex-1 font-normal"
               style={{ includeFontPadding: false }}
             >
 

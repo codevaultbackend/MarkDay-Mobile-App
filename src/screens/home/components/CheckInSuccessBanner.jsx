@@ -50,7 +50,7 @@ const CheckInSuccessBanner = () => {
                 <View className="ml-3 flex-1">
 
                     <Text
-                        className="text-white text-sm"
+                        className="text-white text-sm font-normal"
                         style={{ includeFontPadding: false }}
                     >
                         Attendance Updated
@@ -64,7 +64,7 @@ const CheckInSuccessBanner = () => {
                     </Text>
 
                     <Text
-                        className="text-white/90 text-[12px] mt-2 leading-5"
+                        className="text-white/90 text-[12px] mt-2 leading-5 "
                         style={{ includeFontPadding: false }}
                     >
                         Your work duration has started. Have a productive day.

@@ -133,14 +133,14 @@ const LeaveStatsCard = ({ leaves, loading, leaveError }) => {
                     ) : (
                         <>
                             <Text
-                                className="text-lg font-semibold"
+                                className="text-lg font-semibold text-secondary"
                                 style={numberText}
                             >
                                 {paid?.total || 0} Days
                             </Text>
 
                             <Text
-                                className="text-xs text-gray-400"
+                                className="text-xs text-gray-400 font-normal"
                                 style={labelText}
                             >
                                 Total Paid Leaves
@@ -167,14 +167,14 @@ const LeaveStatsCard = ({ leaves, loading, leaveError }) => {
                     ) : (
                         <>
                             <Text
-                                className="text-lg font-semibold"
+                                className="text-lg font-semibold text-secondary"
                                 style={numberText}
                             >
                                 {paid?.used || 0} Days
                             </Text>
 
                             <Text
-                                className="text-xs text-gray-400"
+                                className="text-xs text-gray-400  font-normal"
                                 style={labelText}
                             >
                                 Used Leaves
@@ -201,14 +201,14 @@ const LeaveStatsCard = ({ leaves, loading, leaveError }) => {
                     ) : (
                         <>
                             <Text
-                                className="text-lg font-semibold"
+                                className="text-lg font-semibold text-secondary"
                                 style={numberText}
                             >
                                 {paid?.remaining || 0} Days
                             </Text>
 
                             <Text
-                                className="text-xs text-gray-400"
+                                className="text-xs text-gray-400 font-normal"
                                 style={labelText}
                             >
                                 Remaining Leaves

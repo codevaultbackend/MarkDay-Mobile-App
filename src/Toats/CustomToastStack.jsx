@@ -179,11 +179,11 @@ const ToastItem = ({ alert, index }) => {
 
         {/* Text */}
         <View style={styles.textContainer}>
-          <Text style={styles.title}>
+          <Text style={styles.title} className="font-medium">
             {config.title}
           </Text>
 
-          <Text style={styles.message}>
+          <Text style={styles.message} className="font-normal">
             {alert.message}
           </Text>
         </View>
@@ -285,6 +285,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
+    includeFontPadding:false,
     fontSize: 15,
     fontWeight: "600",
     color: "#111827",
@@ -292,6 +293,7 @@ const styles = StyleSheet.create({
   },
 
   message: {
+    includeFontPadding:false ,
     fontSize: 13,
     color: "#64748B",
     lineHeight: 18,

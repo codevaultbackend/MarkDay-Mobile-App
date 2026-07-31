@@ -58,15 +58,15 @@ const ShiftEndingBanner = ({ navigation }) => {
                 </View>
 
                 <View className="ml-3 flex-1">
-                    <Text className="text-white text-sm">
+                    <Text className="text-white text-sm font-normal" style={{includeFontPadding:false}}>
                         Shift Reminder
                     </Text>
 
-                    <Text className="text-white text-2xl font-bold mt-[2px]">
+                    <Text className="text-white text-2xl font-bold mt-[2px]" style={{includeFontPadding:false}}>
                         Shift Ending Soon
                     </Text>
 
-                    <Text className="text-white/90 text-[12px] mt-2 leading-5">
+                    <Text className="text-white/90 text-[12px] mt-2 leading-5 font-normal" style={{includeFontPadding:false}}>
                         According to company policy, your shift duration is nearing completion.
                         Please proceed to check out once your work hours are fulfilled.
                     </Text>

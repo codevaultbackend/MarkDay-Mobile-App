@@ -77,7 +77,7 @@ const HomeStatusBanner = ({ navigation }) => {
                 <View className="ml-3 flex-1">
 
                     <Text
-                        className="text-white text-sm"
+                        className="text-white text-sm font-normal"
                         style={{ includeFontPadding: false }}
                     >
                         Current Status
@@ -91,7 +91,7 @@ const HomeStatusBanner = ({ navigation }) => {
                     </Text>
 
                     <Text
-                        className="text-white/90 text-[12px] mt-2 leading-5"
+                        className="text-white/90 text-[12px] mt-2 leading-5 font-normal"
                         style={{ includeFontPadding: false }}
                     >
 

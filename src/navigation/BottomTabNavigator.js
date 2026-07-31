@@ -9,7 +9,7 @@ import CalendarScreen from "../screens/calendar/CalendarScreen";
 import LeaveScreen from "../screens/leave/LeaveScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
 import MainImage from './UserFocus.svg'
-import FacialVerificationScreen from  '../screens/facialVerification/FacialVerificationScreen'
+import FacialVerificationScreen from '../screens/facialVerification/FacialVerificationScreen'
 const Tab = createBottomTabNavigator();
 
 const CustomTabBar = ({ state, navigation }) => {
@@ -34,34 +34,34 @@ const CustomTabBar = ({ state, navigation }) => {
 
           // CENTER BUTTON
           if (route.name === "Atendence") {
-  const isCameraScreen = isFocused;
+            const isCameraScreen = isFocused;
 
-  return (
-    <View key={route.key} className="items-center relative bottom-[32px] ">
-      <TouchableOpacity
-        onPress={() => {
+            return (
+              <View key={route.key} className="items-center relative bottom-[32px] ">
+                <TouchableOpacity
+                  onPress={() => {
 
-          if (isCameraScreen) {
-            
-            navigation.emit({
-              type: "take-photo"
-            });
-          } else {
-            navigation.navigate(route.name);
+                    if (isCameraScreen) {
+
+                      navigation.emit({
+                        type: "take-photo"
+                      });
+                    } else {
+                      navigation.navigate(route.name);
+                    }
+                  }}
+                  className="bg-accent w-16 h-16 rounded-full items-center justify-center border-4 border-gray-50"
+                >
+                  {isCameraScreen ? (
+                    // <Icon name="camera" size={26} color="white" />
+                    <Icon name="aperture" color="white" size={30} />
+                  ) : (
+                    <MainImage style={{ width: 32, height: 32 }} />
+                  )}
+                </TouchableOpacity>
+              </View>
+            );
           }
-        }}
-        className="bg-accent w-16 h-16 rounded-full items-center justify-center border-4 border-gray-50"
-      >
-        {isCameraScreen ? (
-          // <Icon name="camera" size={26} color="white" />
-               <Icon name="aperture" color="white" size={30} /> 
-        ) : (
-          <MainImage style={{ width: 32, height: 32 }} />
-        )}
-      </TouchableOpacity>
-    </View>
-  );
-}
 
           // NORMAL TABS
           return (
@@ -77,9 +77,9 @@ const CustomTabBar = ({ state, navigation }) => {
               />
 
               <Text
-                className={`text-xs mt-1 ${
-                  isFocused ? "text-accent" : "text-gray-400"
-                }`}
+              style={{includeFontPadding:false}}
+                className={` font-medium text-xs mt-1 ${isFocused ? "text-accent" : "text-gray-400"
+                  }`}
               >
                 {route.name}
               </Text>

@@ -47,7 +47,7 @@ style={{ includeFontPadding:false }}
 </Text>
 
 <Text
-className="text-green-600 text-xs mt-1"
+className="text-green-600 text-xs mt-1 font-normal"
 style={{ includeFontPadding:false }}
 >
 

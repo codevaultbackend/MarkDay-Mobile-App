@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, StatusBar } from "react-native";
+import { View, ScrollView, StatusBar, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Header from "./Header";
@@ -18,13 +18,14 @@ import {
   useGetHolidaysQuery
 } from "../../redux/features/attendance/attendanceApi";
 import { getAuth } from "../../utils/authStorage";
+ 
 import { setTodayAttendance } from "../../redux/slices/attendanceSlice";
 
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import RetryScreen from "../calendar/components/RetryScreen";
 import RecentActivitySkeleton from "./components/RecentActivitySkeleton";
-
+import useUser from "../../hooks/useUser";
 
 
 dayjs.extend(customParseFormat);
@@ -32,7 +33,7 @@ dayjs.extend(customParseFormat);
 const HomeScreen = ({ navigation }) => {
 
   const { location, getCurrentLocation, loading, address } = useCurrentLocation();
-
+  const [refreshing, setRefreshing] = useState(false);
   /* ------------------------------- */
   /* Location Fetch */
   /* ------------------------------- */
@@ -75,19 +76,25 @@ const HomeScreen = ({ navigation }) => {
   /* Auth User */
   /* ------------------------------- */
 
-  const [authUser, setAuthUser] = useState(null);
-  const empId = authUser?.empId;
+  // const [authUser, setAuthUser] = useState(null);
+  // const empId = authUser?.empId;
 
+  // useEffect(() => {
+
+  //   const loadAuth = async () => {
+  //     const auth = await getAuth();
+  //     setAuthUser(auth?.user);
+  //   };
+
+  //   loadAuth();
+
+  // }, []);
+  const user = useUser();
+  const empId = user?.empId;
+ console.log(user ,"user")
   useEffect(() => {
-
-    const loadAuth = async () => {
-      const auth = await getAuth();
-      setAuthUser(auth?.user);
-    };
-
-    loadAuth();
-
-  }, []);
+    console.log("👤 User:", user);
+  }, [user]);
 
 
   /* ------------------------------- */
@@ -209,6 +216,23 @@ const HomeScreen = ({ navigation }) => {
     refetchLeaves()
     refetchHolidays()
   }
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+
+    try {
+      await Promise.all([
+        refetchAttendance(),
+        refetchLeaves(),
+        refetchHolidays(),
+      ]);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+
+
   return (
 
     <SafeAreaView
@@ -223,7 +247,17 @@ const HomeScreen = ({ navigation }) => {
 
       <View className="flex-1">
 
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}
+
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#F59E0B"]}      // Android
+              tintColor="#F59E0B"        // iOS
+            />
+          }
+        >
 
           <Header loading={loading} address={address} />
 

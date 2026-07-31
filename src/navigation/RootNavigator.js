@@ -8,6 +8,8 @@ import AppStack from "./AppStack";
 import SplashScreen from "../screens/Splash/SplashScreen.jsx";
 
 import { getAuth, onAuthChanged } from "../utils/authStorage";
+import { syncProfile } from "../utils/profileSync";
+import { shouldRefreshProfile } from "../utils/profileUtils";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,13 +19,50 @@ export default function RootNavigator() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   // 🔐 Check Auth
+  // const checkAuth = async () => {
+  //   try {
+  //     const { user } = await getAuth();
+
+  //     console.log(user, "User====== ==");
+
+  //     // ✅ Login hai to profile sync karo
+  //     if (user) {
+  //       await syncProfile();
+  //     }
+
+  //     setLoggedIn(!!user);
+  //   } catch (error) {
+  //     console.log("Auth Error:", error);
+  //     setLoggedIn(false);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
+
   const checkAuth = async () => {
-    const { user } = await getAuth();
- 
+    try {
+      const { user } = await getAuth();
 
+      if (user) {
+        try {
+          if (shouldRefreshProfile()) {
+            await syncProfile();
+          }
+        } catch (e) {
+          console.log("Profile sync failed:", e);
+        }
+      }
 
-    setLoggedIn(!!user);
-    setLoading(false);
+      setLoggedIn(!!user);
+    } catch (error) {
+      console.log("Auth Error:", error);
+      setLoggedIn(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -41,10 +80,8 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer>
-
       <Stack.Navigator screenOptions={{ headerShown: false }}>
 
-        {/* Splash Screen */}
         {loading && (
           <Stack.Screen
             name="Splash"
@@ -52,7 +89,6 @@ export default function RootNavigator() {
           />
         )}
 
-        {/* Auth / App */}
         {!loading && (
           <Stack.Screen name="Main">
             {() =>
@@ -66,7 +102,6 @@ export default function RootNavigator() {
         )}
 
       </Stack.Navigator>
-
     </NavigationContainer>
   );
 }

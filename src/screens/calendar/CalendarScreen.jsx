@@ -5,7 +5,8 @@ import {
 
   ScrollView,
   TouchableOpacity,
-  StatusBar
+  StatusBar ,
+    RefreshControl,
 } from "react-native";
 
 import dayjs from "dayjs";
@@ -23,7 +24,7 @@ import {
 import AttendanceCard from "./components/AttendanceCard.jsx";
 import Ionicons from "react-native-vector-icons/Ionicons";
 const CalendarScreen = ({ navigation }) => {
-
+const [refreshing, setRefreshing] = useState(false);
   // Current Date
   const [selectedDate, setSelectedDate] = useState(
     dayjs().format("M/D/YYYY")
@@ -132,6 +133,21 @@ const CalendarScreen = ({ navigation }) => {
 
   }, [selectedDate, data, leaves, holidays])
 
+  const onRefresh = async () => {
+  if (!empId) return;
+
+  setRefreshing(true);
+
+  try {
+    await Promise.all([
+      refetchAttendance(),
+      refetchLeaves(),
+      refetchHoliday(),
+    ]);
+  } finally {
+    setRefreshing(false);
+  }
+};
   // Error
   if (error) {
     return <RetryScreen onRetry={handleRetry} error={error || leaveError || holidayError} />;
@@ -150,6 +166,14 @@ const CalendarScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         className="px-5 "
         contentContainerStyle={{ paddingBottom: 40 }}
+          refreshControl={
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={["#F59E0B"]}   // Android
+      tintColor="#F59E0B"     // iOS
+    />
+  }
 
       >
 
@@ -193,6 +217,7 @@ const CalendarScreen = ({ navigation }) => {
           setSelectedDate={setSelectedDate}
           data={data}
           empId={empId}
+            hireDate={authUser?.hireDate}
           leaves={leaves}
           holidays={holidays}
           loading={
@@ -202,6 +227,7 @@ const CalendarScreen = ({ navigation }) => {
         />
         {/* Attendance Card */}
         <AttendanceCard
+         hireDate={authUser?.hireDate}   // 👈 Add this
           attendance={attendance}
           leaves={leaves}
           selectedDate={selectedDate}

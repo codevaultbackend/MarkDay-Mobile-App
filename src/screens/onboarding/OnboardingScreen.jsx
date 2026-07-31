@@ -95,13 +95,13 @@ const OnboardingScreen = ({ navigation }) => {
 
           {/* Button */}
 
-         <View className="px-5 mb-[2px] mt-[40px] ">
+         <View className="px-5 mb-[20px] mt-[40px] ">
   <TouchableOpacity
     onPress={onNext}
     style={{ width: isTablet ? 420 : "100%" }}
     className="bg-accent h-[56px] rounded-2xl items-center self-center flex-row justify-center"
   >
-    <Text className="text-white font-heading text-[18px] mr-2">
+    <Text className="text-white font-medium text-[18px] mr-2 " style={{includeFontPadding:false}}>
       Next
     </Text>
 

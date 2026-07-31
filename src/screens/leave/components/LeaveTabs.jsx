@@ -70,6 +70,7 @@ ${activeTab === "request" ? "bg-accent" : ""}
 `}
                 >
                     <Text
+                    style={{includeFontPadding:false}}
                         className={`
 text-sm font-medium
 ${activeTab === "request" ? "text-white" : "text-gray-400"}
@@ -91,6 +92,7 @@ ${activeTab === "history" ? "bg-accent" : ""}
 `}
                 >
                     <Text
+                    style={{includeFontPadding:false}}
                         className={`
 text-sm font-medium
 ${activeTab === "history" ? "text-white" : "text-gray-400"}

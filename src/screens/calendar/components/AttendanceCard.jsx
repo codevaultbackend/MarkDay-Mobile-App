@@ -15,6 +15,7 @@ const AttendanceCard = ({
   selectedDate,
   type,
   holidays,
+  hireDate,
   loading
 }) => {
 
@@ -40,19 +41,19 @@ const AttendanceCard = ({
 
 
   // Half Day
-  const isHalfDay = useMemo(() => {
+  // const isHalfDay = useMemo(() => {
 
-    if (!attendance?.inTime || !attendance?.outTime)
-      return false;
+  //   if (!attendance?.inTime || !attendance?.outTime)
+  //     return false;
 
-    const inTime = dayjs(attendance.inTime, "hh:mm:ss A");
-    const outTime = dayjs(attendance.outTime, "hh:mm:ss A");
+  //   const inTime = dayjs(attendance.inTime, "hh:mm:ss A");
+  //   const outTime = dayjs(attendance.outTime, "hh:mm:ss A");
 
-    const diff = outTime.diff(inTime, "hour", true);
+  //   const diff = outTime.diff(inTime, "hour", true);
 
-    return diff > 0 && diff < 4;
+  //   return diff > 0 && diff < 4;
 
-  }, [attendance]);
+  // }, [attendance]);
 
 
   // Leave
@@ -90,7 +91,11 @@ const AttendanceCard = ({
     return holiday?.title;
 
   }, [type, holidays, selectedDate]);
+  const isBeforeHire = useMemo(() => {
+    if (!hireDate) return false;
 
+    return dayjs(selectedDate).isBefore(dayjs(hireDate), "day");
+  }, [selectedDate, hireDate]);
   if (loading) {
     return <AttendanceSkeleton />
   }
@@ -120,7 +125,7 @@ const AttendanceCard = ({
 
         {/* Status Badge */}
 
-        {type === "absent" && (
+        {type === "absent" && !isBeforeHire && (
           <View className="bg-red-100 px-3 py-1 rounded-full">
             <Text
               className="text-red-600 text-xs font-medium"
@@ -178,76 +183,75 @@ ${leaveStatus === "rejected" && "text-red-600"}
       </View>
 
 
-      {/* Mark In / Out Row */}
+      {!isBeforeHire ? <>
+        <View className="flex-row gap-3 mt-4">
 
-      <View className="flex-row gap-3 mt-4">
-
-        <View className="flex-1">
-          <Text
-            className="text-gray-400 text-xs"
-            style={{ includeFontPadding: false }}
-          >
-            Mark-in
-          </Text>
-
-          <View className="bg-gray-100 rounded-xl p-4 mt-1">
+          <View className="flex-1">
             <Text
-              className="text-md"
+              className="text-gray-400 text-xs font-medium"
               style={{ includeFontPadding: false }}
             >
-              {attendance?.inTime || "—"}
+              Mark-in
             </Text>
+
+            <View className="bg-gray-100 rounded-xl p-4 mt-1">
+              <Text
+                className="text-md font-medium"
+                style={{ includeFontPadding: false }}
+              >
+                {attendance?.inTime || "—"}
+              </Text>
+            </View>
+
+          </View>
+
+
+          <View className="flex-1">
+            <Text
+              className="text-gray-400 text-xs font-medium"
+              style={{ includeFontPadding: false }}
+            >
+              Mark-out
+            </Text>
+
+            <View className="bg-gray-100 rounded-xl p-4 mt-1 font-medium">
+              <Text
+                className="text-md font-medium"
+                style={{ includeFontPadding: false }}
+              >
+                {attendance?.outTime || "—"}
+              </Text>
+            </View>
+
           </View>
 
         </View>
 
 
-        <View className="flex-1">
+
+        {/* Work Duration */}
+
+        <View className="mt-4">
+
           <Text
-            className="text-gray-400 text-xs"
+            className="text-gray-400 text-xs font-medium"
             style={{ includeFontPadding: false }}
           >
-            Mark-out
+            Work Duration
           </Text>
 
           <View className="bg-gray-100 rounded-xl p-4 mt-1">
-            <Text
-              className="text-md"
-              style={{ includeFontPadding: false }}
-            >
-              {attendance?.outTime || "—"}
-            </Text>
-          </View>
 
-        </View>
+            <View className="flex-row items-center justify-between">
 
-      </View>
+              <Text
+                className="text-md font-medium"
+                style={{ includeFontPadding: false }}
+              >
+                {workDuration || "—"}
+              </Text>
 
-
-
-      {/* Work Duration */}
-
-      <View className="mt-4">
-
-        <Text
-          className="text-gray-400 text-xs"
-          style={{ includeFontPadding: false }}
-        >
-          Work Duration
-        </Text>
-
-        <View className="bg-gray-100 rounded-xl p-4 mt-1">
-
-          <View className="flex-row items-center justify-between">
-
-            <Text
-              className="text-md"
-              style={{ includeFontPadding: false }}
-            >
-              {workDuration || "—"}
-            </Text>
-
-            {isHalfDay && (
+              {/* {isHalfDay && (
               <View className="bg-yellow-100 px-2 py-1 rounded-md">
                 <Text
                   className="text-yellow-600 text-xs"
@@ -256,59 +260,71 @@ ${leaveStatus === "rejected" && "text-red-600"}
                   Half Day
                 </Text>
               </View>
-            )}
+            )} */}
+
+            </View>
 
           </View>
 
         </View>
 
-      </View>
 
 
+        {/* Leave */}
 
-      {/* Leave */}
+        <View className="mt-4">
 
-      <View className="mt-4">
+          <Text
+            className="text-gray-400 text-xs font-medium"
+            style={{ includeFontPadding: false }}
+          >
+            Leave Type
+          </Text>
 
-        <Text
-          className="text-gray-400 text-xs"
-          style={{ includeFontPadding: false }}
-        >
-          Leave Type
-        </Text>
+          <View className="bg-gray-100 rounded-xl p-4 mt-1">
 
-        <View className="bg-gray-100 rounded-xl p-4 mt-1">
+            <View className="flex-row justify-between items-center">
 
-          <View className="flex-row justify-between items-center">
-
-            <Text
-              className={`
-text-md capitalize
+              <Text
+                className={`
+text-md capitalize font-medium
 ${leaveStatus === "approved" && "text-green-600"}
 ${leaveStatus === "pending" && "text-yellow-600"}
 ${leaveStatus === "rejected" && "text-red-600"}
 `}
-              style={{ includeFontPadding: false }}
-            >
-              {leaveStatus || "None"}
-            </Text>
+                style={{ includeFontPadding: false }}
+              >
+                {leaveStatus || "None"}
+              </Text>
 
-            {attendance?.inTime && leaveStatus && (
-              <View className="bg-green-100 px-2 py-1 rounded-md">
-                <Text
-                  className="text-green-600 text-xs"
-                  style={{ includeFontPadding: false }}
-                >
-                  Present
-                </Text>
-              </View>
-            )}
+              {attendance?.inTime && leaveStatus && (
+                <View className="bg-green-100 px-2 py-1 rounded-md">
+                  <Text
+                    className="text-green-600 text-xs font-medium"
+                    style={{ includeFontPadding: false }}
+                  >
+                    Present
+                  </Text>
+                </View>
+              )}
+
+            </View>
 
           </View>
 
         </View>
 
-      </View>
+      </> : <View className="items-center justify-center py-12">
+        <Text
+          className="text-gray-400 text-base"
+          style={{ includeFontPadding: false }}
+        >
+          Employee had not joined yet.
+        </Text>
+      </View>}
+      {/* Mark In / Out Row */}
+
+
 
 
 

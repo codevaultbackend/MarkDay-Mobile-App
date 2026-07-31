@@ -22,6 +22,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { pushAlert } from "../../redux/slices/alertSlice";
 import { useDispatch } from "react-redux";
 import { buttonShadow } from "../../utils/cardStyle";
+import { syncProfile } from "../../utils/profileSync";
 
 const { width, height } = Dimensions.get("window");
 const isTablet = width >= 768;
@@ -38,8 +39,8 @@ const LoginScreen = () => {
 
     const passwordRef = useRef(null);
 
-    const [login] = useLoginMutation();
-    const { handleMutation, loading } = useHandleMutation();
+        const [login] = useLoginMutation();
+        const { handleMutation, loading } = useHandleMutation();
 
     const handleLogin = async () => {
         if (!empId || !password) {
@@ -70,6 +71,7 @@ const LoginScreen = () => {
                     name: res?.name,
                 },
             });
+              await syncProfile();
 
             // ✅ NAVIGATION FIX
 
@@ -135,11 +137,11 @@ const LoginScreen = () => {
                 {/* FORM */}
                 <View className="flex-1 w-full px-5 rounded-tl-[20px] rounded-tr-[20px] bg-primary -mt-[40px]">
                     <View className="mt-6 mb-2">
-                        <Text className="text-2xl font-medium text-secondary">
+                        <Text className="text-2xl font-medium text-secondary" style ={{includeFontPadding:false}}>
                             Login your account
                         </Text>
 
-                        <Text className="text-sm text-gray-500 mt-[10px]">
+                        <Text className="text-sm text-gray-500 mt-[10px] font-normal" style ={{includeFontPadding:false}}>
                             Login to enjoy the best Try On experience
                         </Text>
                     </View>
@@ -150,9 +152,10 @@ const LoginScreen = () => {
                             <Ionicons name="person-outline" size={20} color="#64748B" />
 
                             <TextInput
+                            style ={{includeFontPadding:false}}
                                 placeholder="Employee ID"
                                 placeholderTextColor="#94A3B8"
-                                className="flex-1 ml-3 text-[15px] text-secondary"
+                                className="flex-1 ml-3 text-[15px] text-secondary font-normal"
                                 value={empId}
                                 onChangeText={setEmpId}
                                 returnKeyType="next"
@@ -174,13 +177,14 @@ const LoginScreen = () => {
                             <Ionicons name="lock-closed-outline" size={20} color="#64748B" />
 
                             <TextInput
+                            style ={{includeFontPadding:false}}
                                 ref={passwordRef}
                                 placeholder="Password"
                                 placeholderTextColor="#94A3B8"
                                 secureTextEntry={!showPassword}
                                 value={password}
                                 onChangeText={setPassword}
-                                className="flex-1 ml-3 text-[15px] text-secondary"
+                                className="flex-1 ml-3 text-[15px] text-secondary font-normal"
                                 returnKeyType="done"
 
                                 onSubmitEditing={handleLogin}
@@ -215,7 +219,7 @@ const LoginScreen = () => {
                         style={buttonShadow}
                         className="bg-accent h-[55px] rounded-2xl items-center flex-row justify-center mt-[40px] mb-[20px]"
                     >
-                        <Text className="text-white text-base font-normal">
+                        <Text className="text-white text-base font-normal" style={{includeFontPadding:false}}>
                             {loading ? "Signing In..." : "Sign In"}
                         </Text>
                     </TouchableOpacity>

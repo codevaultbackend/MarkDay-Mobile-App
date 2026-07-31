@@ -542,19 +542,19 @@ const FacialVerificationScreen = ({ navigation }) => {
 
                                         {cameraDenied ? (
 
-                                            <Text className="text-white">
+                                            <Text className="text-white font-normal" style={{includeFontPadding:false}}>
                                                 Camera permission required
                                             </Text>
 
                                         ) : loading ? (
 
-                                            <Text className="text-white">
+                                            <Text className="text-white font-normal " style={{includeFontPadding:false}}>
                                                 Fetching location...
                                             </Text>
 
                                         ) : isInitializing ? (
 
-                                            <Text className="text-white">
+                                            <Text className="text-white font-normal" style={{includeFontPadding:false}}>
                                                 Initializing Camera...
                                             </Text>
 
@@ -597,7 +597,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                         <View className="absolute bottom-3 left-3 right-3 flex-row justify-between items-end">
 
                             <View className="flex-1 mr-2">
-                                <Text className="text-white text-sm">
+                                <Text className="text-white text-sm font-normal" style={{includeFontPadding:false}}>
                                     📍 {loading ? "Getting location..." : "Current Location"}
                                 </Text>
 
@@ -607,7 +607,7 @@ const FacialVerificationScreen = ({ navigation }) => {
 
                                 <Text
                                     numberOfLines={2}
-                                    className="text-white text-xs opacity-80"
+                                    className="text-white text-xs opacity-80 font-normal" style={{includeFontPadding:false}}
                                 >
                                     {loading
                                         ? "Fetching location..."
@@ -621,11 +621,11 @@ const FacialVerificationScreen = ({ navigation }) => {
                             </View>
 
                             <View className="items-end">
-                                <Text className="text-white text-xl font-semibold">
+                                <Text className="text-white text-xl font-semibold" style={{includeFontPadding:false}}>
                                     {formattedTime}
                                 </Text>
 
-                                <Text className="text-white text-xs opacity-80">
+                                <Text className="text-white text-xs opacity-80 font-normal" style={{includeFontPadding:false}}>
                                     {formattedDate}
                                 </Text>
                             </View>
@@ -661,18 +661,18 @@ const FacialVerificationScreen = ({ navigation }) => {
                                     color="#16A34A"
                                 />
 
-                                <Text className="text-[15px] text-green-600 font-semibold ml-1 " style={{ includeFontPadding: false }}>
+                                <Text className="text-[15px] text-green-600 font-semibold ml-1" style={{ includeFontPadding: false }}>
                                     Capture Successful
                                 </Text>
                             </View>
 
-                            <Text className="text-gray-500 text-xs mt-[2px]">
+                            <Text className="text-gray-500 text-xs mt-[2px] font-normal"  style={{includeFontPadding:false}}>
                                 Face identity verified
                             </Text>
 
-                            <Text className="text-gray-400 text-xs">
+                            {/* <Text className="text-gray-400 text-xs">
                                 98.4% match
-                            </Text>
+                            </Text> */}
 
                         </View>
 

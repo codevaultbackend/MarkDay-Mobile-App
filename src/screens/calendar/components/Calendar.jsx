@@ -19,9 +19,13 @@ const Calendar = ({
     empId,
     leaves,
     holidays,
-    loading
-}) => {
+    loading ,
 
+
+hireDate
+
+}) => {
+const hireDay = hireDate ? dayjs(hireDate).startOf("day") : null;
     const today = dayjs();
     const [currentMonth, setCurrentMonth] = useState(today);
 
@@ -139,7 +143,7 @@ const Calendar = ({
                         }}
                     >
                         <Text
-                            className="text-xs text-gray-500"
+                            className="text-xs text-gray-500 font-medium"
                             style={{ includeFontPadding: false }}
                         >
                             {day}
@@ -184,13 +188,14 @@ const Calendar = ({
                     const isFuture = date.isAfter(today, "day");
                     const isToday = date.isSame(today, "day");
 
-
+const isBeforeHire =
+  hireDay && date.startOf("day").isBefore(hireDay);
                     let dotColor = "";
 
                     if (isPresent) dotColor = "bg-green-500";
                     else if (isLeave) dotColor = "bg-yellow-500";
                     else if (isHoliday) dotColor = "bg-blue-500";
-                    else if (!isFuture && !isToday) dotColor = "bg-red-500";
+                    else if (!isFuture && !isToday && !isBeforeHire) dotColor = "bg-red-500";
 
 
                     return (
@@ -204,7 +209,7 @@ const Calendar = ({
                             <AnimatedTouchable
                                 entering={FadeIn.delay(index * 15)}
                               
-                                disabled={isFuture}
+                             disabled={isFuture || isBeforeHire}
                                 onPress={() => setSelectedDate(formatted)}
 
                                 style={{
@@ -224,12 +229,14 @@ const Calendar = ({
                                 {/* Date */}
 
                                 <Text
+                            
                                     className={`
                                 text-sm
+                                font-normal
                                 ${isToday
                                             ? "font-semibold text-accent"
                                             : "text-secondary"}
-                                ${isFuture ? "text-gray-300" : "text-secondary"}
+                              ${isFuture || isBeforeHire ? "text-gray-300" : "text-secondary"}
                                         `
 
                                     }

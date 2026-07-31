@@ -68,7 +68,7 @@ const LeaveHistoryList = ({ leaves, loading, error, refetch }) => {
 
                     {/* Leave ID */}
 
-                    <Text className="font-semibold" style={{ includeFontPadding: false }}>
+                    <Text className="font-semibold text-secondary" style={{ includeFontPadding: false }}>
                         Leave Request ID #{item._id.slice(-5)}
                     </Text>
 
@@ -87,7 +87,7 @@ ${status === "rejected" && "bg-red-100"}
                         <Text
                             style={{ includeFontPadding: false }}
                             className={`
-text-xs capitalize
+text-xs capitalize font-normal
 ${status === "pending" && "text-orange-600"}
 ${status === "approved" && "text-green-600"}
 ${status === "rejected" && "text-red-600"}
@@ -103,7 +103,7 @@ ${status === "rejected" && "text-red-600"}
 
                 {/* Applied Date */}
 
-                <Text className="text-gray-400 text-xs mt-1" style={{ includeFontPadding: false }}>
+                <Text className="text-gray-400 text-xs mt-1 font-normal" style={{ includeFontPadding: false }}>
                     Applied on {dayjs(item.appliedAt).format("MMM DD, YYYY")}
                 </Text>
 
@@ -115,11 +115,11 @@ ${status === "rejected" && "text-red-600"}
                     {/* From Date */}
 
                     <View>
-                        <Text className="text-xs text-gray-400" style={{ includeFontPadding: false }}>
+                        <Text className="text-xs text-gray-400 font-normal" style={{ includeFontPadding: false }}>
                             From Date
                         </Text>
 
-                        <Text className="font-medium" style={{ includeFontPadding: false }}>
+                        <Text className="font-medium text-secondary" style={{ includeFontPadding: false }}>
                             {dayjs(item.startDate).format("DD/MM/YY")}
                         </Text>
                     </View>
@@ -128,7 +128,7 @@ ${status === "rejected" && "text-red-600"}
                     {/* To Date */}
 
                     <View>
-                        <Text className="text-xs text-gray-400" style={{ includeFontPadding: false }}>
+                        <Text className="text-xs text-gray-400 font-normal" style={{ includeFontPadding: false }}>
                             To Date
                         </Text>
 
@@ -141,11 +141,11 @@ ${status === "rejected" && "text-red-600"}
                     {/* Total Days */}
 
                     <View>
-                        <Text className="text-xs text-gray-400" style={{ includeFontPadding: false }}>
+                        <Text className="text-xs text-gray-400 font-normal" style={{ includeFontPadding: false }}>
                             Total Days
                         </Text>
 
-                        <Text className="font-medium" style={{ includeFontPadding: false }}    >
+                        <Text className="font-medium text-secondary" style={{ includeFontPadding: false }}    >
                             {totalDays} Days
                         </Text>
                     </View>
@@ -169,7 +169,7 @@ ${status === "rejected" && "text-red-600"}
 
         <View className="bg-white rounded-3xl p-6 mt-4 items-center">
 
-            <Text className="text-gray-400">
+            <Text className="text-gray-400 font-normal">
                 No Leave Requests Found
             </Text>
 
@@ -185,7 +185,7 @@ ${status === "rejected" && "text-red-600"}
 
             {/* Title */}
 
-            <Text className="text-lg font-semibold ">
+            <Text className="text-lg font-semibold text-secondary">
                 All Leave Requests
             </Text>
 

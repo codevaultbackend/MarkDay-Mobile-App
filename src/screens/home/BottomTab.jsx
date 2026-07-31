@@ -19,14 +19,14 @@ const BottomTab = () => {
 
       <TouchableOpacity className="items-center">
         <Icon name="home" size={22} color="#A67C52" />
-        <Text className="text-xs text-accent mt-1">
+        <Text className="text-xs text-accent mt-1 font-normal" style={{includeFontPadding:false}}>
           Home
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity className="items-center">
         <Icon name="calendar" size={22} />
-        <Text className="text-xs mt-1">
+        <Text className="text-xs mt-1 font-normal" style={{includeFontPadding:false}}>
           Calendar
         </Text>
       </TouchableOpacity>
@@ -37,14 +37,14 @@ const BottomTab = () => {
 
       <TouchableOpacity className="items-center">
         <Icon name="file-text" size={22} />
-        <Text className="text-xs mt-1">
+        <Text className="text-xs mt-1 font-normal" style={{includeFontPadding:false}}>
           Leave
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity className="items-center">
         <Icon name="user" size={22} />
-        <Text className="text-xs mt-1">
+        <Text className="text-xs mt-1 font-normal" style={{includeFontPadding:false}}>
           Profile
         </Text>
       </TouchableOpacity>

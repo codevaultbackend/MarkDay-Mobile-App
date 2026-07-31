@@ -28,21 +28,21 @@ const CheckInBanner = ({ navigation }) => {
                 <View className="ml-3 flex-1">
 
                     <Text
-                        className="text-white text-sm"
+                        className="text-white text-sm font-normal"
                         style={{ includeFontPadding: false }}
                     >
                         Current Status
                     </Text>
 
                     <Text
-                        className="text-white text-2xl font-bold mt-[2px]"
+                        className="text-white text-2xl font-bold mt-[2px] font-normal"
                         style={{ includeFontPadding: false }}
                     >
                         Not Checked In
                     </Text>
 
                     <Text
-                        className="text-white/90 text-[12px] mt-2 leading-5"
+                        className="text-white/90 text-[12px] mt-2 leading-5 font-normal"
                         style={{ includeFontPadding: false }}
                     >
                         You haven't recorded your attendance for today.

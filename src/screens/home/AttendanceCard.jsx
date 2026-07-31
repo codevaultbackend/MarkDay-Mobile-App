@@ -7,7 +7,7 @@ import { useGetHolidaysQuery } from "../../redux/features/attendance/attendanceA
 import { getAuth } from "../../utils/authStorage";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-
+import useUser from "../../hooks/useUser";
 const AttendanceCard = ({
   attendance,
   leaves,
@@ -15,18 +15,13 @@ const AttendanceCard = ({
   loading
 }) => {
 
-  const [empId, setEmpId] = useState(null);
-
-  useEffect(() => {
-    const load = async () => {
-      const auth = await getAuth();
-      setEmpId(auth?.user?.empId);
-    };
-    load();
-  }, []);
+ 
 
  
-  
+
+ 
+  const user = useUser();
+  console.log(user ,"----")
 
  
 
@@ -97,37 +92,45 @@ const AttendanceCard = ({
 
 
   // Absent Count
-  const absentCount = useMemo(() => {
+const absentCount = useMemo(() => {
+  if (!user?.hireDate) return 0;
 
-    const today = dayjs();
-    const start = today.startOf("month");
+  const today = dayjs();
+  const monthStart = today.startOf("month");
+  const hireDate = dayjs(user.hireDate);
 
-    let absent = 0;
+  const start = hireDate.isAfter(monthStart)
+    ? hireDate.startOf("day")
+    : monthStart;
 
-    for (
-      let day = start;
-      day.isBefore(today);
-      day = day.add(1, "day")
-    ) {
+  let absent = 0;
 
-      const date = day.format("M/D/YYYY");
+  for (
+    let day = start;
+    day.isBefore(today, "day");
+    day = day.add(1, "day")
+  ) {
+    const date = day.format("M/D/YYYY");
 
-      const isPresent = attendance?.find(
-        item => item.date === date && item.inTime
-      );
+    const isPresent = attendance?.some(
+      item => item.date === date && item.inTime
+    );
 
-      const isLeave = leaveDates.includes(date);
-      const isHoliday = holidayDates.includes(date);
+    const isLeave = leaveDates.includes(date);
+    const isHoliday = holidayDates.includes(date);
 
-      if (!isPresent && !isLeave && !isHoliday) {
-        absent++;
-      }
-
+    if (!isPresent && !isLeave && !isHoliday) {
+      absent++;
     }
+  }
 
-    return absent;
-
-  }, [attendance, leaveDates, holidayDates]);
+  return absent;
+}, [
+  attendance,
+  leaveDates,
+  holidayDates,
+  user?.hireDate,
+]);
 
 
   return (
@@ -148,10 +151,10 @@ const AttendanceCard = ({
           Attendance
         </Text>
 
-        <View className="bg-[#FCF7ED] px-3 py-1 rounded-full">
+        <View className="bg-[#FCF7ED] px-3 py-1 rounded-full ">
 
           <Text
-            className="text-xs text-gray-500"
+            className="text-xs text-gray-500 font-medium"
             style={{ includeFontPadding: false }}
           >
             This Month
@@ -199,7 +202,7 @@ const AttendanceCard = ({
             <View className="w-2 h-2 bg-green-500 rounded-full mr-2" />
 
             <Text
-              className="text-xs text-gray-400"
+              className="text-xs text-gray-400 font-normal"
               style={{ includeFontPadding: false }}
             >
               Present
@@ -228,7 +231,7 @@ const AttendanceCard = ({
             <View className="w-2 h-2 bg-red-400 rounded-full mr-2" />
 
             <Text
-              className="text-xs text-gray-400"
+              className="text-xs text-gray-400 font-normal"
               style={{ includeFontPadding: false }}
             >
               Absent
@@ -237,7 +240,7 @@ const AttendanceCard = ({
           </View>
 
           <Text
-            className="text-lg font-semibold mt-1 text-secondary"
+            className="text-lg font-semibold mt-1 text-secondary "
             style={{ includeFontPadding: false }}
           >
             {absentCount}
@@ -257,7 +260,7 @@ const AttendanceCard = ({
             <View className="w-2 h-2 bg-yellow-400 rounded-full mr-2" />
 
             <Text
-              className="text-xs text-gray-400"
+              className="text-xs text-gray-400 font-medium"
               style={{ includeFontPadding: false }}
             >
               Late

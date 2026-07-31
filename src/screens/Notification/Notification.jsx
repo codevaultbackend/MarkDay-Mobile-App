@@ -12,7 +12,7 @@ const Notification = () => {
       />
       <View className='flex-1 flex-col items-center justify-center'>
 
-             <Text>Notification Screen</Text>
+             <Text className='font-medium text-secondary'  style={{includeFontPadding:false}}>Notification Screen</Text>
       </View>
 
 

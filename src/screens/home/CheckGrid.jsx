@@ -6,44 +6,38 @@ import dayjs from "dayjs";
 import { cardStyle } from "../../utils/cardStyle";
 
 const Card = ({ icon, title, value }) => {
-
   return (
-
     <View
-      className="bg-white w-[48%] h-[72px] rounded-3xl mb-4 border border-gray-200 flex-col items-center  justify-center"
+      className="bg-white w-[48%] h-[72px] rounded-3xl mb-4 border border-gray-200 justify-center px-3"
       style={cardStyle}
     >
-
       <View className="flex-row items-center">
-
         <View className="bg-[#A67C52] w-10 h-10 rounded-full items-center justify-center">
           <Ionicons name={icon} size={18} color="white" />
         </View>
 
-        <View className="ml-3">
-
+        <View className="ml-3 flex-1">
           <Text
-            className="text-xs text-gray-400"
+            numberOfLines={1}
+            className="text-xs text-gray-400 font-medium"
             style={{ includeFontPadding: false }}
           >
             {title}
           </Text>
 
           <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.8}
             className="text-lg font-semibold"
             style={{ includeFontPadding: false }}
           >
             {value}
           </Text>
-
         </View>
-
       </View>
-
     </View>
-
   );
-
 };
 
 
@@ -56,7 +50,7 @@ const CheckGrid = () => {
   } = useSelector(state => state.todayAttendance);
 
 
-  const [workDuration, setWorkDuration] = useState("00:00 hrs");
+  const [workDuration, setWorkDuration] = useState("00:00:00");
 
 
   // Work Duration Logic
@@ -68,33 +62,33 @@ const CheckGrid = () => {
     }
 
     const calculate = () => {
-
       const start = dayjs(checkInTime, ["h:mm:ss A", "h:mm A"]);
       const end = checkOutTime
         ? dayjs(checkOutTime, ["h:mm:ss A", "h:mm A"])
         : dayjs();
 
-      const diff = end.diff(start, "minute");
+      const diff = end.diff(start, "second");
 
       if (diff < 0) {
-        setWorkDuration("00:00 hrs");
+        setWorkDuration("00:00:00");
         return;
       }
 
-      const hours = Math.floor(diff / 60);
-      const minutes = diff % 60;
+      const hours = Math.floor(diff / 3600);
+      const minutes = Math.floor((diff % 3600) / 60);
+      const seconds = diff % 60;
 
       setWorkDuration(
         `${hours.toString().padStart(2, "0")}:${minutes
           .toString()
-          .padStart(2, "0")} hrs`
+          .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
       );
     };
 
     calculate();
 
     if (!checkOutTime) {
-      const interval = setInterval(calculate, 60000);
+      const interval = setInterval(calculate, 1000);
       return () => clearInterval(interval);
     }
 
@@ -121,7 +115,7 @@ const CheckGrid = () => {
       <Card
         icon="time"
         title="Work Duration"
-        value={checkInTime ? workDuration : "00:00 hrs"}
+        value={checkInTime ? workDuration : "00:00:00"}
       />
 
       <Card

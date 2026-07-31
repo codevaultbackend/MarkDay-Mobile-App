@@ -58,7 +58,9 @@ export async function getAuth() {
   }
 }
 
-
+export const getUser = () => {
+  return mmkvStorage.getItem("user") || null;
+};
 export async function removeAuth() {
   try {
 

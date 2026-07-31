@@ -38,11 +38,11 @@ const Onboarding3 = () => {
                 {/* TEXT */}
                 <View className="mt-[44px] items-center ">
 
-                    <Text className="text-[28px] text-secondary font-bold text-center">
+                    <Text className="text-[28px] text-secondary font-bold text-center" style ={{includeFontPadding:false}}>
                         Request leave simply
                     </Text>
 
-                      <Text className="text-[16px] text-[#475569] font-normal text-center mt-[8px] leading-[24px] mb-[40px] min-h-[80px]">             
+                      <Text className="text-[16px] text-[#475569] font-normal text-center mt-[8px] leading-[24px] mb-[40px] min-h-[80px]" style ={{includeFontPadding:false}}>             
                         Visualize your attendance history and
                         work hours with our intuitive calendar
                         view.

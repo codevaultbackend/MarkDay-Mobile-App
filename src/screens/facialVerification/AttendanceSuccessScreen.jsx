@@ -84,7 +84,7 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
                                 : "Check-in Successful"}
                         </Text>
 
-                        <Text className="text-center text-gray-500 mt-2 px-6" style={{ includeFontPadding: false }}>
+                        <Text className="text-center text-gray-500 mt-2 px-6 font-normal" style={{ includeFontPadding: false }}>
                             Your attendance has been recorded for today's shift
                         </Text>
 
@@ -100,7 +100,7 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
                                 </View>
 
                                 <View>
-                                    <Text className="text-gray-400 text-xs" style={{ includeFontPadding: false }}>
+                                    <Text className="text-gray-400 text-xs font-normal" style={{ includeFontPadding: false }}>
                                         {type === "out"
                                             ? "CHECK-OUT TIME"
                                             : "CHECK-IN TIME"}
@@ -122,7 +122,7 @@ const AttendanceSuccessScreen = ({ route, navigation }) => {
                                 </View>
 
                                 <View className="flex-1">
-                                    <Text className="text-gray-400 text-xs" style={{ includeFontPadding: false }}>
+                                    <Text className="text-gray-400 text-xs font-normal" style={{ includeFontPadding: false }}>
                                         LOCATION
                                     </Text>
 

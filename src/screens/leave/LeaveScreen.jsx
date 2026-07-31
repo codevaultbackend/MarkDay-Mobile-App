@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { KeyboardAvoidingView, ScrollView, StatusBar, View } from "react-native";
+import { KeyboardAvoidingView, RefreshControl, ScrollView, StatusBar, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
     FadeIn,
@@ -66,9 +66,19 @@ const LeaveScreen = ({ navigation }) => {
     //  get User Leave   ===== end
 
 
+const [refreshing, setRefreshing] = useState(false);
 
+const onRefresh = async () => {
+  if (!empId) return;
 
+  setRefreshing(true);
 
+  try {
+    await refetchLeaves();
+  } finally {
+    setRefreshing(false);
+  }
+};
 
     return (
 
@@ -102,6 +112,14 @@ const LeaveScreen = ({ navigation }) => {
                     showsVerticalScrollIndicator={false}
                     eyboardShouldPersistTaps="handled"
                     contentContainerStyle={{ paddingBottom: 40 }}
+                      refreshControl={
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={["#F59E0B"]}
+      tintColor="#F59E0B"
+    />
+  }
                 >
 
                     {/* Header */}

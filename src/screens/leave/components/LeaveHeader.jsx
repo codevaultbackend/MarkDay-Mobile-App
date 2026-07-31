@@ -20,7 +20,7 @@ color="#1F2937"
 </TouchableOpacity>
 
 <Text
-className="text-lg font-semibold flex-1 text-center"
+className="text-lg font-semibold flex-1 text-center text-secondary"
 style={{ includeFontPadding:false }}
 >
 Leave Management

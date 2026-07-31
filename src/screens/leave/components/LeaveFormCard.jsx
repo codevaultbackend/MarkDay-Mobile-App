@@ -179,46 +179,7 @@ const LeaveFormCard = ({ onSuccess }) => {
 
                 {/* ================= LEAVE TYPE ================= */}
 
-                {/* <View className="flex-row gap-2 mb-3 flex-wrap">
-
-                    {["paid", "unpaid", "optional_leave"].map(type => {
-
-                        const active = leaveType === type
-
-                        return (
-
-                            <TouchableOpacity
-                                key={type}
-                                onPress={() => setLeaveType(type)}
-                                className={`
-px-5 py-2.5 rounded-full
-${active ? "bg-accent" : "border border-accent"}
-`}
-                            >
-
-                                <Text
-                                    className={`
-text-sm capitalize
-${active ? "text-white" : "text-accent"}
-`}
-                                >
-
-                                    {
-                                        type === "optional_leave"
-                                            ? "Optional Holiday"
-                                            : type.replace("_", " ")
-                                    }
-
-
-                                </Text>
-
-                            </TouchableOpacity>
-
-                        )
-
-                    })}
-
-                </View> */}
+ 
 
 
 
@@ -234,7 +195,7 @@ ${active ? "text-white" : "text-accent"}
 
                 <View className="mt-4">
 
-                    <Text className="text-[#474747] text-sm border-1">
+                    <Text className="text-[#474747] text-sm border-1 font-normal " style={{includeFontPadding:false}}>
                         Start Date
                     </Text>
 
@@ -243,7 +204,7 @@ ${active ? "text-white" : "text-accent"}
                         className="bg-gray-100 rounded-xl px-4 py-4 mt-2 flex-row justify-between border border-gray-200"
                     >
 
-                        <Text>
+                        <Text className="font-normal text-secondary" style={{includeFontPadding:false}}>
                             {dayjs(startDate).format("DD MMM YYYY")}
                         </Text>
 
@@ -262,7 +223,7 @@ ${active ? "text-white" : "text-accent"}
 
                 <View className="mt-4">
 
-                    <Text className="text-[#474747] text-sm">
+                    <Text className="text-[#474747] text-sm font-normal" style={{includeFontPadding:false}}>
                         End Date
                     </Text>
 
@@ -271,7 +232,7 @@ ${active ? "text-white" : "text-accent"}
                         className="bg-gray-100 rounded-xl px-4 py-4 mt-2 flex-row justify-between border border-gray-200"
                     >
 
-                        <Text>
+                        <Text className="font-normal text-secondary" style={{includeFontPadding:false}}>
                             {dayjs(endDate).format("DD MMM YYYY")}
                         </Text>
 
@@ -289,7 +250,7 @@ ${active ? "text-white" : "text-accent"}
                 {/* ================= ERROR ================= */}
 
                 {dateError ? (
-                    <Text className="text-red-500 text-xs mt-2">
+                    <Text className="text-red-500 text-xs mt-2 font-normal" style={{includeFontPadding:false}} >
                         {dateError}
                     </Text>
                 ) : null}
@@ -300,19 +261,20 @@ ${active ? "text-white" : "text-accent"}
 
                 <View className="mt-4 ">
 
-                    <Text className="text-[#474747] text-sm">
+                    <Text className="text-[#474747] text-sm font-normal" style={{includeFontPadding:false}}>
                         Reason for Leave
-                        <Text className="text-red-500">*</Text>
+                        <Text className="text-red-500 font-normal" style={{includeFontPadding:false}}>*</Text>
                     </Text>
                     <TextInput
                         multiline
                         textAlignVertical="top"
                         value={reason}
                         onChangeText={setReason}
-                        className="bg-gray-100 rounded-xl px-4 py-3 mt-2 h-28 border border-gray-200"
+                        className="bg-gray-100 rounded-xl px-4 py-3 mt-2 h-28 border border-gray-200 font-normal"
+                        style={{includeFontPadding:false}}
                     />
                     {reasonError ? (
-                        <Text className="text-red-500 text-xs mt-1">
+                        <Text className="text-red-500 text-xs mt-1 font-normal" style={{includeFontPadding:false}}>
                             {reasonError}
                         </Text>
                     ) : null}
@@ -335,7 +297,7 @@ ${active ? "text-white" : "text-accent"}
 
                         <Text>
 
-                            <Text className="font-semibold">
+                            <Text className="font-semibold text-secondary" style={{includeFontPadding:false}}>
                                 Note :
                             </Text>
 

@@ -67,7 +67,7 @@ const SplashScreen = () => {
           </Text>
 
           {/* Tagline */}
-          <Text className="text-sm text-gray-500 mt-1">
+          <Text className="text-sm text-gray-500 mt-1 font-normal" style={{includeFontPadding:false}}>
             Smart Attendance System
           </Text>
 
@@ -79,7 +79,7 @@ const SplashScreen = () => {
       {/* Bottom Footer */}
       <View className="items-center mb-8">
 
-        <Text className="text-xs text-gray-400">
+        <Text className="text-xs text-gray-400 font-normal" style={{includeFontPadding:false}}>
           Powered by MarkDay
         </Text>
 

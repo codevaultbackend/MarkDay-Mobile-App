@@ -32,7 +32,7 @@ const TodayCard = ({ item }) => (
         {dayjs(item.date, "M/D/YYYY").format("DD")}
       </Text>
 
-      <Text className="text-white text-xs" style={{ includeFontPadding: false }}>
+      <Text className="text-white text-xs font-normal" style={{ includeFontPadding: false }}>
         {dayjs(item.date, "M/D/YYYY").format("ddd")}
       </Text>
 
@@ -63,13 +63,13 @@ const TodayCard = ({ item }) => (
 
     <View className="items-end">
 
-      <Text className="font-semibold text-base" style={{ includeFontPadding: false }}>
+      <Text className="font-semibold text-base text-secondary" style={{ includeFontPadding: false }}>
         {item.time}
       </Text>
 
       <Text
         style={{ includeFontPadding: false }}
-        className={`text-xs mt-1 ${item.status === "Late"
+        className={` font-normal text-xs font-normal mt-1 ${item.status === "Late"
           ? "text-red-400"
           : "text-gray-400"
           }`}
@@ -93,7 +93,7 @@ const YesterdayCard = ({ item }) => (
 
   <View className="mt-3">
 
-    <Text className="text-xs text-gray-400 mb-2 ml-2" style={{ includeFontPadding: false }}>
+    <Text className="text-xs text-gray-400 mb-2 ml-2 font-normal" style={{ includeFontPadding: false }}>
       Yesterday
     </Text>
 
@@ -110,7 +110,7 @@ const YesterdayCard = ({ item }) => (
           {dayjs(item.date, "M/D/YYYY").format("DD")}
         </Text>
 
-        <Text className="text-white text-xs" style={{ includeFontPadding: false }}>
+        <Text className="text-white text-xs font-normal" style={{ includeFontPadding: false }}>
           {dayjs(item.date, "M/D/YYYY").format("ddd")}
         </Text>
 
@@ -121,7 +121,7 @@ const YesterdayCard = ({ item }) => (
 
       <View className="flex-1">
 
-        <Text className="font-semibold text-base" style={{ includeFontPadding: false }}>
+        <Text className="font-semibold text-base text-secondary" style={{ includeFontPadding: false }}>
           {item.title}
         </Text>
 
@@ -141,11 +141,11 @@ const YesterdayCard = ({ item }) => (
 
       <View className="items-end">
 
-        <Text className="font-semibold text-base" style={{ includeFontPadding: false }}>
+        <Text className="font-semibold text-base text-secondary" style={{ includeFontPadding: false }}>
           {item.time}
         </Text>
 
-        <Text className="text-xs text-gray-400 mt-1" style={{ includeFontPadding: false }}>
+        <Text className="text-xs text-gray-400 mt-1 font-normal" style={{ includeFontPadding: false }}>
           {item.status}
         </Text>
 
@@ -178,7 +178,7 @@ const LeaveCard = ({ item }) => (
         {dayjs(item.date, "M/D/YYYY").format("DD")}
       </Text>
 
-      <Text className="text-white text-xs" style={{ includeFontPadding: false }}>
+      <Text className="text-white text-xs font-normal" style={{ includeFontPadding: false }}>
         {dayjs(item.date, "M/D/YYYY").format("ddd")}
       </Text>
 
@@ -189,7 +189,7 @@ const LeaveCard = ({ item }) => (
 
     <View className="flex-1">
 
-      <Text className="font-semibold text-base " style={{ includeFontPadding: false }}>
+      <Text className="font-semibold text-base text-secondary" style={{ includeFontPadding: false }}>
         Leave Applied
       </Text>
 
@@ -386,51 +386,71 @@ const RecentActivity = ({
       </Text>
 
 
-      {
+     {
+  activities.length === 0 ? (
 
-        activities.map((item, index) => {
+    <View
+      style={cardStyle}
+      className="bg-white p-6 rounded-3xl mt-3 items-center justify-center border border-gray-200"
+    >
+      <Text
+        className="text-base font-semibold text-gray-700 font-medium"
+        style={{ includeFontPadding: false }}
+      >
+        No Recent Activity
+      </Text>
 
-          const isToday =
-            dayjs(item.date, "M/D/YYYY")
-              .isSame(dayjs(), "day")
+      <Text
+        className="text-sm text-gray-400 mt-1 text-center font-normal"
+        style={{ includeFontPadding: false }}
+      >
+        Your recent attendance or leave activity will appear here.
+      </Text>
+    </View>
 
+  ) : (
 
-          const isYesterday =
-            dayjs(item.date, "M/D/YYYY")
-              .isSame(
-                dayjs().subtract(1, "day"),
-                "day"
-              )
+    activities.map((item, index) => {
 
+      const isToday =
+        dayjs(item.date, "M/D/YYYY")
+          .isSame(dayjs(), "day")
 
-          if (item.type === "leave")
-            return (
-              <LeaveCard
-                key={index}
-                item={item}
-              />
-            )
-
-
-          if (isYesterday)
-            return (
-              <YesterdayCard
-                key={index}
-                item={item}
-              />
-            )
-
-
-          return (
-            <TodayCard
-              key={index}
-              item={item}
-            />
+      const isYesterday =
+        dayjs(item.date, "M/D/YYYY")
+          .isSame(
+            dayjs().subtract(1, "day"),
+            "day"
           )
 
-        })
+      if (item.type === "leave")
+        return (
+          <LeaveCard
+            key={index}
+            item={item}
+          />
+        )
 
-      }
+      if (isYesterday)
+    
+        return (
+          <YesterdayCard
+            key={index}
+            item={item}
+          />
+        )
+
+      return (
+        <TodayCard
+          key={index}
+          item={item}
+        />
+      )
+
+    })
+
+  )
+}
 
     </View>
 

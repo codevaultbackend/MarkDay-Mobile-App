@@ -63,7 +63,7 @@ return () => unsubscribe();
 
       {/* Description */}
       <Text
-        className="text-sm text-gray-500 text-center mt-2"
+        className="text-sm text-gray-500 text-center mt-2 font-normal" 
         style={{ includeFontPadding: false }}
       >
         Please check your internet connection and try again.
