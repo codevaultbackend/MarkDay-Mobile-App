@@ -1,13 +1,9 @@
 import React, { useMemo } from "react";
 import { View, Text } from "react-native";
 import { cardStyle } from "../../utils/cardStyle";
-import { useGetAttendanceQuery } from "../../redux/features/attendance/attendanceApi";
-import { useGetLeavesQuery } from "../../redux/features/attendance/attendanceApi";
-import { useGetHolidaysQuery } from "../../redux/features/attendance/attendanceApi";
-import { getAuth } from "../../utils/authStorage";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
 import useUser from "../../hooks/useUser";
+
 const AttendanceCard = ({
   attendance,
   leaves,
@@ -15,21 +11,35 @@ const AttendanceCard = ({
   loading
 }) => {
 
- 
-
- 
-
- 
   const user = useUser();
-  console.log(user ,"----")
 
- 
+  console.log(user, "----");
+
+
+  // Current Month
+  const currentMonth = dayjs().month();
+  const currentYear = dayjs().year();
 
 
   // Present Count
   const presentCount = useMemo(() => {
-    return attendance?.filter(item => item?.inTime)?.length || 0;
-  }, [attendance]);
+
+    if (!attendance) return 0;
+
+    return attendance.filter(item => {
+
+      if (!item?.inTime) return false;
+
+      const date = dayjs(item.date);
+
+      return (
+        date.month() === currentMonth &&
+        date.year() === currentYear
+      );
+
+    }).length;
+
+  }, [attendance, currentMonth, currentYear]);
 
 
   // Late Count
@@ -41,6 +51,14 @@ const AttendanceCard = ({
 
       if (!item?.inTime) return false;
 
+      const date = dayjs(item.date);
+
+      const isCurrentMonth =
+        date.month() === currentMonth &&
+        date.year() === currentYear;
+
+      if (!isCurrentMonth) return false;
+
       const checkIn = dayjs(item.inTime, "h:mm:ss A");
       const lateTime = dayjs("10:15 AM", "h:mm A");
 
@@ -48,7 +66,7 @@ const AttendanceCard = ({
 
     }).length;
 
-  }, [attendance]);
+  }, [attendance, currentMonth, currentYear]);
 
 
   // Leave Dates
@@ -68,6 +86,7 @@ const AttendanceCard = ({
         while (start.isBefore(end) || start.isSame(end)) {
 
           arr.push(start.format("M/D/YYYY"));
+
           start = start.add(1, "day");
 
         }
@@ -92,45 +111,72 @@ const AttendanceCard = ({
 
 
   // Absent Count
-const absentCount = useMemo(() => {
-  if (!user?.hireDate) return 0;
+  const absentCount = useMemo(() => {
 
-  const today = dayjs();
-  const monthStart = today.startOf("month");
-  const hireDate = dayjs(user.hireDate);
+    if (!user?.hireDate) return 0;
 
-  const start = hireDate.isAfter(monthStart)
-    ? hireDate.startOf("day")
-    : monthStart;
+    const today = dayjs();
 
-  let absent = 0;
+    const monthStart = today.startOf("month");
 
-  for (
-    let day = start;
-    day.isBefore(today, "day");
-    day = day.add(1, "day")
-  ) {
-    const date = day.format("M/D/YYYY");
+    const hireDate = dayjs(user.hireDate);
 
-    const isPresent = attendance?.some(
-      item => item.date === date && item.inTime
-    );
+    const start = hireDate.isAfter(monthStart)
+      ? hireDate.startOf("day")
+      : monthStart;
 
-    const isLeave = leaveDates.includes(date);
-    const isHoliday = holidayDates.includes(date);
+    let absent = 0;
 
-    if (!isPresent && !isLeave && !isHoliday) {
-      absent++;
+    for (
+      let day = start;
+      day.isBefore(today, "day");
+      day = day.add(1, "day")
+    ) {
+
+      const date = day.format("M/D/YYYY");
+
+      const isCurrentMonth =
+        day.month() === currentMonth &&
+        day.year() === currentYear;
+
+      if (!isCurrentMonth) continue;
+
+      const isPresent = attendance?.some(
+        item => {
+
+          if (!item?.inTime) return false;
+
+          const itemDate = dayjs(item.date);
+
+          return (
+            itemDate.format("M/D/YYYY") === date &&
+            itemDate.month() === currentMonth &&
+            itemDate.year() === currentYear
+          );
+
+        }
+      );
+
+      const isLeave = leaveDates.includes(date);
+
+      const isHoliday = holidayDates.includes(date);
+
+      if (!isPresent && !isLeave && !isHoliday) {
+        absent++;
+      }
+
     }
-  }
 
-  return absent;
-}, [
-  attendance,
-  leaveDates,
-  holidayDates,
-  user?.hireDate,
-]);
+    return absent;
+
+  }, [
+    attendance,
+    leaveDates,
+    holidayDates,
+    user?.hireDate,
+    currentMonth,
+    currentYear,
+  ]);
 
 
   return (
@@ -199,6 +245,7 @@ const absentCount = useMemo(() => {
         >
 
           <View className="flex-row items-center">
+
             <View className="w-2 h-2 bg-green-500 rounded-full mr-2" />
 
             <Text
@@ -228,6 +275,7 @@ const absentCount = useMemo(() => {
         >
 
           <View className="flex-row items-center">
+
             <View className="w-2 h-2 bg-red-400 rounded-full mr-2" />
 
             <Text
@@ -257,6 +305,7 @@ const absentCount = useMemo(() => {
         >
 
           <View className="flex-row items-center">
+
             <View className="w-2 h-2 bg-yellow-400 rounded-full mr-2" />
 
             <Text

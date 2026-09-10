@@ -18,27 +18,7 @@ export default function RootNavigator() {
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // 🔐 Check Auth
-  // const checkAuth = async () => {
-  //   try {
-  //     const { user } = await getAuth();
-
-  //     console.log(user, "User====== ==");
-
-  //     // ✅ Login hai to profile sync karo
-  //     if (user) {
-  //       await syncProfile();
-  //     }
-
-  //     setLoggedIn(!!user);
-  //   } catch (error) {
-  //     console.log("Auth Error:", error);
-  //     setLoggedIn(false);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
+ 
 
 
 
@@ -61,7 +41,7 @@ export default function RootNavigator() {
       console.log("Auth Error:", error);
       setLoggedIn(false);
     } finally {
-      setLoading(false);
+         setLoading(false);
     }
   };
 

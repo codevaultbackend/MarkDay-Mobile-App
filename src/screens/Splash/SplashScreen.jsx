@@ -12,7 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const SplashScreen = () => {
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  const scaleAnim = useRef(new Animated.Value(0.85)).current;
 
   useEffect(() => {
 
@@ -25,7 +25,8 @@ const SplashScreen = () => {
 
       Animated.spring(scaleAnim, {
         toValue: 1,
-        friction: 4,
+        friction: 5,
+        tension: 60,
         useNativeDriver: true,
       }),
 
@@ -52,35 +53,25 @@ const SplashScreen = () => {
           className="items-center"
         >
 
-          {/* Logo */}
-          <View className="w-24 h-24 bg-accent rounded-3xl items-center justify-center shadow-lg">
+          <Image
+            source={require("../Splash/MarkdayLogo.png")}
+            resizeMode="contain"
+            className="w-80 h-80"
+          />
 
-            <Text className="text-white text-3xl font-bold">
-              M
-            </Text>
-
-          </View>
-
-          {/* App Name */}
-          <Text className="text-2xl font-semibold text-secondary mt-5">
-            MarkDay
-          </Text>
-
-          {/* Tagline */}
-          <Text className="text-sm text-gray-500 mt-1 font-normal" style={{includeFontPadding:false}}>
-            Smart Attendance System
-          </Text>
+         
 
         </Animated.View>
 
       </View>
 
-
-      {/* Bottom Footer */}
       <View className="items-center mb-8">
 
-        <Text className="text-xs text-gray-400 font-normal" style={{includeFontPadding:false}}>
-          Powered by MarkDay
+        <Text
+          className="text-xs text-gray-400 font-normal"
+          style={{ includeFontPadding: false }}
+        >
+          Powered by AthraTech
         </Text>
 
       </View>
