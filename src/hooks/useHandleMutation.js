@@ -172,17 +172,11 @@ message =
  * Unauthorized
  */
 
-} else if (err?.status === 401) {
+} 
 
-message =
-"Session expired. Please login again"
+ 
 
-
-/**
- * Server Error
- */
-
-} else if (err?.status === 500) {
+else if (err?.status === 500) {
 
 message =
 "Server error. Please try later"
