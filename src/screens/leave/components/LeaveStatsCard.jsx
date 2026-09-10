@@ -10,7 +10,7 @@ import Animated, {
 
 import { cardStyle } from "../../../utils/cardStyle";
 
-const { width } = Dimensions.get("window")
+const { width } = Dimensions.get("window");
 
 
 /*
@@ -23,14 +23,14 @@ const numberText = {
     includeFontPadding: false,
     lineHeight: 22,
     textAlign: "center"
-}
+};
 
 const labelText = {
     includeFontPadding: false,
     lineHeight: 14,
     marginTop: 8,
     textAlign: "center"
-}
+};
 
 
 /*
@@ -41,7 +41,7 @@ Shimmer Component
 
 const Shimmer = ({ width = 60, height = 16 }) => {
 
-    const translateX = useSharedValue(-width)
+    const translateX = useSharedValue(-width);
 
     useEffect(() => {
 
@@ -49,9 +49,9 @@ const Shimmer = ({ width = 60, height = 16 }) => {
             withTiming(width, { duration: 1000 }),
             -1,
             false
-        )
+        );
 
-    }, [])
+    }, []);
 
     const animatedStyle = useAnimatedStyle(() => {
 
@@ -65,9 +65,9 @@ const Shimmer = ({ width = 60, height = 16 }) => {
                     )
                 }
             ]
-        }
+        };
 
-    })
+    });
 
     return (
 
@@ -95,10 +95,9 @@ const Shimmer = ({ width = 60, height = 16 }) => {
 
         </View>
 
-    )
+    );
 
-}
-
+};
 
 
 /*
@@ -107,9 +106,56 @@ Main Component
 ============================================
 */
 
-const LeaveStatsCard = ({ leaves, loading, leaveError }) => {
+const LeaveStatsCard = ({
+    leaves,
+    loading,
+    leaveError
+}) => {
 
-    const paid = leaves?.paidLeave || {}
+
+    // ========================================
+    // Paid Leave
+    // ========================================
+
+    const paid = leaves?.paidLeave || {};
+
+
+    // ========================================
+    // Optional Leave
+    // ========================================
+
+    const optional = leaves?.optionalLeave || {};
+
+
+    // ========================================
+    // Total Leave
+    // Paid + Optional
+    // ========================================
+
+    const totalLeaves =
+        (paid?.total ?? 0) +
+        (optional?.total ?? 0);
+
+
+    // ========================================
+    // Used Leave
+    // Paid + Optional
+    // ========================================
+
+    const usedLeaves =
+        (paid?.used ?? 0) +
+        (optional?.used ?? 0);
+
+
+    // ========================================
+    // Remaining Leave
+    // Paid + Optional
+    // ========================================
+
+    const remainingLeaves =
+        (paid?.remaining ?? 0) +
+        (optional?.remaining ?? 0);
+
 
     return (
 
@@ -120,32 +166,45 @@ const LeaveStatsCard = ({ leaves, loading, leaveError }) => {
 
             <View className="flex-row justify-between">
 
+
                 {/* ================= Total ================= */}
 
                 <View className="flex-1 items-center">
 
                     {(loading || leaveError) ? (
+
                         <>
-                            <Shimmer width={60} height={18} />
+                            <Shimmer
+                                width={60}
+                                height={18}
+                            />
+
                             <View className="h-1" />
-                            <Shimmer width={100} height={12} />
+
+                            <Shimmer
+                                width={100}
+                                height={12}
+                            />
                         </>
+
                     ) : (
+
                         <>
                             <Text
                                 className="text-lg font-semibold text-secondary"
                                 style={numberText}
                             >
-                                {paid?.total || 0} Days
+                                {totalLeaves} Days
                             </Text>
 
                             <Text
                                 className="text-xs text-gray-400 font-normal"
                                 style={labelText}
                             >
-                                Total Paid Leaves
+                                Total Leaves
                             </Text>
                         </>
+
                     )}
 
                 </View>
@@ -159,27 +218,39 @@ const LeaveStatsCard = ({ leaves, loading, leaveError }) => {
                 <View className="flex-1 items-center">
 
                     {(loading || leaveError) ? (
+
                         <>
-                            <Shimmer width={60} height={18} />
+                            <Shimmer
+                                width={60}
+                                height={18}
+                            />
+
                             <View className="h-1" />
-                            <Shimmer width={90} height={12} />
+
+                            <Shimmer
+                                width={90}
+                                height={12}
+                            />
                         </>
+
                     ) : (
+
                         <>
                             <Text
                                 className="text-lg font-semibold text-secondary"
                                 style={numberText}
                             >
-                                {paid?.used || 0} Days
+                                {usedLeaves} Days
                             </Text>
 
                             <Text
-                                className="text-xs text-gray-400  font-normal"
+                                className="text-xs text-gray-400 font-normal"
                                 style={labelText}
                             >
                                 Used Leaves
                             </Text>
                         </>
+
                     )}
 
                 </View>
@@ -193,18 +264,29 @@ const LeaveStatsCard = ({ leaves, loading, leaveError }) => {
                 <View className="flex-1 items-center">
 
                     {(loading || leaveError) ? (
+
                         <>
-                            <Shimmer width={60} height={18} />
+                            <Shimmer
+                                width={60}
+                                height={18}
+                            />
+
                             <View className="h-1" />
-                            <Shimmer width={110} height={12} />
+
+                            <Shimmer
+                                width={110}
+                                height={12}
+                            />
                         </>
+
                     ) : (
+
                         <>
                             <Text
                                 className="text-lg font-semibold text-secondary"
                                 style={numberText}
                             >
-                                {paid?.remaining || 0} Days
+                                {remainingLeaves} Days
                             </Text>
 
                             <Text
@@ -214,6 +296,7 @@ const LeaveStatsCard = ({ leaves, loading, leaveError }) => {
                                 Remaining Leaves
                             </Text>
                         </>
+
                     )}
 
                 </View>
@@ -222,8 +305,8 @@ const LeaveStatsCard = ({ leaves, loading, leaveError }) => {
 
         </View>
 
-    )
+    );
 
-}
+};
 
-export default LeaveStatsCard
+export default LeaveStatsCard;

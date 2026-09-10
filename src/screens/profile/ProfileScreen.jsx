@@ -208,14 +208,33 @@ const ProfileScreen = ({ navigation }) => {
             {menuItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => {
-                  if (item.title === "Logout") {
-                    setLogoutVisible(true);
-                  }
-                }}
+              onPress={() => {
+
+  if (item.title === "Notifications") {
+    navigation.navigate("notification-screen");
+  }
+
+  if (item.title === "Privacy Policy") {
+    navigation.navigate("privacy-policy-screen");
+  }
+
+  if (item.title === "Terms & Conditions") {
+    navigation.navigate("terms-and-condition-screen");
+  }
+
+  if (item.title === "About Us") {
+    navigation.navigate("about-us-screen");
+  }
+
+  if (item.title === "Logout") {
+    setLogoutVisible(true);
+  }
+
+}}
                 className="flex-row items-center justify-between px-4 py-5 border-b border-gray-100"
               >
                 <View className="flex-row items-center gap-3">
+
                   <Ionicons
                     name={item.icon}
                     size={20}
@@ -228,6 +247,7 @@ const ProfileScreen = ({ navigation }) => {
                   >
                     {item.title}
                   </Text>
+
                 </View>
 
                 <Ionicons
@@ -235,6 +255,7 @@ const ProfileScreen = ({ navigation }) => {
                   size={20}
                   color="#9CA3AF"
                 />
+
               </TouchableOpacity>
             ))}
           </View>

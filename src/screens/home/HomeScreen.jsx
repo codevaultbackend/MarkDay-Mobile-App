@@ -18,7 +18,7 @@ import {
   useGetHolidaysQuery
 } from "../../redux/features/attendance/attendanceApi";
 import { getAuth } from "../../utils/authStorage";
- 
+
 import { setTodayAttendance } from "../../redux/slices/attendanceSlice";
 
 import dayjs from "dayjs";
@@ -91,7 +91,7 @@ const HomeScreen = ({ navigation }) => {
   // }, []);
   const user = useUser();
   const empId = user?.empId;
- console.log(user ,"user")
+  console.log(user, "user")
   useEffect(() => {
     console.log("👤 User:", user);
   }, [user]);
@@ -278,7 +278,12 @@ const HomeScreen = ({ navigation }) => {
 
           {/* Cards */}
           {
-            checkInTime && <CheckGrid />
+            checkInTime && (
+              <CheckGrid
+                leaves={leaves}
+                navigation={navigation}
+              />
+            )
           }
 
 
