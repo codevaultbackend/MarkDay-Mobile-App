@@ -110,7 +110,26 @@ const ProfileScreen = ({ navigation }) => {
           barStyle="dark-content"
           backgroundColor="#FCF7ED"
         />
+        <View className="flex-row items-center justify-between mt-4">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="w-8"
+          >
+            <Ionicons
+              name="chevron-back"
+              size={24}
+            />
+          </TouchableOpacity>
 
+          <Text
+            className="text-lg font-semibold text-center flex-1"
+            style={{ includeFontPadding: false }}
+          >
+            Profile
+          </Text>
+
+          <View className="w-8" />
+        </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 40 }}
@@ -125,26 +144,7 @@ const ProfileScreen = ({ navigation }) => {
         >
           {/* Header */}
 
-          <View className="flex-row items-center justify-between mt-4">
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              className="w-8"
-            >
-              <Ionicons
-                name="chevron-back"
-                size={24}
-              />
-            </TouchableOpacity>
 
-            <Text
-              className="text-lg font-semibold text-center flex-1"
-              style={{ includeFontPadding: false }}
-            >
-              Profile
-            </Text>
-
-            <View className="w-8" />
-          </View>
 
           {/* Profile Card */}
 
@@ -208,29 +208,29 @@ const ProfileScreen = ({ navigation }) => {
             {menuItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
-              onPress={() => {
+                onPress={() => {
 
-  if (item.title === "Notifications") {
-    navigation.navigate("notification-screen");
-  }
+                  if (item.title === "Notifications") {
+                    navigation.navigate("notification-screen");
+                  }
 
-  if (item.title === "Privacy Policy") {
-    navigation.navigate("privacy-policy-screen");
-  }
+                  if (item.title === "Privacy Policy") {
+                    navigation.navigate("privacy-policy-screen");
+                  }
 
-  if (item.title === "Terms & Conditions") {
-    navigation.navigate("terms-and-condition-screen");
-  }
+                  if (item.title === "Terms & Conditions") {
+                    navigation.navigate("terms-and-condition-screen");
+                  }
 
-  if (item.title === "About Us") {
-    navigation.navigate("about-us-screen");
-  }
+                  if (item.title === "About Us") {
+                    navigation.navigate("about-us-screen");
+                  }
 
-  if (item.title === "Logout") {
-    setLogoutVisible(true);
-  }
+                  if (item.title === "Logout") {
+                    setLogoutVisible(true);
+                  }
 
-}}
+                }}
                 className="flex-row items-center justify-between px-4 py-5 border-b border-gray-100"
               >
                 <View className="flex-row items-center gap-3">

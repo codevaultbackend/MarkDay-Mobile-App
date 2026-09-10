@@ -60,7 +60,7 @@ const AboutUs = ({ navigation }) => {
 
         {/* Intro */}
 
-        <View className="bg-white rounded-3xl p-5 mt-6">
+        <View className="bg-white rounded-3xl p-5 mt-5">
 
           <View className="items-center">
 
