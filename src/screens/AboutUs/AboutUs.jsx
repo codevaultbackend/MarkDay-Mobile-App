@@ -14,7 +14,7 @@ const AboutUs = ({ navigation }) => {
   return (
     <SafeAreaView
       className="flex-1 bg-primary px-5"
-      edges={["top", "left", "right"]}
+      
     >
 
       <StatusBar
@@ -24,7 +24,7 @@ const AboutUs = ({ navigation }) => {
 
       {/* Header */}
 
-      <View className="flex-row items-center justify-between mt-4">
+      <View className="flex-row items-center justify-between mt-4 mb-2">
 
         <TouchableOpacity
           onPress={() => navigation.goBack()}

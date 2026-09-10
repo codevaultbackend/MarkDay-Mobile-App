@@ -162,23 +162,8 @@ const [refreshing, setRefreshing] = useState(false);
         backgroundColor="#FCF7ED"
       />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        className="px-5 "
-        contentContainerStyle={{ paddingBottom: 40 }}
-          refreshControl={
-    <RefreshControl
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-      colors={["#F59E0B"]}   // Android
-      tintColor="#F59E0B"     // iOS
-    />
-  }
-
-      >
-
-        {/* Header */}
-        <View className="flex-row items-center justify-between mt-4 mb-2">
+{/* Header */}
+        <View className="flex-row items-center justify-between mt-4 mb-2 px-5">
 
           {/* Back Button */}
 
@@ -206,7 +191,23 @@ const [refreshing, setRefreshing] = useState(false);
 
           <View className="w-8" />
 
-        </View>
+        </View> 
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        className="px-5"
+        contentContainerStyle={{ paddingBottom: 40 }}
+          refreshControl={
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={["#F59E0B"]}   // Android
+      tintColor="#F59E0B"     // iOS
+    />
+  }
+
+      >
+
+        
 
 
         {/* Calendar Card */}

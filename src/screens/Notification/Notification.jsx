@@ -24,7 +24,7 @@ const Notification = ({ navigation }) => {
 
       {/* Header */}
 
-      <View className="flex-row items-center justify-between mt-4 px-5">
+      <View className="flex-row items-center justify-between mt-4 px-5 mb-2">
 
         <TouchableOpacity
           onPress={() => navigation.goBack()}

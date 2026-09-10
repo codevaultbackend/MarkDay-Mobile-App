@@ -214,7 +214,7 @@ const CheckGrid = ({ leaves, navigation }) => {
       <Card
         icon="calendar"
         title="Leave"
-        value={`${totalLeave} / ${takenLeave}`}
+      value={`${takenLeave} / ${totalLeave}`}
         onPress={handleLeavePress}
       />
 
