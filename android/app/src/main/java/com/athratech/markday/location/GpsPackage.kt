@@ -1,4 +1,4 @@
-    package com.markday.location
+    package com.athratech.markday.location
 
     import com.facebook.react.ReactPackage
     import com.facebook.react.bridge.NativeModule

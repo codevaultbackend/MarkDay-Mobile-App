@@ -326,7 +326,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                 location: `${location?.latitude},${location?.longitude}`,
                 photo: captured?.path
             },
-            showSuccess: true
+            showSuccess: false
         });
 
         console.log("Check In Response", res);
@@ -385,7 +385,7 @@ const FacialVerificationScreen = ({ navigation }) => {
                 type: "out",
                 location: `${location?.latitude},${location?.longitude}`,
             },
-            showSuccess: true
+            showSuccess: false
         });
 
         setApiType(null)

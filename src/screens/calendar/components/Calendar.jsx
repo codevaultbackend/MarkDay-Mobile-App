@@ -19,13 +19,13 @@ const Calendar = ({
     empId,
     leaves,
     holidays,
-    loading ,
+    loading,
 
 
-hireDate
+    hireDate
 
 }) => {
-const hireDay = hireDate ? dayjs(hireDate).startOf("day") : null;
+    const hireDay = hireDate ? dayjs(hireDate).startOf("day") : null;
     const today = dayjs();
     const [currentMonth, setCurrentMonth] = useState(today);
 
@@ -188,8 +188,8 @@ const hireDay = hireDate ? dayjs(hireDate).startOf("day") : null;
                     const isFuture = date.isAfter(today, "day");
                     const isToday = date.isSame(today, "day");
 
-const isBeforeHire =
-  hireDay && date.startOf("day").isBefore(hireDay);
+                    const isBeforeHire =
+                        hireDay && date.startOf("day").isBefore(hireDay);
                     let dotColor = "";
 
                     if (isPresent) dotColor = "bg-green-500";
@@ -200,7 +200,7 @@ const isBeforeHire =
 
                     return (
                         <View
-                          key={formatted}
+                            key={formatted}
                             style={{
                                 width: "14.285%",
                                 padding: 2
@@ -208,8 +208,8 @@ const isBeforeHire =
                         >
                             <AnimatedTouchable
                                 entering={FadeIn.delay(index * 15)}
-                              
-                             disabled={isFuture || isBeforeHire}
+
+                                disabled={isFuture || isBeforeHire}
                                 onPress={() => setSelectedDate(formatted)}
 
                                 style={{
@@ -229,7 +229,7 @@ const isBeforeHire =
                                 {/* Date */}
 
                                 <Text
-                            
+
                                     className={`
                                 text-sm
                                 font-normal

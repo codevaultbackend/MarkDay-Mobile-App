@@ -1,4 +1,4 @@
-package com.markday
+package com.athratech.markday
 
 import android.app.Application
 import com.facebook.react.PackageList
@@ -6,8 +6,8 @@ import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
- import com.markday.location.GpsPackage // ✅ add this
-   import com.markday.location.CustomLocationPackage// ✅ add this
+ import com.athratech.markday.location.GpsPackage // ✅ add this
+   import com.athratech.markday.location.CustomLocationPackage// ✅ add this
 class MainApplication : Application(), ReactApplication {
 
   override val reactHost: ReactHost by lazy {

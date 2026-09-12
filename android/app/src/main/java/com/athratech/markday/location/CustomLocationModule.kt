@@ -1,4 +1,4 @@
-package com.markday.location
+package com.athratech.markday.location
 
 import android.annotation.SuppressLint
 import android.app.Activity

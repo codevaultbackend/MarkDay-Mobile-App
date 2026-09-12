@@ -1,4 +1,4 @@
-package com.markday.location
+package com.athratech.markday.location
 
 import android.app.Activity
 import android.content.Context

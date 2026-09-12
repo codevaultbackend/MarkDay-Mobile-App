@@ -1,4 +1,4 @@
-package com.markday
+package com.athratech.markday
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
