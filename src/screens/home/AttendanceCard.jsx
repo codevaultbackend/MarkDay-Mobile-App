@@ -2,7 +2,10 @@ import React, { useMemo } from "react";
 import { View, Text } from "react-native";
 import { cardStyle } from "../../utils/cardStyle";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import useUser from "../../hooks/useUser";
+
+dayjs.extend(customParseFormat);
 
 const AttendanceCard = ({
   attendance,
@@ -16,23 +19,49 @@ const AttendanceCard = ({
   console.log(user, "----");
 
 
-  // Current Month
+  /* -------------------------------- */
+  /* Current Month                    */
+  /* -------------------------------- */
+
   const currentMonth = dayjs().month();
   const currentYear = dayjs().year();
 
+  console.log(currentMonth, "currentMonth");
+  console.log(currentYear, "currentYear");
 
-  // Present Count
+
+  /* -------------------------------- */
+  /* Present Count                    */
+  /* -------------------------------- */
+
   const presentCount = useMemo(() => {
 
     if (!attendance) return 0;
 
     return attendance.filter(item => {
 
+      console.log("🔥 PRESENT ITEM:", item);
+
       if (!item?.inTime) return false;
 
-      const date = dayjs(item.date);
+      const date = dayjs(item.date, [
+        "M/D/YYYY",
+        "MM/DD/YYYY",
+        "YYYY-MM-DD",
+        "YYYY-MM-DDTHH:mm:ss.SSSZ"
+      ]);
+
+      console.log("🔥 PRESENT DATE CHECK:", {
+        originalDate: item?.date,
+        inTime: item?.inTime,
+        parsedDate: date.format("M/D/YYYY"),
+        isValid: date.isValid(),
+        month: date.month(),
+        year: date.year()
+      });
 
       return (
+        date.isValid() &&
         date.month() === currentMonth &&
         date.year() === currentYear
       );
@@ -42,7 +71,13 @@ const AttendanceCard = ({
   }, [attendance, currentMonth, currentYear]);
 
 
-  // Late Count
+  console.log(presentCount, "presentCount");
+
+
+  /* -------------------------------- */
+  /* Late Count                       */
+  /* -------------------------------- */
+
   const lateCount = useMemo(() => {
 
     if (!attendance) return 0;
@@ -51,25 +86,58 @@ const AttendanceCard = ({
 
       if (!item?.inTime) return false;
 
-      const date = dayjs(item.date);
+      const date = dayjs(item.date, [
+        "M/D/YYYY",
+        "MM/DD/YYYY",
+        "YYYY-MM-DD",
+        "YYYY-MM-DDTHH:mm:ss.SSSZ"
+      ]);
 
       const isCurrentMonth =
+        date.isValid() &&
         date.month() === currentMonth &&
         date.year() === currentYear;
 
       if (!isCurrentMonth) return false;
 
-      const checkIn = dayjs(item.inTime, "h:mm:ss A");
+
+      const checkIn = dayjs(item.inTime, [
+        "h:mm:ss A",
+        "hh:mm:ss A",
+        "h:mm A",
+        "hh:mm A"
+      ]);
+
       const lateTime = dayjs("10:15 AM", "h:mm A");
 
-      return checkIn.isAfter(lateTime);
+
+      console.log("🔥 LATE CHECK:", {
+        date: item?.date,
+        inTime: item?.inTime,
+        checkInValid: checkIn.isValid(),
+        checkIn: checkIn.format("hh:mm A"),
+        lateTime: lateTime.format("hh:mm A"),
+        isLate: checkIn.isAfter(lateTime)
+      });
+
+
+      return (
+        checkIn.isValid() &&
+        checkIn.isAfter(lateTime)
+      );
 
     }).length;
 
   }, [attendance, currentMonth, currentYear]);
 
 
-  // Leave Dates
+  console.log(lateCount, "lateCount");
+
+
+  /* -------------------------------- */
+  /* Leave Dates                      */
+  /* -------------------------------- */
+
   const leaveDates = useMemo(() => {
 
     if (!leaves?.leaves) return [];
@@ -77,15 +145,22 @@ const AttendanceCard = ({
     let arr = [];
 
     leaves.leaves
-      .filter(l => l.status?.toLowerCase() === "approved")
+      .filter(
+        l => l.status?.toLowerCase() === "approved"
+      )
       .forEach(leave => {
 
         let start = dayjs(leave.startDate);
         let end = dayjs(leave.endDate);
 
-        while (start.isBefore(end) || start.isSame(end)) {
+        while (
+          start.isBefore(end) ||
+          start.isSame(end)
+        ) {
 
-          arr.push(start.format("M/D/YYYY"));
+          arr.push(
+            start.format("M/D/YYYY")
+          );
 
           start = start.add(1, "day");
 
@@ -98,7 +173,13 @@ const AttendanceCard = ({
   }, [leaves]);
 
 
-  // Holiday Dates
+  console.log("🟡 APPROVED LEAVE DATES:", leaveDates);
+
+
+  /* -------------------------------- */
+  /* Holiday Dates                    */
+  /* -------------------------------- */
+
   const holidayDates = useMemo(() => {
 
     if (!holidays) return [];
@@ -110,7 +191,13 @@ const AttendanceCard = ({
   }, [holidays]);
 
 
-  // Absent Count
+  console.log("🔵 HOLIDAY DATES:", holidayDates);
+
+
+  /* -------------------------------- */
+  /* Absent Count                     */
+  /* -------------------------------- */
+
   const absentCount = useMemo(() => {
 
     if (!user?.hireDate) return 0;
@@ -127,6 +214,7 @@ const AttendanceCard = ({
 
     let absent = 0;
 
+
     for (
       let day = start;
       day.isBefore(today, "day");
@@ -135,37 +223,79 @@ const AttendanceCard = ({
 
       const date = day.format("M/D/YYYY");
 
+
       const isCurrentMonth =
         day.month() === currentMonth &&
         day.year() === currentYear;
 
+
       if (!isCurrentMonth) continue;
+
 
       const isPresent = attendance?.some(
         item => {
 
           if (!item?.inTime) return false;
 
-          const itemDate = dayjs(item.date);
 
-          return (
+          const itemDate = dayjs(item.date, [
+            "M/D/YYYY",
+            "MM/DD/YYYY",
+            "YYYY-MM-DD",
+            "YYYY-MM-DDTHH:mm:ss.SSSZ"
+          ]);
+
+
+          const result =
+            itemDate.isValid() &&
             itemDate.format("M/D/YYYY") === date &&
             itemDate.month() === currentMonth &&
-            itemDate.year() === currentYear
-          );
+            itemDate.year() === currentYear;
+
+
+          console.log("🔍 ABSENT DATE CHECK:", {
+            checkingDate: date,
+            attendanceDate: item?.date,
+            parsedDate: itemDate.format("M/D/YYYY"),
+            inTime: item?.inTime,
+            isPresent: result
+          });
+
+
+          return result;
 
         }
       );
 
-      const isLeave = leaveDates.includes(date);
 
-      const isHoliday = holidayDates.includes(date);
+      const isLeave =
+        leaveDates.includes(date);
 
-      if (!isPresent && !isLeave && !isHoliday) {
+
+      const isHoliday =
+        holidayDates.includes(date);
+
+
+      console.log("📅 ABSENT CHECK:", {
+        date,
+        isPresent,
+        isLeave,
+        isHoliday
+      });
+
+
+      if (
+        !isPresent &&
+        !isLeave &&
+        !isHoliday
+      ) {
+
         absent++;
+
       }
 
     }
+
 
     return absent;
 
@@ -178,6 +308,13 @@ const AttendanceCard = ({
     currentYear,
   ]);
 
+
+  console.log(absentCount, "absentCount");
+
+
+  /* -------------------------------- */
+  /* UI                               */
+  /* -------------------------------- */
 
   return (
 
@@ -197,7 +334,8 @@ const AttendanceCard = ({
           Attendance
         </Text>
 
-        <View className="bg-[#FCF7ED] px-3 py-1 rounded-full ">
+
+        <View className="bg-[#FCF7ED] px-3 py-1 rounded-full">
 
           <Text
             className="text-xs text-gray-500 font-medium"
@@ -217,18 +355,27 @@ const AttendanceCard = ({
 
         <View
           className="bg-green-500"
-          style={{ width: `${presentCount * 5}%` }}
+          style={{
+            width: `${presentCount * 5}%`
+          }}
         />
+
 
         <View
           className="bg-red-400"
-          style={{ width: `${absentCount * 5}%` }}
+          style={{
+            width: `${absentCount * 5}%`
+          }}
         />
+
 
         <View
           className="bg-yellow-400"
-          style={{ width: `${lateCount * 5}%` }}
+          style={{
+            width: `${lateCount * 5}%`
+          }}
         />
+
 
         <View className="flex-1 bg-gray-200" />
 
@@ -248,6 +395,7 @@ const AttendanceCard = ({
 
             <View className="w-2 h-2 bg-green-500 rounded-full mr-2" />
 
+
             <Text
               className="text-xs text-gray-400 font-normal"
               style={{ includeFontPadding: false }}
@@ -256,6 +404,7 @@ const AttendanceCard = ({
             </Text>
 
           </View>
+
 
           <Text
             className="text-lg font-semibold mt-1 text-secondary"
@@ -278,6 +427,7 @@ const AttendanceCard = ({
 
             <View className="w-2 h-2 bg-red-400 rounded-full mr-2" />
 
+
             <Text
               className="text-xs text-gray-400 font-normal"
               style={{ includeFontPadding: false }}
@@ -287,8 +437,9 @@ const AttendanceCard = ({
 
           </View>
 
+
           <Text
-            className="text-lg font-semibold mt-1 text-secondary "
+            className="text-lg font-semibold mt-1 text-secondary"
             style={{ includeFontPadding: false }}
           >
             {absentCount}
@@ -308,6 +459,7 @@ const AttendanceCard = ({
 
             <View className="w-2 h-2 bg-yellow-400 rounded-full mr-2" />
 
+
             <Text
               className="text-xs text-gray-400 font-medium"
               style={{ includeFontPadding: false }}
@@ -316,6 +468,7 @@ const AttendanceCard = ({
             </Text>
 
           </View>
+
 
           <Text
             className="text-lg font-semibold mt-1 text-secondary"

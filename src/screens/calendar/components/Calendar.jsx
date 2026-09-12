@@ -43,7 +43,7 @@ const Calendar = ({
 
         return [...blanks, ...days];
 
-    }, [currentMonth]);
+    }, [currentMonth, startDay, daysInMonth]);
 
 
     // Present Dates

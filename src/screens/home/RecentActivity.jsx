@@ -1,127 +1,107 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { View, Text } from "react-native";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
-import {
-  useGetAttendanceQuery,
-  useGetLeavesQuery
-} from "../../redux/features/attendance/attendanceApi";
-
-import { getAuth } from "../../utils/authStorage";
-import RecentActivitySkeleton from "./components/RecentActivitySkeleton";
 import { cardStyle } from "../../utils/cardStyle";
 
+dayjs.extend(customParseFormat);
 
 
 /* ===============================
-Today Card
-=============================== */
+   Date Parser
+================================ */
 
-const TodayCard = ({ item }) => (
+const parseDate = (date) => {
+  if (!date) return null;
 
-  <View
-    style={cardStyle}
-    className="bg-white p-4 rounded-3xl mt-3 flex-row items-center border border-gray-200"
-  >
+  // API format: 9/12/2026
+  let parsed = dayjs(date, "M/D/YYYY", true);
 
-    {/* Date Box */}
+  if (parsed.isValid()) {
+    return parsed.startOf("day");
+  }
 
-    <View className="bg-[#9A7354] w-14 h-14 rounded-2xl items-center justify-center mr-3">
+  // Backup for normal ISO date
+  parsed = dayjs(date);
 
-      <Text className="text-white text-lg font-bold" style={{ includeFontPadding: false }}>
-        {dayjs(item.date, "M/D/YYYY").format("DD")}
-      </Text>
+  if (parsed.isValid()) {
+    return parsed.startOf("day");
+  }
 
-      <Text className="text-white text-xs font-normal" style={{ includeFontPadding: false }}>
-        {dayjs(item.date, "M/D/YYYY").format("ddd")}
-      </Text>
-
-    </View>
-
-
-    {/* Center Content */}
-
-    <View className="flex-1">
-
-      <Text className="font-semibold text-base" style={{ includeFontPadding: false }}>
-        {item.title}
-      </Text>
-
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        className="text-xs text-[#2D2D2D] mt-1 font-medium"
-        style={{ includeFontPadding: false }}
-      >
-        {item.location}
-      </Text>
-
-    </View>
-
-
-    {/* Right Side */}
-
-    <View className="items-end">
-
-      <Text className="font-semibold text-base text-secondary" style={{ includeFontPadding: false }}>
-        {item.time}
-      </Text>
-
-      <Text
-        style={{ includeFontPadding: false }}
-        className={` font-normal text-xs font-normal mt-1 ${item.status === "Late"
-          ? "text-red-400"
-          : "text-gray-400"
-          }`}
-      >
-        {item.status}
-      </Text>
-
-    </View>
-
-  </View>
-
-)
-
+  return null;
+};
 
 
 /* ===============================
-Yesterday Card
-=============================== */
+   Time Parser
+================================ */
 
-const YesterdayCard = ({ item }) => (
+const parseTime = (time) => {
+  if (!time) return null;
 
-  <View className="mt-3">
+  const formats = [
+    "h:mm:ss A",
+    "hh:mm:ss A",
+    "h:mm A",
+    "hh:mm A",
+  ];
 
-    <Text className="text-xs text-gray-400 mb-2 ml-2 font-normal" style={{ includeFontPadding: false }}>
-      Yesterday
-    </Text>
+  for (const format of formats) {
+    const parsed = dayjs(time, format, true);
 
+    if (parsed.isValid()) {
+      return parsed;
+    }
+  }
+
+  return null;
+};
+
+
+/* ===============================
+   Today Card
+================================ */
+
+const TodayCard = ({ item }) => {
+
+  const date = parseDate(item.date);
+
+  return (
     <View
       style={cardStyle}
-      className="bg-white p-4 rounded-3xl flex-row items-center border border-gray-200"
+      className="bg-white p-4 rounded-3xl mt-3 flex-row items-center border border-gray-200"
     >
 
       {/* Date Box */}
 
       <View className="bg-[#9A7354] w-14 h-14 rounded-2xl items-center justify-center mr-3">
 
-        <Text className="text-white text-lg font-bold" style={{ includeFontPadding: false }}>
-          {dayjs(item.date, "M/D/YYYY").format("DD")}
+        <Text
+          className="text-white text-lg font-bold"
+          style={{ includeFontPadding: false }}
+        >
+          {date ? date.format("DD") : "--"}
         </Text>
 
-        <Text className="text-white text-xs font-normal" style={{ includeFontPadding: false }}>
-          {dayjs(item.date, "M/D/YYYY").format("ddd")}
+        <Text
+          className="text-white text-xs font-normal"
+          style={{ includeFontPadding: false }}
+        >
+          {date ? date.format("ddd") : "---"}
         </Text>
 
       </View>
 
 
-      {/* Content */}
+      {/* Center Content */}
 
       <View className="flex-1">
 
-        <Text className="font-semibold text-base text-secondary" style={{ includeFontPadding: false }}>
+        <Text
+          className="font-semibold text-base"
+          style={{ includeFontPadding: false }}
+        >
           {item.title}
         </Text>
 
@@ -137,325 +117,576 @@ const YesterdayCard = ({ item }) => (
       </View>
 
 
-      {/* Right */}
+      {/* Right Side */}
 
       <View className="items-end">
 
-        <Text className="font-semibold text-base text-secondary" style={{ includeFontPadding: false }}>
+        <Text
+          className="font-semibold text-base text-secondary"
+          style={{ includeFontPadding: false }}
+        >
           {item.time}
         </Text>
 
-        <Text className="text-xs text-gray-400 mt-1 font-normal" style={{ includeFontPadding: false }}>
+        <Text
+          style={{ includeFontPadding: false }}
+          className={`text-xs mt-1 font-normal ${item.status === "Late"
+              ? "text-red-400"
+              : "text-gray-400"
+            }`}
+        >
           {item.status}
         </Text>
 
       </View>
 
     </View>
-
-  </View>
-
-)
-
+  );
+};
 
 
 /* ===============================
-Leave Card
-=============================== */
+   Yesterday Card
+================================ */
 
-const LeaveCard = ({ item }) => (
+const YesterdayCard = ({ item }) => {
 
-  <View
-    style={cardStyle}
-    className="bg-white p-4 rounded-3xl mt-3 flex-row flex-start border border-gray-200"
-  >
+  const date = parseDate(item.date);
 
-    {/* Date Box */}
+  return (
+    <View className="mt-3">
 
-    <View className="bg-[#9A7354] w-14 h-14 rounded-2xl items-center justify-center mr-3">
-
-      <Text className="text-white text-lg font-bold" style={{ includeFontPadding: false }}>
-        {dayjs(item.date, "M/D/YYYY").format("DD")}
-      </Text>
-
-      <Text className="text-white text-xs font-normal" style={{ includeFontPadding: false }}>
-        {dayjs(item.date, "M/D/YYYY").format("ddd")}
-      </Text>
-
-    </View>
-
-
-    {/* Center Content */}
-
-    <View className="flex-1">
-
-      <Text className="font-semibold text-base text-secondary" style={{ includeFontPadding: false }}>
-        Leave Applied
-      </Text>
-
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        className="text-xs text-[#2D2D2D] mt-1 font-medium "
-        style={{ includeFontPadding: false }}
+      <View
+        style={cardStyle}
+        className="bg-white p-4 rounded-3xl flex-row items-center border border-gray-200"
       >
 
-      </Text>
+        {/* Date Box */}
+
+        <View className="bg-[#9A7354] w-14 h-14 rounded-2xl items-center justify-center mr-3">
+
+          <Text
+            className="text-white text-lg font-bold"
+            style={{ includeFontPadding: false }}
+          >
+            {date ? date.format("DD") : "--"}
+          </Text>
+
+          <Text
+            className="text-white text-xs font-normal"
+            style={{ includeFontPadding: false }}
+          >
+            {date ? date.format("ddd") : "---"}
+          </Text>
+
+        </View>
+
+
+        {/* Content */}
+
+        <View className="flex-1">
+
+          <Text
+            className="font-semibold text-base text-secondary"
+            style={{ includeFontPadding: false }}
+          >
+            {item.title}
+          </Text>
+
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            className="text-xs text-[#2D2D2D] mt-1 font-medium"
+            style={{ includeFontPadding: false }}
+          >
+            {item.location}
+          </Text>
+
+        </View>
+
+
+        {/* Right */}
+
+        <View className="items-end">
+
+          <Text
+            className="font-semibold text-base text-secondary"
+            style={{ includeFontPadding: false }}
+          >
+            {item.time}
+          </Text>
+
+          <Text
+            className="text-xs text-gray-400 mt-1 font-normal"
+            style={{ includeFontPadding: false }}
+          >
+            {item.status}
+          </Text>
+
+        </View>
+
+      </View>
 
     </View>
-
-
-    {/* Right Side */}
-
-    <View className="items-end ">
-
-      <Text
-        style={{ includeFontPadding: false }}
-        className={`text-xs font-semibold mt-1 ${item.status === "pending"
-          ? "text-yellow-500"
-          : item.status === "approved"
-            ? "text-green-500"
-            : "text-red-500"
-          }`}
-      >
-        {item.status}
-      </Text>
-
-    </View>
-
-  </View>
-
-)
-
+  );
+};
 
 
 /* ===============================
-Main Component
-=============================== */
+   Leave Card
+================================ */
+
+const LeaveCard = ({ item }) => {
+
+  const date = parseDate(item.date);
+
+  return (
+    <View
+      style={cardStyle}
+      className="bg-white p-4 rounded-3xl mt-3 flex-row flex-start border border-gray-200"
+    >
+
+      {/* Date Box */}
+
+      <View className="bg-[#9A7354] w-14 h-14 rounded-2xl items-center justify-center mr-3">
+
+        <Text
+          className="text-white text-lg font-bold"
+          style={{ includeFontPadding: false }}
+        >
+          {date ? date.format("DD") : "--"}
+        </Text>
+
+        <Text
+          className="text-white text-xs font-normal"
+          style={{ includeFontPadding: false }}
+        >
+          {date ? date.format("ddd") : "---"}
+        </Text>
+
+      </View>
+
+
+      {/* Center Content */}
+
+      <View className="flex-1">
+
+        <Text
+          className="font-semibold text-base text-secondary"
+          style={{ includeFontPadding: false }}
+        >
+          Leave Applied
+        </Text>
+
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          className="text-xs text-[#2D2D2D] mt-1 font-medium"
+          style={{ includeFontPadding: false }}
+        >
+        </Text>
+
+      </View>
+
+
+      {/* Right Side */}
+
+      <View className="items-end">
+
+        <Text
+          style={{ includeFontPadding: false }}
+          className={`text-xs font-semibold mt-1 ${item.status?.toLowerCase() === "pending"
+              ? "text-yellow-500"
+              : item.status?.toLowerCase() === "approved"
+                ? "text-green-500"
+                : "text-red-500"
+            }`}
+        >
+          {item.status}
+        </Text>
+
+      </View>
+
+    </View>
+  );
+};
+
+
+/* ===============================
+   Main Component
+================================ */
 
 const RecentActivity = ({
   attendance,
   leaves,
-  loading
+  loading,
 }) => {
 
-  const [empId, setEmpId] = useState(null)
 
-  useEffect(() => {
-
-    const load = async () => {
-      const auth = await getAuth()
-      setEmpId(auth?.user?.empId)
-    }
-
-    load()
-
-  }, [])
-
- 
-
-
-
-
+  /* ===============================
+     Activities
+  ================================ */
 
   const activities = useMemo(() => {
 
-    let arr = []
+    const arr = [];
 
-    const today =
-      dayjs().format("M/D/YYYY")
+    const today = dayjs().startOf("day");
 
-    const yesterday =
-      dayjs()
-        .subtract(1, "day")
-        .format("M/D/YYYY")
+    const yesterday = dayjs()
+      .subtract(1, "day")
+      .startOf("day");
 
 
+    /* ===============================
+       Attendance
+    ================================ */
 
-    /* Attendance */
+    attendance?.forEach((item) => {
 
-    attendance?.forEach(item => {
+      const itemDate = parseDate(item?.date);
 
-      if (item.inTime) {
+      if (!itemDate) return;
 
-        arr.push({
-          date: item.date,
-          title: "Start Shift",
-          time:
-            dayjs(
-              item.inTime,
-              "h:mm:ss A"
-            ).format("hh:mm A"),
 
-          status:
-            dayjs(
-              item.inTime,
-              "h:mm:ss A"
-            ).isAfter(
-              dayjs("10:15 AM", "h:mm A")
-            )
+      /* ===============================
+         Start Shift
+      ================================ */
+
+      if (item?.inTime) {
+
+        const inTime = parseTime(item.inTime);
+
+        if (inTime) {
+
+          const lateTime = dayjs(
+            "10:15 AM",
+            "h:mm A",
+            true
+          );
+
+          arr.push({
+            type: "attendance",
+
+            date: itemDate.format("M/D/YYYY"),
+
+            title: "Start Shift",
+
+            time: inTime.format("hh:mm A"),
+
+            status: inTime.isAfter(lateTime)
               ? "Late"
               : "On Time",
 
-          location: item.inLocation
-        })
+            location: item?.inLocation || "",
+          });
+
+        }
 
       }
 
 
-      if (item.outTime) {
+      /* ===============================
+         End Shift
+      ================================ */
 
-        arr.push({
-          date: item.date,
-          title: "End Shift",
-          time:
-            dayjs(
-              item.outTime,
-              "h:mm:ss A"
-            ).format("hh:mm A"),
+      if (item?.outTime) {
 
-          status: "Completed",
-          location: item.outLocation
-        })
+        const outTime = parseTime(item.outTime);
+
+        if (outTime) {
+
+          arr.push({
+            type: "attendance",
+
+            date: itemDate.format("M/D/YYYY"),
+
+            title: "End Shift",
+
+            time: outTime.format("hh:mm A"),
+
+            status: "Completed",
+
+            location: item?.outLocation || "",
+          });
+
+        }
 
       }
 
-    })
+    });
 
 
+    /* ===============================
+       Latest Leave
+    ================================ */
 
-    /* Latest Leave */
-
-    const latestLeave =
-      [...(leaves?.leaves || [])]
-        .sort((a, b) =>
-          dayjs(b.appliedAt) -
-          dayjs(a.appliedAt)
-        )[0]
+    const latestLeave = [
+      ...(leaves?.leaves || []),
+    ]
+      .filter((leave) => leave?.appliedAt)
+      .sort(
+        (a, b) =>
+          new Date(b.appliedAt) -
+          new Date(a.appliedAt)
+      )[0];
 
 
     if (latestLeave) {
 
-      arr.push({
+      const leaveDate = dayjs(
+        latestLeave.appliedAt
+      );
 
-        type: "leave",
+      if (leaveDate.isValid()) {
 
-        date:
-          dayjs(
-            latestLeave.appliedAt
-          ).format("M/D/YYYY"),
+        arr.push({
 
-        status:
-          latestLeave.status,
+          type: "leave",
 
-        subtitle:
-          `${dayjs(latestLeave.startDate)
-            .format("DD MMM")} -
-            ${dayjs(latestLeave.endDate)
-            .format("DD MMM")}`
+          date: leaveDate.format("M/D/YYYY"),
 
-      })
+          status: latestLeave.status,
+
+          subtitle:
+            `${dayjs(latestLeave.startDate).format(
+              "DD MMM"
+            )} - ${dayjs(latestLeave.endDate).format(
+              "DD MMM"
+            )}`,
+
+        });
+
+      }
 
     }
 
 
-    return arr.filter(
-      item =>
-        item.date === today ||
-        item.date === yesterday
-    )
+    /* ===============================
+       ONLY TODAY + YESTERDAY
+    ================================ */
+
+    const filtered = arr.filter((item) => {
+
+      const itemDate = parseDate(item?.date);
+
+      if (!itemDate) return false;
+
+      return (
+        itemDate.isSame(today, "day") ||
+        itemDate.isSame(yesterday, "day")
+      );
+
+    });
 
 
-  }, [attendance, leaves])
+    /* ===============================
+       Sort
+       Yesterday First
+       Today Second
+    ================================ */
+
+    return filtered.sort((a, b) => {
+
+      const dateA = parseDate(a.date);
+      const dateB = parseDate(b.date);
+
+      if (!dateA || !dateB) return 0;
+
+      return dateA.valueOf() - dateB.valueOf();
+
+    });
+
+  }, [attendance, leaves]);
 
 
-
-  //   if (isLoading || leaveLoading) {
-  //  return <View className="px-5"> 
-  //      <RecentActivitySkeleton /> </View>
-  //   }
-
-
+  /* ===============================
+     Render
+  ================================ */
 
   return (
 
     <View className="px-5 mt-5 mb-24">
 
-      <Text className="text-lg font-semibold" style={{ includeFontPadding: false }}>
+      <Text
+        className="text-lg font-semibold"
+        style={{ includeFontPadding: false }}
+      >
         Recent Activity
       </Text>
 
 
-     {
-  activities.length === 0 ? (
+      {activities.length === 0 ? (
 
-    <View
-      style={cardStyle}
-      className="bg-white p-6 rounded-3xl mt-3 items-center justify-center border border-gray-200"
-    >
-      <Text
-        className="text-base font-semibold text-gray-700 font-medium"
-        style={{ includeFontPadding: false }}
-      >
-        No Recent Activity
-      </Text>
+        <View
+          style={cardStyle}
+          className="bg-white p-6 rounded-3xl mt-3 items-center justify-center border border-gray-200"
+        >
 
-      <Text
-        className="text-sm text-gray-400 mt-1 text-center font-normal"
-        style={{ includeFontPadding: false }}
-      >
-        Your recent attendance or leave activity will appear here.
-      </Text>
-    </View>
+          <Text
+            className="text-base font-semibold text-gray-700 font-medium"
+            style={{ includeFontPadding: false }}
+          >
+            No Recent Activity
+          </Text>
 
-  ) : (
+          <Text
+            className="text-sm text-gray-400 mt-1 text-center font-normal"
+            style={{ includeFontPadding: false }}
+          >
+            Your recent attendance or leave activity will appear here.
+          </Text>
 
-    activities.map((item, index) => {
+        </View>
 
-      const isToday =
-        dayjs(item.date, "M/D/YYYY")
-          .isSame(dayjs(), "day")
+      ) : (
 
-      const isYesterday =
-        dayjs(item.date, "M/D/YYYY")
-          .isSame(
-            dayjs().subtract(1, "day"),
+        activities.map((item, index) => {
+
+          const itemDate = parseDate(item.date);
+
+          if (!itemDate) return null;
+
+
+          const today = dayjs().startOf("day");
+
+          const yesterday = dayjs()
+            .subtract(1, "day")
+            .startOf("day");
+
+
+          const isToday = itemDate.isSame(
+            today,
             "day"
-          )
+          );
 
-      if (item.type === "leave")
-        return (
-          <LeaveCard
-            key={index}
-            item={item}
-          />
-        )
+          const isYesterday = itemDate.isSame(
+            yesterday,
+            "day"
+          );
 
-      if (isYesterday)
-    
-        return (
-          <YesterdayCard
-            key={index}
-            item={item}
-          />
-        )
 
-      return (
-        <TodayCard
-          key={index}
-          item={item}
-        />
-      )
+          /* ===============================
+             Previous Activity
+          ================================ */
 
-    })
+          const previousItem =
+            activities[index - 1];
 
-  )
-}
+          const previousDate =
+            previousItem
+              ? parseDate(previousItem.date)
+              : null;
+
+
+          /* ===============================
+             Show Yesterday Heading
+          ================================ */
+
+          const showYesterdayHeading =
+            isYesterday &&
+            (
+              index === 0 ||
+              !previousDate?.isSame(
+                yesterday,
+                "day"
+              )
+            );
+
+
+          /* ===============================
+             Show Today Heading
+          ================================ */
+
+          const showTodayHeading =
+            isToday &&
+            (
+              index === 0 ||
+              !previousDate?.isSame(
+                today,
+                "day"
+              )
+            );
+
+
+          return (
+
+            <React.Fragment
+              key={`${item.type}-${item.date}-${index}`}
+            >
+
+              {/* ===============================
+                  Yesterday Heading
+              ================================ */}
+
+              {showYesterdayHeading && (
+
+                <Text
+                  className="text-xs text-gray-400   ml-2 mt-4 font-normal"
+                  style={{
+                    includeFontPadding: false,
+                  }}
+                >
+                  Yesterday
+                </Text>
+
+              )}
+
+
+              {/* ===============================
+                  Today Heading
+              ================================ */}
+
+              {showTodayHeading && (
+
+                <Text
+                  className="text-xs text-gray-400   ml-2 mt-4 font-normal"
+                  style={{
+                    includeFontPadding: false,
+                  }}
+                >
+                  Today
+                </Text>
+
+              )}
+
+
+              {/* ===============================
+                  Leave
+              ================================ */}
+
+              {item.type === "leave" ? (
+
+                <LeaveCard
+                  item={item}
+                />
+
+              ) : isYesterday ? (
+
+                <YesterdayCard
+                  item={item}
+                />
+
+              ) : (
+
+                <TodayCard
+                  item={item}
+                />
+
+              )}
+
+            </React.Fragment>
+
+          );
+
+        })
+
+      )}
 
     </View>
 
-  )
+  );
+};
 
-}
 
-export default RecentActivity
+export default RecentActivity;
