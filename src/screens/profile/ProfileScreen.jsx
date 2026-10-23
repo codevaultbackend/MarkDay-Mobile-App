@@ -7,6 +7,7 @@ import {
   ScrollView,
   StatusBar,
   RefreshControl,
+  Linking,
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -83,10 +84,11 @@ const ProfileScreen = ({ navigation }) => {
       title: "Notifications",
       icon: "notifications-outline",
     },
-    {
-      title: "Terms & Conditions",
-      icon: "document-text-outline",
-    },
+    // {
+    //   title: "Terms & Conditions",
+    //   icon: "document-text-outline",
+    // },
+    
     {
       title: "Privacy Policy",
       icon: "shield-outline",
@@ -214,13 +216,17 @@ const ProfileScreen = ({ navigation }) => {
                     navigation.navigate("notification-screen");
                   }
 
-                  if (item.title === "Privacy Policy") {
-                    navigation.navigate("privacy-policy-screen");
-                  }
+                if (item.title === "Privacy Policy") {
+  Linking.openURL(
+    "https://markday.athratech.com/privacy-policy/"
+  ).catch(() => {
+    Alert.alert("Error", "Unable to open Privacy Policy.");
+  });
+}
 
-                  if (item.title === "Terms & Conditions") {
-                    navigation.navigate("terms-and-condition-screen");
-                  }
+                  // if (item.title === "Terms & Conditions") {
+                  //   navigation.navigate("terms-and-condition-screen");
+                  // }
 
                   if (item.title === "About Us") {
                     navigation.navigate("about-us-screen");
